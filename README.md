@@ -1,2 +1,2 @@
-# PawPerfect
+# MayaPets
 pet web application

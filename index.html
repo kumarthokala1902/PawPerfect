@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PawPerfect — Premium Pet Nutrition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue: #0066ff;
+      --blue2: #0047b3;
+      --yellow: #ffd600;
+      --red: #ff3b3b;
+      --black: #111111;
+      --white: #ffffff;
+      --gray: #f5f7fc;
+      --text: #333;
+      --shadow: 0 8px 40px rgba(0, 102, 255, 0.10);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--black);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVBAR ───────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: var(--white);
+      box-shadow: 0 2px 24px rgba(0, 0, 0, .07);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5vw;
+      height: 68px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--blue);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .logo-text {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      color: var(--blue);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--black);
+      position: relative;
+      padding-bottom: 2px;
+      transition: color .25s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--blue);
+      transition: width .3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--blue);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .btn-nav {
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 700;
+      font-size: .88rem;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 24px;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none;
+    }
+
+    .btn-nav:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 214, 0, .4);
+    }
+
+    /* ─── HERO ──────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: var(--white);
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-wave {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 340px;
+      background: var(--blue);
+      clip-path: ellipse(120% 100% at 50% 0%);
+      z-index: 0;
+    }
+
+    .hero-wave::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0066ff 0%, #0047b3 100%);
+      opacity: .9;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 5vw 80px;
+      gap: 40px;
+    }
+
+    .hero-left {
+      flex: 1;
+      max-width: 580px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, .15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, .3);
+      color: var(--white);
+      font-size: .8rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+      animation: fadeUp .6s ease both;
+    }
+
+    .hero-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--yellow);
+    }
+
+    .hero-h1 {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      color: var(--white);
+      animation: fadeUp .6s .1s ease both;
+    }
+
+    .hero-h1 .accent {
+      color: var(--yellow);
+    }
+
+    .hero-h1 .red {
+      color: #ff6b6b;
+    }
+
+    .hero-sub {
+      margin-top: 20px;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, .82);
+      line-height: 1.7;
+      animation: fadeUp .6s .2s ease both;
+    }
+
+    .hero-ctas {
+      margin-top: 36px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp .6s .3s ease both;
+    }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 36px;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(255, 214, 0, .5);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid rgba(255, 255, 255, .5);
+      border-radius: 50px;
+      padding: 12px 30px;
+      cursor: pointer;
+      transition: all .25s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, .12);
+      border-color: white;
+    }
+
+    .hero-stats {
+      margin-top: 48px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      animation: fadeUp .6s .4s ease both;
+    }
+
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--white);
+    }
+
+    .stat-num span {
+      color: var(--yellow);
+    }
+
+    .stat-label {
+      font-size: .78rem;
+      color: rgba(255, 255, 255, .7);
+      margin-top: 2px;
+    }
+
+    .hero-right {
+      flex: 1;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: floatIn .8s .2s ease both;
+      position: relative;
+    }
+
+    .hero-img-wrap {
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .12);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 255, 255, .2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-img-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 40% 40%, rgba(255, 214, 0, .15), transparent 60%);
+    }
+
+    .hero-emoji {
+      font-size: 160px;
+      line-height: 1;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, .2));
+    }
+
+    .floating-card {
+      position: absolute;
+      background: var(--white);
+      border-radius: 16px;
+      padding: 14px 18px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .12);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: .82rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .fc1 {
+      bottom: 30px;
+      left: -30px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .fc2 {
+      top: 50px;
+      right: -20px;
+      animation: float 3s .8s ease-in-out infinite;
+    }
+
+    .fc3 {
+      top: 50%;
+      right: -40px;
+      animation: float 3s 1.5s ease-in-out infinite;
+    }
+
+    .fc-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .fc-icon.blue {
+      background: #e8f0ff;
+    }
+
+    .fc-icon.yell {
+      background: #fff9d6;
+    }
+
+    .fc-icon.red {
+      background: #ffe8e8;
+    }
+
+    /* ─── BRAND STRIP ───────────────────────────────────────── */
+    .brands-wrapper {
+      background: var(--gray);
+      border-top: 1px solid #e5eaf5;
+      border-bottom: 1px solid #e5eaf5;
+      padding: 24px 0;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      width: 100%;
+    }
+
+    .brands-track {
+      display: flex;
+      width: max-content;
+      animation: scrollBrands 30s linear infinite;
+    }
+
+    .brand-group {
+      display: flex;
+      gap: 100px;
+      padding-right: 100px;
+    }
+
+    .brand-item {
+      font-size: .85rem;
+      font-weight: 700;
+      color: #aab;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+    }
+
+    .brand-item .material-symbols-outlined {
+      font-size: 22px;
+      color: var(--blue);
+    }
+
+    /* ─── SECTION BASE ───────────────────────────────────────── */
+    section {
+      padding: 96px 5vw;
+    }
+
+    .section-tag {
+      display: inline-block;
+      background: #e8f0ff;
+      color: var(--blue);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 16px;
+    }
+
+    .section-h2 {
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      color: var(--black);
+    }
+
+    .section-h2 .blue {
+      color: var(--blue);
+    }
+
+    .section-h2 .yellow {
+      color: var(--yellow);
+      background: var(--black);
+      padding: 0 6px;
+      border-radius: 4px;
+    }
+
+    .section-sub {
+      margin-top: 14px;
+      font-size: 1rem;
+      color: #666;
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+
+    /* ─── PRODUCTS ───────────────────────────────────────────── */
+    .products {
+      background: var(--gray);
+    }
+
+    .products-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .prod-card {
+      background: var(--white);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .05);
+      transition: transform .3s, box-shadow .3s;
+    }
+
+    .prod-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 60px rgba(0, 102, 255, .12);
+    }
+
+    .prod-img {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+    }
+
+    .prod-img.b1 {
+      background: linear-gradient(135deg, #e8f0ff, #ccdeff);
+    }
+
+    .prod-img.b2 {
+      background: linear-gradient(135deg, #fff9d6, #ffe680);
+    }
+
+    .prod-img.b3 {
+      background: linear-gradient(135deg, #ffe8e8, #ffb3b3);
+    }
+
+    .prod-img.b4 {
+      background: linear-gradient(135deg, #e6faf0, #a8edcc);
+    }
+
+    .prod-body {
+      padding: 22px 22px 28px;
+    }
+
+    .prod-tag {
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .prod-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 6px 0;
+    }
+
+    .prod-price {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--blue);
+    }
+
+    .prod-price span {
+      font-size: .8rem;
+      font-weight: 500;
+      color: #999;
+      text-decoration: line-through;
+      margin-left: 6px;
+    }
+
+    .prod-btn {
+      margin-top: 16px;
+      width: 100%;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 50px;
+      padding: 12px;
+      font-size: .88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .prod-btn:hover {
+      background: var(--blue2);
+    }
+
+    /* ─── WHY US ─────────────────────────────────────────────── */
+    .why {
+      background: var(--white);
+    }
+
+    .why-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+      margin-top: 0;
+    }
+
+    .why-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .why-blob {
+      width: 420px;
+      height: 420px;
+      border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+      background: linear-gradient(135deg, var(--blue), #0047b3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 130px;
+      animation: morphBlob 6s ease-in-out infinite;
+    }
+
+    .why-stat-box {
+      position: absolute;
+      background: var(--white);
+      border-radius: 18px;
+      padding: 18px 22px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .1);
+      font-weight: 700;
+    }
+
+    .wsb1 {
+      bottom: 30px;
+      left: -20px;
+    }
+
+    .wsb2 {
+      top: 40px;
+      right: -30px;
+    }
+
+    .wsb-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--blue);
+    }
+
+    .wsb-label {
+      font-size: .75rem;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .why-list {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .why-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px;
+      border-radius: 16px;
+      border: 1.5px solid #eef1fb;
+      transition: border-color .25s, box-shadow .25s;
+    }
+
+    .why-item:hover {
+      border-color: var(--blue);
+      box-shadow: 0 4px 20px rgba(0, 102, 255, .08);
+    }
+
+    .why-check {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 12px;
+      background: #e8f0ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .why-item-title {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .why-item-text {
+      font-size: .82rem;
+      color: #666;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* ─── TESTIMONIALS ───────────────────────────────────────── */
+    .testi {
+      background: var(--blue);
+      padding: 96px 5vw;
+      overflow: hidden;
+    }
+
+    .testi .section-tag {
+      background: rgba(255, 255, 255, .15);
+      color: var(--white);
+    }
+
+    .testi .section-h2 {
+      color: var(--white);
+    }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .testi-card {
+      background: rgba(255, 255, 255, .1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 24px;
+      padding: 32px;
+      transition: transform .3s;
+    }
+
+    .testi-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .stars {
+      color: var(--yellow);
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+
+    .testi-text {
+      font-size: .92rem;
+      color: rgba(255, 255, 255, .88);
+      line-height: 1.7;
+    }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .testi-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: rgba(255, 255, 255, .2);
+    }
+
+    .testi-name {
+      font-weight: 700;
+      color: var(--white);
+      font-size: .9rem;
+    }
+
+    .testi-role {
+      font-size: .75rem;
+      color: rgba(255, 255, 255, .6);
+    }
+
+    /* ─── CTA ────────────────────────────────────────────────── */
+    .cta-section {
+      background: var(--white);
+      padding: 96px 5vw;
+      text-align: center;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, #0066ff 0%, #0047b3 100%);
+      border-radius: 32px;
+      padding: 80px 40px;
+      position: relative;
+      overflow: hidden;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .06);
+      top: -100px;
+      right: -80px;
+    }
+
+    .cta-box::after {
+      content: '';
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .04);
+      bottom: -60px;
+      left: -40px;
+    }
+
+    .cta-h {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -1px;
+    }
+
+    .cta-sub {
+      margin-top: 14px;
+      font-size: 1rem;
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 36px;
+      flex-wrap: wrap;
+    }
+
+    .btn-cta-main {
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 800;
+      font-size: 1rem;
+      border: none;
+      border-radius: 50px;
+      padding: 16px 40px;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-cta-main:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(255, 214, 0, .45);
+    }
+
+    .btn-cta-sec {
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid rgba(255, 255, 255, .4);
+      border-radius: 50px;
+      padding: 14px 32px;
+      cursor: pointer;
+      transition: all .25s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-cta-sec:hover {
+      background: rgba(255, 255, 255, .12);
+      border-color: white;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--black);
+      color: rgba(255, 255, 255, .75);
+      padding: 64px 5vw 32px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .footer-brand .logo-text {
+      color: var(--white);
+    }
+
+    .footer-brand p {
+      font-size: .85rem;
+      line-height: 1.7;
+      margin-top: 14px;
+      max-width: 260px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .social-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      text-decoration: none;
+      transition: background .2s;
+    }
+
+    .social-btn:hover {
+      background: var(--blue);
+    }
+
+    .footer-col h4 {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 18px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col a {
+      text-decoration: none;
+      color: rgba(255, 255, 255, .6);
+      font-size: .82rem;
+      transition: color .2s;
+    }
+
+    .footer-col a:hover {
+      color: var(--yellow);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 28px;
+      font-size: .78rem;
+      color: rgba(255, 255, 255, .4);
+    }
+
+    .footer-badge {
+      background: rgba(0, 102, 255, .25);
+      color: var(--blue);
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes scrollBrands {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: scale(.9) translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes morphBlob {
+
+      0%,
+      100% {
+        border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+      }
+
+      50% {
+        border-radius: 45% 55% 40% 60% / 60% 40% 55% 45%;
+      }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .7s, transform .7s;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-inner {
+        flex-direction: column;
+        padding-top: 160px;
+        text-align: center;
+      }
+
+      .hero-ctas {
+        justify-content: center;
+      }
+
+      .hero-stats {
+        justify-content: center;
+      }
+
+      .hero-right {
+        display: none;
+      }
+
+      .why-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .why-visual {
+        display: none;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      nav .nav-links {
+        display: none;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
+  <nav>
+    <a class="logo" href="#">
+      <div class="logo-icon">🐾</div>
+      <span class="logo-text">Paw<span>Perfect</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#products">Products</a></li>
+      <li><a href="#care">Puppy Care</a></li>
+      <li><a href="#breeds">Dog Breeds</a></li>
+      <li><a href="#samples">Free Samples</a></li>
+      <li><a href="#expert">Ask an Expert</a></li>
+      <li><a href="#why">About Us</a></li>
+    </ul>
+    <a href="#cta" class="btn-nav">Shop Now →</a>
+  </nav>
+
+  <!-- ══ HERO ════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-wave"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-badge"><span class="dot"></span> #1 Rated Pet Nutrition Brand 2025</div>
+        <h1 class="hero-h1">
+          Give Your Pet<br>
+          <span class="accent">Pure Happiness</span><br>
+          Every <span class="red">Day.</span>
+        </h1>
+        <p class="hero-sub">
+          Premium, vet-approved nutrition crafted for your furry family members.<br>
+          Real ingredients. Real love. Delivered to your door.
+        </p>
+        <div class="hero-ctas">
+          <a href="#products" class="btn-primary">🛒 Explore Products</a>
+          <a href="#why" class="btn-outline">▶ Watch Our Story</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">2M<span>+</span></div>
+            <div class="stat-label">Happy Pets Fed</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">50<span>+</span></div>
+            <div class="stat-label">Product Varieties</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">4.9<span>★</span></div>
+            <div class="stat-label">Average Rating</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-img-wrap">
+          <img src="images/hero_dog.png" alt="Happy Golden Retriever"
+            style="width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+        </div>
+        <div class="floating-card fc1">
+          <div class="fc-icon blue">✅</div>
+          <div>
+            <div style="font-size:.82rem;font-weight:700">Vet Approved</div>
+            <div style="font-size:.72rem;color:#888">100% Safe Formula</div>
+          </div>
+        </div>
+        <div class="floating-card fc2">
+          <div class="fc-icon yell">🚀</div>
+          <div>
+            <div style="font-size:.82rem;font-weight:700">Fast Delivery</div>
+            <div style="font-size:.72rem;color:#888">Same Day Dispatch</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ BRANDS ══════════════════════════════════════════════ -->
+  <div class="brands-wrapper">
+    <div class="brands-track">
+      <div class="brand-group">
+        <span class="brand-item"><span class="material-symbols-outlined">workspace_premium</span> BEST BRAND 2025</span>
+        <span class="brand-item"><span class="material-symbols-outlined">verified</span> VET CERTIFIED</span>
+        <span class="brand-item"><span class="material-symbols-outlined">eco</span> 100% NATURAL</span>
+        <span class="brand-item"><span class="material-symbols-outlined">local_shipping</span> FREE SHIPPING
+          ₹499+</span>
+        <span class="brand-item"><span class="material-symbols-outlined">workspace_premium</span> BEST BRAND 2025</span>
+        <span class="brand-item"><span class="material-symbols-outlined">verified</span> VET CERTIFIED</span>
+        <span class="brand-item"><span class="material-symbols-outlined">eco</span> 100% NATURAL</span>
+        <span class="brand-item"><span class="material-symbols-outlined">local_shipping</span> FREE SHIPPING
+          ₹499+</span>
+      </div>
+      <div class="brand-group" aria-hidden="true">
+        <span class="brand-item"><span class="material-symbols-outlined">workspace_premium</span> BEST BRAND 2025</span>
+        <span class="brand-item"><span class="material-symbols-outlined">verified</span> VET CERTIFIED</span>
+        <span class="brand-item"><span class="material-symbols-outlined">eco</span> 100% NATURAL</span>
+        <span class="brand-item"><span class="material-symbols-outlined">local_shipping</span> FREE SHIPPING
+          ₹499+</span>
+        <span class="brand-item"><span class="material-symbols-outlined">workspace_premium</span> BEST BRAND 2025</span>
+        <span class="brand-item"><span class="material-symbols-outlined">verified</span> VET CERTIFIED</span>
+        <span class="brand-item"><span class="material-symbols-outlined">eco</span> 100% NATURAL</span>
+        <span class="brand-item"><span class="material-symbols-outlined">local_shipping</span> FREE SHIPPING
+          ₹499+</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ PRODUCTS ════════════════════════════════════════════ -->
+  <section class="products" id="products">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="products-header reveal">
+        <div>
+          <span class="section-tag">Our Products</span>
+          <h2 class="section-h2">Bestselling <span class="blue">Favourites</span></h2>
+        </div>
+        <a href="#" class="btn-primary" style="white-space:nowrap">View All →</a>
+      </div>
+      <div class="products-grid">
+        <div class="prod-card reveal">
+          <div class="prod-img" style="height: 240px; background: none; overflow: hidden; padding: 0;">
+            <img src="images/product_chicken.png" style="width: 100%; height: 100%; object-fit: cover;"
+              alt="Chicken Product">
+          </div>
+          <div class="prod-body">
+            <div class="prod-tag">Adult Dog</div>
+            <div class="prod-name">Chicken & Rice Classic</div>
+            <div class="prod-price">₹649 <span>₹799</span></div>
+            <button class="prod-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="prod-card reveal">
+          <div class="prod-img" style="height: 240px; background: none; overflow: hidden; padding: 0;">
+            <img src="images/product_salmon.png" style="width: 100%; height: 100%; object-fit: cover;"
+              alt="Salmon Product">
+          </div>
+          <div class="prod-body">
+            <div class="prod-tag">Premium</div>
+            <div class="prod-name">Salmon & Veggie Feast</div>
+            <div class="prod-price">₹849 <span>₹999</span></div>
+            <button class="prod-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="prod-card reveal">
+          <div class="prod-img" style="height: 240px; background: none; overflow: hidden; padding: 0;">
+            <img src="images/product_cat.png" style="width: 100%; height: 100%; object-fit: cover;"
+              alt="Cat Food Product">
+          </div>
+          <div class="prod-body">
+            <div class="prod-tag">Cat Food</div>
+            <div class="prod-name">Tuna Delight for Cats</div>
+            <div class="prod-price">₹549 <span>₹699</span></div>
+            <button class="prod-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="prod-card reveal">
+          <div class="prod-img" style="height: 240px; background: none; overflow: hidden; padding: 0;">
+            <img src="images/product_puppy.png" style="width: 100%; height: 100%; object-fit: cover;"
+              alt="Puppy Product">
+          </div>
+          <div class="prod-body">
+            <div class="prod-tag">Puppy</div>
+            <div class="prod-name">Puppy Growth Formula</div>
+            <div class="prod-price">₹749 <span>₹899</span></div>
+            <button class="prod-btn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PUPPY CARE ════════════════════════════════════════════ -->
+  <section class="care" id="care" style="background: var(--white);">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center;">
+        <div class="reveal">
+          <span class="section-tag">Puppy Care Center</span>
+          <h2 class="section-h2">Expert Guidance for Your<br><span class="blue">Growing Best Friend</span></h2>
+          <p class="section-sub">Get unparalleled guidance from our certified veterinary experts to ensure your puppy
+            develops healthy routines, proper nutrition, and perfect obedience.</p>
+
+          <div style="margin-top: 36px; display: flex; flex-direction: column; gap: 20px;">
+            <div
+              style="display: flex; align-items: flex-start; gap: 16px; padding: 20px; border-radius: 16px; border: 1.5px solid #eef1fb; transition: border-color .25s, box-shadow .25s;">
+              <div
+                style="width: 48px; height: 48px; min-width: 48px; border-radius: 12px; background: #e8f0ff; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                🩺</div>
+              <div>
+                <div style="font-size: 1.05rem; font-weight: 700; color: var(--black);">One-on-One Consultations</div>
+                <div style="font-size: .88rem; color: #666; margin-top: 4px; line-height: 1.6;">Access dedicated vets
+                  online or in-person for personalized health advice.</div>
+              </div>
+            </div>
+            <div
+              style="display: flex; align-items: flex-start; gap: 16px; padding: 20px; border-radius: 16px; border: 1.5px solid #eef1fb; transition: border-color .25s, box-shadow .25s;">
+              <div
+                style="width: 48px; height: 48px; min-width: 48px; border-radius: 12px; background: #fff9d6; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                🦴</div>
+              <div>
+                <div style="font-size: 1.05rem; font-weight: 700; color: var(--black);">Nutrition Planning</div>
+                <div style="font-size: .88rem; color: #666; margin-top: 4px; line-height: 1.6;">Customized diet charts
+                  depending on your puppy's breed and growth stage.</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary" style="margin-top: 36px;">Talk to a Vet →</button>
+        </div>
+
+        <div class="reveal" style="position: relative; width: 100%; height: 500px; border-radius: 24px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.08);">
+        <img src="https://images.unsplash.com/photo-1612531386530-97286d97c2d2?auto=format&fit=crop&w=800&q=80" alt="Puppy consulting a doctor" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ WHY US ═══════════════════════════════════════════════ -->
+  <section class="why" id="why">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="why-inner">
+        <div class="why-visual reveal">
+          <div class="why-blob"
+            style="background: url('https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80') center/cover; font-size: 0;">
+          </div>
+          <div class="why-stat-box wsb1">
+            <div class="wsb-num">98%</div>
+            <div class="wsb-label">Customer Satisfaction</div>
+          </div>
+          <div class="why-stat-box wsb2">
+            <div class="wsb-num">10+</div>
+            <div class="wsb-label">Years of Trust</div>
+          </div>
+        </div>
+        <div>
+          <span class="section-tag">Why Choose Us</span>
+          <h2 class="section-h2">A Brand Your<br>Pet Can <span class="blue">Trust</span></h2>
+          <p class="section-sub">We've been serving pets and their families for over a decade, building trust one bowl
+            at a time.</p>
+          <div class="why-list">
+            <div class="why-item reveal">
+              <div class="why-check">🥇</div>
+              <div>
+                <div class="why-item-title">Award-Winning Quality</div>
+                <div class="why-item-text">Recognised by top veterinary organisations for nutrition excellence and
+                  product safety standards.</div>
+              </div>
+            </div>
+            <div class="why-item reveal">
+              <div class="why-check">🚚</div>
+              <div>
+                <div class="why-item-title">Free Same-Day Delivery</div>
+                <div class="why-item-text">Order before 2 PM and get your pet's food delivered the same day. Zero
+                  delivery charges on orders above ₹499.</div>
+              </div>
+            </div>
+            <div class="why-item reveal">
+              <div class="why-check">🔄</div>
+              <div>
+                <div class="why-item-title">Hassle-Free Returns</div>
+                <div class="why-item-text">Not satisfied? Return within 30 days, no questions asked. Your pet's
+                  happiness is our guarantee.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TESTIMONIALS ════════════════════════════════════════ -->
+  <section class="testi" id="testi">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="reveal" style="text-align:center">
+        <span class="section-tag">Happy Customers</span>
+        <h2 class="section-h2" style="color:white">Pets & Owners <span style="color:var(--yellow)">Love</span> Us</h2>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testi-text">"My golden retriever Max was always picky, but he absolutely devours PawPerfect every
+            single meal. His coat has never looked shinier!"</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="overflow: hidden; padding: 0;">
+              <img src="https://images.unsplash.com/photo-1589156191108-c762ff4b96ab?auto=format&fit=crop&w=100&q=80"
+                style="width: 100%; height: 100%; object-fit: cover;" alt="Kavitha">
+            </div>
+            <div>
+              <div class="testi-name">Kavitha Rajan</div>
+              <div class="testi-role">Dog Mom, Chennai</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testi-text">"Been using PawPerfect for 2 years. My vet is always impressed by how healthy my cats
+            are. Worth every rupee — highly recommend!"</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="overflow: hidden; padding: 0;">
+              <img src="https://images.unsplash.com/photo-1552058544-e2ebbb5fef67?auto=format&fit=crop&w=100&q=80"
+                style="width: 100%; height: 100%; object-fit: cover;" alt="Karthik">
+            </div>
+            <div>
+              <div class="testi-name">Karthik Selvam</div>
+              <div class="testi-role">Cat Dad, Coimbatore</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testi-text">"The delivery is lightning fast and the packaging is so premium. My pup Bruno gets
+            excited when he sees the blue box arrive at the door!"</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="overflow: hidden; padding: 0;">
+              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80"
+                style="width: 100%; height: 100%; object-fit: cover;" alt="Meenakshi">
+            </div>
+            <div>
+              <div class="testi-name">Meenakshi Iyer</div>
+              <div class="testi-role">Pet Parent, Madurai</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CTA ══════════════════════════════════════════════════ -->
+  <section class="cta-section" id="cta">
+    <div class="cta-box reveal">
+      <h2 class="cta-h">Ready to Make Your Pet<br>Healthier & Happier? 🐾</h2>
+      <p class="cta-sub">Join 2 million+ pet owners who trust PawPerfect daily.<br>First order? Get 20% off with code
+        <strong style="color:var(--yellow)">PAWLOVE</strong></p>
+      <div class="cta-btns">
+        <button class="btn-cta-main">🛒 Shop Now — 20% Off</button>
+        <button class="btn-cta-sec">📞 Talk to a Vet</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════════ -->
+  <footer>
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="logo" href="#" style="display:inline-flex">
+            <div class="logo-icon">🐾</div>
+            <span class="logo-text">Paw<span>Perfect</span></span>
+          </a>
+          <p>Premium pet nutrition crafted with love and science. Trusted by over 2 million pet owners across India.</p>
+          <div class="footer-social">
+            <a class="social-btn" href="#">📘</a>
+            <a class="social-btn" href="#">📸</a>
+            <a class="social-btn" href="#">🐦</a>
+            <a class="social-btn" href="#">▶️</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul>
+            <li><a href="#">Dog Food</a></li>
+            <li><a href="#">Cat Food</a></li>
+            <li><a href="#">Puppy Range</a></li>
+            <li><a href="#">Treats & Snacks</a></li>
+            <li><a href="#">Supplements</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Vet Helpline</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>@ 2026 FortuMars AI Technologies and Business Solutions Pvt. Ltd. All rights are reserved.</span>
+        <span class="footer-badge">🔒 SSL Secured</span>
+        <span>Privacy · Terms · Sitemap</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Navbar scroll shadow
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      nav.style.boxShadow = window.scrollY > 10
+        ? '0 4px 30px rgba(0,0,0,.12)'
+        : '0 2px 24px rgba(0,0,0,.07)';
+    });
+  </script>
+</body>
+
+</html>

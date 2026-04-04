@@ -1201,7 +1201,7 @@ footer {
   margin: 0 auto;
   padding: 0 5vw;
   display: grid;
-  grid-template-columns: 1.6fr 0.8fr 0.8fr 0.8fr 2.2fr;
+  grid-template-columns: 1.8fr 1fr 1fr 2.5fr;
   gap: 40px;
   margin-bottom: 60px;
 }
@@ -1348,7 +1348,7 @@ footer {
 
 @media (max-width: 1200px) {
   .footer-inner { grid-template-columns: 1fr 1fr; gap: 50px; }
-  .footer-contact-card { grid-column: span 2; justify-self: center; width: 100%; max-width: 500px; }
+  .footer-contact-card { grid-column: span 2; }
 }
 
 @media (max-width: 768px) {
@@ -1358,13 +1358,141 @@ footer {
   .footer-social-pill { justify-content: center; }
   .footer-bottom { flex-direction: column; gap: 15px; }
   
-  /* Robust Mobile Nav Fixes */
-  nav { height: auto !important; padding: 25px 5vw !important; flex-direction: column !important; gap: 20px !important; display: flex !important; }
-  .nav-container { flex-direction: column !important; gap: 20px !important; width: 100% !important; height: auto !important; display: flex !important; }
-  .nav-links { flex-wrap: wrap !important; justify-content: center !important; gap: 15px !important; display: flex !important; width: 100% !important; }
-  .search-container { max-width: 100% !important; width: 100% !important; order: 2; }
-  .logo { order: 1; }
-  .nav-actions { order: 3; }
+  /* ── MOBILE NAV: SINGLE ROW HEADER ────────────────────── */
+  /* Layout: [Logo] [Search──────────] [Cart] [Profile] */
+  nav { 
+    height: auto !important; 
+    padding: 10px 0 !important; 
+    background: white; 
+    position: sticky; 
+    top: 0;
+    z-index: 1100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  }
+  .nav-container { 
+    display: flex !important; 
+    flex-wrap: nowrap !important;          /* Single row - no wrapping */
+    flex-direction: row !important;
+    justify-content: flex-start !important; 
+    align-items: center !important; 
+    gap: 10px !important;
+    padding: 0 3vw !important;
+    width: 100% !important;
+  }
+
+  /* 1. Logo — fixed left */
+  .logo { 
+    order: 1 !important; 
+    flex-shrink: 0 !important;
+    transform: scale(0.85);
+    transform-origin: left center;
+  }
+
+  /* 2. Search bar — grows to fill middle space */
+  .search-container { 
+    order: 2 !important;
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+    margin: 0 !important;
+  }
+  .search-bar { 
+    padding: 9px 12px 9px 38px !important; 
+    font-size: 0.85rem !important;
+    width: 100% !important;
+  }
+  .search-icon { font-size: 18px !important; left: 10px !important; }
+
+  /* 3. Cart & Profile — fixed right, in order cart then profile */
+  .nav-actions { 
+    order: 3 !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  /* Ensure cart comes before profile inside nav-actions */
+  .nav-actions .cart-btn  { order: 1 !important; }
+  .nav-actions #authBtn   { order: 2 !important; }
+
+  /* Shrink icon buttons slightly */
+  .nav-icon-btn { 
+    width: 34px !important; 
+    height: 34px !important;
+    font-size: 20px !important;
+  }
+
+  /* Keep the profile avatar a perfect circle — never stretch it */
+  #authBtn > div {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ── MOBILE NAV: BOTTOM BAR (FLOATING) ───────────────── */
+  .nav-links { 
+    position: fixed !important; 
+    bottom: 0 !important; 
+    left: 0 !important; 
+    right: 0 !important; 
+    background: white !important; 
+    display: flex !important; 
+    justify-content: space-around !important; 
+    align-items: center !important; 
+    height: 60px !important; 
+    z-index: 2000 !important; 
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: 0 -4px 25px rgba(0,0,0,0.08) !important;
+    border-top: 1px solid #eee !important;
+  }
+  .nav-links li { margin: 0 !important; padding: 0 8px !important; }
+  .nav-links li a { 
+    display: flex !important; 
+    flex-direction: column !important; 
+    align-items: center !important; 
+    gap: 3px !important; 
+    font-size: 0.7rem !important; 
+    font-weight: 700 !important; 
+    color: #718096 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+  }
+  .nav-links li a:hover, 
+  .nav-links li a.active-nav { color: var(--blue) !important; }
+  
+  /* Hide 'About Us' from bottom nav on mobile */
+  .nav-links li:last-child { display: none !important; }
+
+  /* ── PRODUCT GRID: 2 COLUMNS ─────────────────────────── */
+  .products-grid, .product-grid { 
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 12px !important; 
+    padding: 16px 3vw 80px !important;   /* bottom pad for sticky nav bar */
+  }
+  .prod-card { padding: 12px !important; }
+  .prod-img-wrap { height: 140px !important; }
+  .prod-title { font-size: 0.85rem !important; margin: 8px 0 4px !important; line-clamp: 2 !important; }
+  .prod-price { font-size: 0.95rem !important; }
+  .prod-btn { font-size: 0.8rem !important; padding: 10px !important; }
+
+  /* Hero section tweaks for mobile */
+  .hero-carousel { margin-bottom: 20px; }
+  .carousel-card { padding: 36px 18px !important; height: 300px !important; }
+  .card-title { font-size: 2rem !important; }
+  .card-subtitle { font-size: 0.9rem !important; }
+
+  /* Bottom padding on entire page for fixed bottom nav */
+  body { padding-bottom: 60px !important; }
+  
+  /* Brand filter bar offsets below single-row header */
+  .brand-nav-wrapper { top: 68px !important; }
 }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -1707,6 +1835,13 @@ footer {
   margin-top: 80px;
   border-top: 1.5px solid #eee;
   padding-top: 40px;
+}
+
+.pdp-tabs-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 5vw;
+  display: block; /* Ensures vertical flow */
 }
 
 .tabs-nav {

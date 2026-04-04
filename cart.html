@@ -175,6 +175,26 @@
       renderCart();
     }
 
+    function orderAll() {
+      const cart = getCart();
+      if(cart.length === 0) return;
+      
+      localStorage.setItem('mayaPetsCheckoutMode', 'cart');
+      localStorage.setItem('mayaPetsCheckoutItems', JSON.stringify(cart));
+      window.location.href = 'checkout.html';
+    }
+
+    function orderItem(id) {
+      const cart = getCart();
+      const item = cart.find(i => String(i.id) === String(id));
+      if(!item) return;
+
+      localStorage.setItem('mayaPetsCheckoutMode', 'single');
+      localStorage.setItem('mayaPetsCheckoutSingleId', id);
+      localStorage.setItem('mayaPetsCheckoutItems', JSON.stringify([item]));
+      window.location.href = 'checkout.html';
+    }
+
     // Listen for cart updates
     window.addEventListener('cartUpdated', renderCart);
     document.addEventListener('DOMContentLoaded', renderCart);

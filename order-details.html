@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Details — MayaPets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    :root { --blue:#0497B1; --blue2:#037286; --black:#111; --gray:#f5f7fc; --green:#28a745; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin:0; font-family:'Poppins',sans-serif; background:#f8f9fb; color:var(--black); }
+
+    .header-compact { background:white; padding: 15px 5vw; display:flex; align-items:center; justify-content:space-between; box-shadow: 0 4px 20px rgba(0,0,0,0.03); position: sticky; top:0; z-index:100; }
+    .auth-brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+    .auth-brand-icon { background: var(--blue); color: white; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .auth-brand-name { font-size: 1.5rem; font-weight: 800; color: var(--black); }
+    .auth-brand-name span { color: var(--blue); }
+
+    .btn-back-profile { display:flex; align-items:center; gap:6px; color:#555; text-decoration:none; font-weight:600; font-size:0.95rem; }
+    .btn-back-profile:hover { color:var(--blue); }
+
+    .page-container { max-width: 1000px; margin: 40px auto 80px; padding: 0 24px; }
+    
+    .page-title { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; }
+    .page-title h1 { margin:0; font-size: 2rem; font-weight: 900; }
+    .page-title p { margin:6px 0 0; color:#555; font-size:1rem; }
+
+    .card { background: white; border-radius: 20px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #eee; margin-bottom: 24px; }
+    .card h2 { font-size: 1.25rem; font-weight: 800; margin: 0 0 24px; display:flex; align-items:center; gap:10px; border-bottom: 1px solid #eee; padding-bottom:15px; }
+
+    /* ── TRACKING STEPPER ──────────────────────────────── */
+    .timeline { display:flex; justify-content:space-between; position:relative; margin: 40px 0 20px; }
+    .timeline::before { content:''; position:absolute; top:20px; left:0; right:0; height:4px; background:#e0e0e0; z-index:1; border-radius:50px; }
+    
+    .timeline-step { position:relative; z-index:2; text-align:center; width:25%; }
+    .timeline-icon { width:44px; height:44px; background:#e0e0e0; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-weight:bold; transition:0.3s; border:4px solid white; box-shadow:0 0 0 1px #e0e0e0; }
+    .timeline-label { font-size:0.85rem; font-weight:700; color:#888; }
+    .timeline-date { font-size:0.75rem; color:#aaa; margin-top:4px; }
+
+    .timeline-step.active .timeline-icon { background: var(--blue); box-shadow:0 0 0 1px var(--blue); }
+    .timeline-step.active .timeline-label { color: var(--blue); }
+    .timeline-step.completed .timeline-icon { background: var(--green); box-shadow:0 0 0 1px var(--green); }
+    .timeline-step.completed .timeline-label { color: var(--green); }
+
+    /* Track Progress Bar */
+    .timeline-progress { position:absolute; top:20px; left:0; height:4px; background:var(--green); z-index:1; border-radius:50px; transition:width 0.4s; }
+
+    /* ── GRID LAYOUT ───────────────────────────────────── */
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .info-block h3 { font-size:1.05rem; font-weight:700; margin:0 0 12px; color:var(--black); }
+    .info-block p { margin:0 0 6px; font-size:0.95rem; color:#555; line-height:1.6; }
+
+    /* ── ITEMS LIST ────────────────────────────────────── */
+    .item-row { display:flex; gap:20px; padding:20px 0; border-bottom:1px solid #eee; }
+    .item-row:last-child { border-bottom:none; padding-bottom:0; }
+    .item-img { width: 80px; height: 80px; background:var(--gray); border-radius:12px; object-fit:contain; border:1px solid #eee; padding:8px; }
+    .item-info { flex:1; }
+    .item-info h4 { margin:0 0 6px; font-size:1.05rem; font-weight:700; }
+    .item-info p { margin:0; font-size:0.9rem; color:#666; }
+    .item-price { font-weight:800; font-size:1.1rem; }
+
+    /* ── SUMMARY ───────────────────────────────────────── */
+    .order-summary-box { background:var(--gray); border-radius:16px; padding:24px; margin-top:30px; }
+    .summary-row { display:flex; justify-content:space-between; margin-bottom:12px; font-size:1rem; color:#555; }
+    .summary-total { display:flex; justify-content:space-between; margin-top:16px; padding-top:16px; border-top:1px dashed #ccc; font-size:1.3rem; font-weight:900; color:var(--black); }
+
+    #pageLoading { text-align: center; padding: 100px 20px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <header class="header-compact">
+    <a href="index.html" class="auth-brand">
+      <div class="auth-brand-icon"><span class="material-symbols-outlined">pets</span></div>
+      <div class="auth-brand-name">Maya<span>Pets</span></div>
+    </a>
+    <a href="profile.html#sec-orders" class="btn-back-profile">
+      <span class="material-symbols-outlined">arrow_back</span> Back to My Orders
+    </a>
+  </header>
+
+  <div id="pageLoading">
+    <div style="width:48px;height:48px;border:3px solid #eee;border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 20px;"></div>
+    <p style="color:#888;">Fetching your order details...</p>
+  </div>
+
+  <div class="page-container" id="detailsContent" style="display:none;">
+    
+    <div class="page-title">
+      <div>
+        <h1>Order Details</h1>
+        <p id="displayOrderId">Loading...</p>
+      </div>
+      <div>
+        <button class="btn-outline" style="border:1.5px solid #ddd; background:white; cursor:pointer; padding:10px 20px; border-radius:10px; font-weight:600; font-family:inherit; color:#444;" onclick="window.print()">
+          <span class="material-symbols-outlined" style="font-size:18px; vertical-align:text-bottom;">print</span> Print Invoice
+        </button>
+      </div>
+    </div>
+
+    <!-- TRACKING -->
+    <div class="card">
+      <h2 style="border:none; padding:0; margin:0;"><span class="material-symbols-outlined" style="color:var(--blue)">local_shipping</span> Track Delivery</h2>
+      
+      <div class="timeline" id="trackingTimeline">
+        <div class="timeline-progress" id="timelineProgress" style="width:0%;"></div>
+        
+        <div class="timeline-step completed" id="stepOrdered">
+          <div class="timeline-icon"><span class="material-symbols-outlined">check</span></div>
+          <div class="timeline-label">Ordered</div>
+          <div class="timeline-date" id="dateOrdered">--</div>
+        </div>
+        <div class="timeline-step" id="stepShipped">
+          <div class="timeline-icon"><span class="material-symbols-outlined">inventory_2</span></div>
+          <div class="timeline-label">Shipped</div>
+          <div class="timeline-date" id="dateShipped">--</div>
+        </div>
+        <div class="timeline-step" id="stepOut">
+          <div class="timeline-icon"><span class="material-symbols-outlined">directions_car</span></div>
+          <div class="timeline-label">Out for Delivery</div>
+          <div class="timeline-date" id="dateOut">--</div>
+        </div>
+        <div class="timeline-step" id="stepDelivered">
+          <div class="timeline-icon"><span class="material-symbols-outlined">home</span></div>
+          <div class="timeline-label">Delivered</div>
+          <div class="timeline-date" id="dateDelivered">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADDRESS & PAYMENT -->
+    <div class="details-grid">
+      <div class="card" style="margin-bottom:0;">
+        <h2><span class="material-symbols-outlined" style="color:var(--blue)">location_on</span> Shipping Address</h2>
+        <div class="info-block" id="displayAddress">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <h2><span class="material-symbols-outlined" style="color:var(--blue)">payments</span> Payment Strategy</h2>
+        <div class="info-block" id="displayPayment">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ITEMS -->
+    <div class="card" style="margin-top:24px;">
+      <h2><span class="material-symbols-outlined" style="color:var(--blue)">inventory</span> Order Summary</h2>
+      
+      <div id="orderItemsList">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="order-summary-box">
+        <div class="summary-row">
+          <span>Items Subtotal:</span>
+          <span id="displaySubtotal">--</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping:</span>
+          <span style="color:var(--blue); font-weight:700;">FREE</span>
+        </div>
+        <div class="summary-total">
+          <span>Grand Total:</span>
+          <span id="displayTotal">--</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTDb-RiuIKmXC4MJJQgSidWbLylNO-NHw",
+      authDomain: "mayapetsproject.firebaseapp.com",
+      projectId: "mayapetsproject",
+      storageBucket: "mayapetsproject.firebasestorage.app",
+      messagingSenderId: "988493888178",
+      appId: "1:988493888178:web:a1984309337782333a27ab"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderIdToFind = urlParams.get('id');
+
+    if(!orderIdToFind) {
+      window.location.href = 'index.html';
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if(!user) {
+        window.location.href = `login.html?redirect=order-details.html?id=${orderIdToFind}`;
+        return;
+      }
+      
+      const docRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(docRef);
+      
+      if(snap.exists()) {
+        const orders = snap.data().orders || [];
+        const order = orders.find(o => o.orderId === orderIdToFind);
+        if(order) {
+          renderOrderDetails(order);
+          document.getElementById('pageLoading').style.display = 'none';
+          document.getElementById('detailsContent').style.display = 'block';
+        } else {
+          document.getElementById('pageLoading').innerHTML = '<h2 style="color:red;">Order Not Found</h2>';
+        }
+      } else {
+        document.getElementById('pageLoading').innerHTML = '<h2 style="color:red;">User Data Not Found</h2>';
+      }
+    });
+
+    function renderOrderDetails(o) {
+      const d = new Date(o.date);
+      const formattedDate = isNaN(d.getTime()) ? o.date : d.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      document.getElementById('displayOrderId').innerHTML = `Order #<b>${o.orderId}</b> • Placed on ${formattedDate}`;
+
+      // Address
+      const a = o.address;
+      if(a) {
+        document.getElementById('displayAddress').innerHTML = `
+          <h3>${a.name}</h3>
+          <p>${a.line1}${a.line2 ? ', ' + a.line2 : ''}</p>
+          <p>${a.city}, ${a.state} – ${a.pincode}</p>
+          <p style="margin-top:10px;"><strong>Phone:</strong> ${a.phone}</p>
+          <span style="display:inline-block; margin-top:8px; padding:4px 10px; background:var(--gray); border-radius:6px; font-size:0.8rem; font-weight:700; text-transform:uppercase;">${a.type}</span>
+        `;
+      }
+
+      // Payment
+      document.getElementById('displayPayment').innerHTML = `
+        <h3>Method: ${o.paymentMethod || 'COD'}</h3>
+        <p>Status: <strong style="color:var(--green)">Success</strong></p>
+      `;
+
+      // Timeline logic (Dummy progression for presentation)
+      const status = o.status.toLowerCase();
+      let progress = 0;
+      
+      document.getElementById('dateOrdered').innerText = formattedDate;
+
+      if(status === 'ordered') {
+        progress = 12;
+        document.getElementById('stepShipped').classList.add('active');
+        document.getElementById('dateShipped').innerHTML = '<i>Processing</i>';
+      } else if (status === 'shipped') {
+        progress = 50;
+        document.getElementById('stepShipped').classList.add('completed');
+        document.getElementById('stepShipped').classList.remove('active');
+        document.getElementById('stepOut').classList.add('active');
+      } else if (status === 'delivered') {
+        progress = 100;
+        document.getElementById('stepShipped').classList.add('completed');
+        document.getElementById('stepOut').classList.add('completed');
+        document.getElementById('stepDelivered').classList.add('completed');
+      }
+
+      document.getElementById('timelineProgress').style.width = progress + '%';
+
+      // Items
+      let itemsHtml = '';
+      o.items.forEach(item => {
+        const lineTotal = item.price * item.qty;
+        itemsHtml += `
+          <div class="item-row">
+            <img src="${item.image}" class="item-img" alt="${item.name}">
+            <div class="item-info">
+              <h4>${item.name}</h4>
+              <p>Quantity: ${item.qty} • Unit: ${item.unit}</p>
+            </div>
+            <div class="item-price">₹${lineTotal.toLocaleString()}</div>
+          </div>
+        `;
+      });
+      document.getElementById('orderItemsList').innerHTML = itemsHtml;
+
+      // Totals
+      document.getElementById('displaySubtotal').innerText = `₹${(o.total || 0).toLocaleString()}`;
+      document.getElementById('displayTotal').innerText = `₹${(o.total || 0).toLocaleString()}`;
+    }
+  </script>
+
+</body>
+</html>

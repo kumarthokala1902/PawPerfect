@@ -186,6 +186,52 @@
     .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
     .btn-outline.danger:hover { border-color: var(--red); color: var(--red); }
 
+    /* ── ORDERS ────────────────────────────────────────── */
+    .orders-list { display: flex; flex-direction: column; gap: 16px; }
+    .order-card {
+      border: 1px solid #eee;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      background: white;
+      transition: 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .order-card:hover { border-color: var(--blue); box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
+    
+    .order-card-img {
+      width: 100px;
+      height: 100px;
+      background: var(--gray);
+      border-radius: 12px;
+      object-fit: contain;
+      padding: 8px;
+      border: 1px solid #f0f0f0;
+    }
+    
+    .order-card-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .order-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom:8px; }
+    .order-card-title { font-size: 1.05rem; font-weight: 700; margin: 0; }
+    .order-card-meta { font-size: 0.85rem; color: #666; margin: 4px 0 0; }
+    
+    .order-status-pill {
+      background: rgba(4,151,177,0.1);
+      color: var(--blue2);
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .order-status-pill.shipped { background: rgba(255,193,7,0.15); color: #b08d00; }
+    .order-status-pill.delivered { background: rgba(40,167,69,0.15); color: #1e7e34; }
+    
+    .order-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #eee; padding-top:12px; margin-top: 12px; }
+    .order-card-price { font-size: 1.1rem; font-weight: 800; color: var(--black); }
+
     /* Add address form */
     .addr-form { display: none; flex-direction: column; gap: 14px; margin-top: 20px; }
     .addr-form.open { display: flex; }
@@ -331,7 +377,7 @@
           </div>
           <span class="material-symbols-outlined chevron">chevron_right</span>
         </div>
-        <div class="sidebar-item logout-item" onclick="handleLogout()">
+        <div class="sidebar-item logout-item">
           <div class="si-left">
             <div class="si-icon" style="background:rgba(255,59,59,0.08)"><span class="material-symbols-outlined" style="font-size:20px;color:var(--red);">logout</span></div>
             <span>Log Out</span>
@@ -346,17 +392,24 @@
         <!-- ORDERS -->
         <div class="panel-section active" id="sec-orders">
           <div class="panel-title">My Orders</div>
-          <div class="empty-state">
-            <span>📦</span>
-            <h3>No Orders Yet</h3>
-            <p>You haven't placed any orders. Start shopping for your pet!</p>
-            <a href="pet-food.html"><button class="btn-blue">Shop Now</button></a>
+          <div id="ordersContainer">
+            <div class="empty-state">
+              <span>📦</span>
+              <h3>No Orders Yet</h3>
+              <p>You haven't placed any orders. Start shopping for your pet!</p>
+              <a href="pet-food.html"><button class="btn-blue">Shop Now</button></a>
+            </div>
           </div>
         </div>
 
         <!-- ADDRESS -->
         <div class="panel-section" id="sec-address">
-          <div class="panel-title">Address Book</div>
+          <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Address Book</span>
+            <button class="btn-location" onclick="fillCurrentLocation()" style="background:none; border:1px solid var(--blue); color:var(--blue); padding:6px 12px; border-radius:8px; font-size:0.75rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:16px;">my_location</span> Use Current Location
+            </button>
+          </div>
 
           <div class="address-list" id="addressList">
             <!-- addresses injected by JS -->
@@ -368,19 +421,66 @@
 
           <!-- Add Address Form -->
           <div class="addr-form" id="addrForm">
+            <div id="locationLoader" style="display:none; font-size:0.8rem; color:var(--blue); margin-bottom:10px; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">sync</span> Detecting your location...
+            </div>
             <div class="addr-form-row">
               <input type="text" id="aName" placeholder="Full Name" />
+              <input type="email" id="aEmail" placeholder="Email Address" />
+            </div>
+            <div class="addr-form-row">
               <input type="tel" id="aPhone" placeholder="Phone Number" />
+              <input type="text" id="aPincode" placeholder="Pincode" />
             </div>
             <input type="text" id="aLine1" placeholder="Address Line 1 (House / Flat / Street)" />
             <input type="text" id="aLine2" placeholder="Address Line 2 (Area / Landmark)" />
             <div class="addr-form-row">
               <input type="text" id="aCity" placeholder="City" />
-              <input type="text" id="aState" placeholder="State" />
+              <select id="aState">
+                <option value="">-- Select State --</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                <option value="Ladakh">Ladakh</option>
+                <option value="Lakshadweep">Lakshadweep</option>
+                <option value="Puducherry">Puducherry</option>
+              </select>
             </div>
-            <div class="addr-form-row">
-              <input type="text" id="aPincode" placeholder="Pincode" />
-              <select id="aType">
+            <div class="addr-form-row" style="grid-template-columns: 1fr;">
+              <select id="aPincode" style="display:none;"></select> <!-- hidden legacy ref -->
+              <input type="text" id="aPincode_actual" style="display:none;" /> <!-- hidden legacy ref -->
+              
+              <select id="aType" style="width:100%;">
                 <option value="Home">🏠 Home</option>
                 <option value="Work">🏢 Work</option>
                 <option value="Other">📍 Other</option>
@@ -461,6 +561,46 @@
 
     let currentUser = null;
 
+    // Define globally immediately
+    window.handleLogout = function() {
+      const modal = document.getElementById('logoutModal');
+      if (modal) modal.style.display = 'flex';
+    };
+
+    window.closeLogoutModal = function() {
+      const modal = document.getElementById('logoutModal');
+      if (modal) modal.style.display = 'none';
+    };
+
+    // Attach to the actual element to bypass any onclick scoping issues
+    document.addEventListener('DOMContentLoaded', () => {
+      const logoutBtn = document.querySelector('.logout-item');
+      if (logoutBtn) {
+        logoutBtn.onclick = (e) => {
+          e.preventDefault();
+          window.handleLogout();
+        };
+      }
+
+      const confirmBtn = document.getElementById('confirmLogoutBtn');
+      if (confirmBtn) {
+        confirmBtn.onclick = async () => {
+          try {
+            confirmBtn.innerText = 'Signing out...';
+            confirmBtn.disabled = true;
+            localStorage.removeItem('mayaPetsCart');
+            localStorage.removeItem('mayaPetsCheckoutItems');
+            localStorage.removeItem('mayaPetsCheckoutMode');
+            await signOut(auth);
+            window.location.replace('login.html');
+          } catch (err) {
+            console.error('Logout error:', err);
+            window.location.replace('login.html');
+          }
+        };
+      }
+    });
+
     onAuthStateChanged(auth, async (user) => {
       document.getElementById('pageLoading').style.display = 'none';
       if (!user) {
@@ -486,16 +626,64 @@
       document.getElementById('settingsName').value  = user.displayName || '';
       document.getElementById('settingsEmail').value = user.email;
 
-      // Load addresses
-      await loadAddresses();
+      // Load user data (addresses & orders)
+      await loadUserData();
     });
 
-    // ── Addresses ────────────────────────────────────────
-    async function loadAddresses() {
+    // ── User Data ────────────────────────────────────────
+    async function loadUserData() {
       const ref  = doc(db, 'users', currentUser.uid);
       const snap = await getDoc(ref);
       const data = snap.exists() ? snap.data() : {};
       renderAddresses(data.addresses || []);
+      renderOrders(data.orders || []);
+    }
+
+    function renderOrders(orders) {
+      const container = document.getElementById('ordersContainer');
+      if (!orders || orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <span>📦</span>
+            <h3>No Orders Yet</h3>
+            <p>You haven't placed any orders. Start shopping for your pet!</p>
+            <a href="pet-food.html"><button class="btn-blue">Shop Now</button></a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '<div class="orders-list">' + orders.map(o => {
+        const d = new Date(o.date);
+        const dateStr = isNaN(d.getTime()) ? o.date : d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+        
+        let statusClass = '';
+        if(o.status.toLowerCase() === 'shipped') statusClass = 'shipped';
+        if(o.status.toLowerCase() === 'delivered') statusClass = 'delivered';
+
+        const firstItem = o.items && o.items[0];
+        const extraCount = o.items ? o.items.length - 1 : 0;
+        
+        return `
+          <a href="order-details.html?id=${o.orderId}" class="order-card">
+            <img src="${firstItem ? firstItem.image : 'images/placeholder-item.png'}" class="order-card-img" alt="Product Image">
+            <div class="order-card-info">
+              <div>
+                <div class="order-card-header">
+                  <h3 class="order-card-title">${o.orderId}</h3>
+                  <span class="order-status-pill ${statusClass}">${o.status}</span>
+                </div>
+                <p class="order-card-meta">Placed on ${dateStr} • ${o.items ? o.items.length : 0} Item(s)</p>
+                <p class="order-card-meta" style="color:#222; margin-top:8px;">${firstItem ? firstItem.name : ''} ${extraCount > 0 ? ` <i>+ ${extraCount} more</i>` : ''}</p>
+              </div>
+              <div class="order-card-footer">
+                <span class="order-card-price">₹${(o.total || 0).toLocaleString()}</span>
+                <span class="material-symbols-outlined" style="color:var(--blue);">chevron_right</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }).join('') + '</div>';
     }
 
     function renderAddresses(addresses) {
@@ -517,7 +705,11 @@
     }
 
     window.saveAddress = async function() {
+      const btn = document.querySelector('#addrForm .btn-blue');
+      const originalText = btn.innerText;
+      
       const name    = document.getElementById('aName').value.trim();
+      const email   = document.getElementById('aEmail').value.trim();
       const phone   = document.getElementById('aPhone').value.trim();
       const line1   = document.getElementById('aLine1').value.trim();
       const line2   = document.getElementById('aLine2').value.trim();
@@ -534,20 +726,65 @@
         return;
       }
 
-      const newAddr = { name, phone, line1, line2, city, state, pincode, type };
-      const ref = doc(db, 'users', currentUser.uid);
-      const snap = await getDoc(ref);
-      const current = snap.exists() ? (snap.data().addresses || []) : [];
-      current.push(newAddr);
-      await setDoc(ref, { addresses: current }, { merge: true });
+      try {
+        btn.innerText = 'Saving...';
+        btn.disabled = true;
 
-      msg.style.color   = 'green';
-      msg.innerText     = '✅ Address saved!';
-      msg.style.display = 'block';
+        const newAddr = { name, email, phone, line1, line2, city, state, pincode, type };
+        const ref = doc(db, 'users', currentUser.uid);
+        const snap = await getDoc(ref);
+        const current = snap.exists() ? (snap.data().addresses || []) : [];
+        current.push(newAddr);
+        
+        await setDoc(ref, { addresses: current }, { merge: true });
 
-      // Reset form
-      ['aName','aPhone','aLine1','aLine2','aCity','aState','aPincode'].forEach(id => document.getElementById(id).value = '');
-      setTimeout(() => { msg.style.display='none'; toggleAddrForm(); loadAddresses(); }, 1200);
+        msg.style.color   = 'green';
+        msg.innerText     = '✅ Address saved successfully!';
+        msg.style.display = 'block';
+
+        // Reset form
+        ['aName','aEmail','aPhone','aLine1','aLine2','aCity','aPincode'].forEach(id => {
+          const el = document.getElementById(id);
+          if(el) el.value = '';
+        });
+        
+        setTimeout(() => { 
+          msg.style.display='none'; 
+          toggleAddrForm(); 
+          loadAddresses(); // Refresh the list
+          btn.innerText = originalText;
+          btn.disabled = false;
+        }, 1200);
+
+      } catch (err) {
+        console.error("Save Address Error:", err);
+        msg.style.color = 'var(--red)';
+        
+        if (err.code === 'permission-denied') {
+          msg.innerHTML = `
+            ❌ <b>Permission Denied!</b><br/>
+            Your Firebase Database is locked. To fix this:<br/>
+            1. Go to <b>Firebase Console > Firestore > Rules</b><br/>
+            2. Paste these rules:<br/>
+            <pre style="background:#eee; padding:10px; border-radius:8px; margin-top:10px; font-size:0.75rem; overflow-x:auto;">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}</pre>
+            3. Click <b>Publish</b>.
+          `;
+        } else {
+          msg.innerText = '❌ Error: ' + (err.code || err.message || 'Saving failed. Check Firebase console.');
+        }
+
+        msg.style.display = 'block';
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
     };
 
     window.deleteAddress = async function(index) {
@@ -574,27 +811,7 @@
     };
 
     // ── Logout ────────────────────────────────────────────
-    window.handleLogout = async function() {
-      if (confirm('Are you sure you want to log out?')) {
-        try {
-          // Disable button visually
-          const logoutBtn = document.querySelector('.logout-item');
-          if (logoutBtn) {
-            logoutBtn.style.pointerEvents = 'none';
-            logoutBtn.style.opacity = '0.5';
-          }
-
-          // Await standard sign out
-          await signOut(auth);
-
-          // Redirect to login
-          window.location.href = 'login.html';
-        } catch(err) {
-          console.error('Logout error:', err);
-          alert('Something went wrong. Please try again.');
-        }
-      }
-    };
+    // (Defined at top for global scope)
   </script>
 
   <!-- Non-module UI helpers -->
@@ -611,8 +828,70 @@
       const btn  = document.getElementById('addAddrBtn');
       const open = form.classList.toggle('open');
       btn.innerText = open ? '✕ Cancel' : '+ Add New Address';
+
+      if (open && currentUser) {
+        document.getElementById('aName').value = currentUser.displayName || '';
+        document.getElementById('aEmail').value = currentUser.email || '';
+      }
     }
+
+    window.fillCurrentLocation = function() {
+      const loader = document.getElementById('locationLoader');
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser");
+        return;
+      }
+
+      loader.style.display = 'flex';
+      const form = document.getElementById('addrForm');
+      if (!form.classList.contains('open')) toggleAddrForm();
+
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+          const data = await res.json();
+          if (data && data.address) {
+            const addr = data.address;
+            document.getElementById('aCity').value = addr.city || addr.town || addr.village || '';
+            document.getElementById('aPincode').value = addr.postcode || '';
+            
+            const stateVal = addr.state || '';
+            const stateSelect = document.getElementById('aState');
+            for(let i=0; i<stateSelect.options.length; i++) {
+              if (stateSelect.options[i].value.toLowerCase() === stateVal.toLowerCase()) {
+                stateSelect.selectedIndex = i;
+                break;
+              }
+            }
+            document.getElementById('aLine1').value = `${addr.road || ''} ${addr.suburb || ''}`.trim();
+          }
+        } catch (e) {
+          console.error("Geocoding error", e);
+        } finally {
+          loader.style.display = 'none';
+        }
+      }, (err) => {
+        loader.style.display = 'none';
+        alert("Unable to retrieve your location. Please check your permissions.");
+      });
+    };
   </script>
+
+  <!-- Custom Logout Modal -->
+  <div id="logoutModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:10000; align-items:center; justify-content:center;">
+    <div style="background:white; padding:32px; border-radius:24px; width:90%; max-width:400px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.15); border:1px solid #eee;">
+      <div style="width:60px; height:60px; background:rgba(255,59,59,0.08); color:var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+        <span class="material-symbols-outlined" style="font-size:32px;">logout</span>
+      </div>
+      <h2 style="font-weight:800; margin:0 0 10px; font-size:1.4rem;">Log Out?</h2>
+      <p style="color:#666; margin:0 0 28px; line-height:1.5; font-size:0.95rem;">Are you sure you want to log out of your MayaPets account? You'll need to sign in again to access your orders.</p>
+      <div style="display:flex; gap:12px;">
+        <button onclick="closeLogoutModal()" style="flex:1; padding:14px; border-radius:12px; border:1px solid #ddd; background:white; font-weight:700; cursor:pointer; font-family:inherit;">Cancel</button>
+        <button id="confirmLogoutBtn" style="flex:1; padding:14px; border-radius:12px; border:none; background:var(--red); color:white; font-weight:800; cursor:pointer; font-family:inherit;">Yes, Log Out</button>
+      </div>
+    </div>
+  </div>
 
   <script src="cart.js"></script>
   <script src="products.js"></script>

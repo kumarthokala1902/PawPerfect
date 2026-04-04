@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Confirmed — MayaPets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    :root { --blue:#0497B1; --blue2:#037286; --black:#111; --gray:#f5f7fc; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin:0; font-family:'Poppins',sans-serif; background:#f8f9fb; color:var(--black); display:flex; flex-direction:column; min-height:100vh; }
+
+    .nav-simple { background:white; padding: 20px 5vw; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+    .nav-simple .auth-brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-simple .auth-brand-icon { background: var(--blue); color: white; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .nav-simple .auth-brand-name { font-size: 1.5rem; font-weight: 800; color: var(--black); }
+    .nav-simple .auth-brand-name span { color: var(--blue); }
+
+    main { flex:1; display:flex; align-items:center; justify-content:center; padding:60px 20px; }
+
+    .success-card { background:white; padding:50px 40px; border-radius:24px; text-align:center; max-width:500px; width:100%; box-shadow: 0 10px 40px rgba(0,0,0,0.06); border: 1px solid #eee; }
+    
+    .success-icon-wrap { margin:0 auto 24px; width:100px; height:100px; background:rgba(4, 151, 177, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .success-icon-wrap .material-symbols-outlined { font-size: 50px; color: var(--blue); font-variation-settings: 'FILL' 1; }
+
+    .success-card h1 { font-size: 2rem; font-weight: 800; margin:0 0 10px; }
+    .success-card p { color:#666; font-size:1rem; margin:0 0 30px; line-height: 1.6; }
+
+    .order-meta { background: var(--gray); border-radius: 14px; padding: 20px; margin-bottom: 30px; text-align: left; }
+    .meta-row { display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.95rem; }
+    .meta-row:last-child { margin-bottom:0; }
+    .meta-label { color: #666; font-weight:500; }
+    .meta-val { font-weight:700; color:var(--black); }
+
+    .actions { display: flex; gap: 16px; flex-direction: column; }
+    .btn-main { background: var(--blue); color: white; text-decoration:none; padding:18px; border-radius:12px; font-weight:700; font-size:1.05rem; transition:0.3s; box-shadow: 0 8px 20px rgba(4,151,177,0.2); }
+    .btn-main:hover { background: var(--blue2); transform:translateY(-2px); box-shadow: 0 12px 25px rgba(4,151,177,0.3); }
+    .btn-sub { background: none; color: var(--blue); border: 2px solid var(--blue); text-decoration:none; padding:16px; border-radius:12px; font-weight:700; font-size:1.05rem; transition:0.3s; }
+    .btn-sub:hover { background: rgba(4,151,177,0.05); }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav-simple">
+    <a href="index.html" class="auth-brand">
+      <div class="auth-brand-icon"><span class="material-symbols-outlined">pets</span></div>
+      <div class="auth-brand-name">Maya<span>Pets</span></div>
+    </a>
+  </nav>
+
+  <main>
+    <div class="success-card">
+      <div class="success-icon-wrap">
+        <span class="material-symbols-outlined">check_circle</span>
+      </div>
+      <h1>Order Placed Successfully!</h1>
+      <p>Thank you for your purchase. We're getting your pet's goodies ready for dispatch.</p>
+
+      <div class="order-meta">
+        <div class="meta-row">
+          <span class="meta-label">Order ID:</span>
+          <span class="meta-val" id="displayOrderId">--</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Est. Delivery:</span>
+          <span class="meta-val" id="displayDeliveryDate">--</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a href="#" id="viewOrderBtn" class="btn-main">View Order Details</a>
+        <a href="pet-food.html" class="btn-sub">Continue Shopping</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('id') || 'MP-Unknown';
+      document.getElementById('displayOrderId').innerText = orderId;
+      document.getElementById('viewOrderBtn').href = `order-details.html?id=${orderId}`;
+
+      const deliveryDate = new Date();
+      deliveryDate.setDate(deliveryDate.getDate() + 3); // Approx 3 days delivery
+      
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      document.getElementById('displayDeliveryDate').innerText = deliveryDate.toLocaleDateString('en-US', options);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout — MayaPets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    :root { --blue:#0497B1; --blue2:#037286; --red:#ff3b3b; --black:#111; --gray:#f5f7fc; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin:0; font-family:'Poppins',sans-serif; background:#f8f9fb; color:var(--black); }
+
+    /* ── PAGE LAYOUT ───────────────────────────────────── */
+    .checkout-page {
+      max-width: 1200px;
+      margin: 40px auto 80px;
+      padding: 0 24px;
+    }
+    .checkout-header {
+      margin-bottom: 30px;
+    }
+    .checkout-header h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin: 0;
+      color: var(--black);
+    }
+    
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── SECTIONS ──────────────────────────────────────── */
+    .checkout-section {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      border: 1px solid #eee;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin: 0 0 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title .material-symbols-outlined { color: var(--blue); }
+
+    /* ── ADDRESSES ─────────────────────────────────────── */
+    .address-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .address-card {
+      border: 2px solid #eee;
+      border-radius: 14px;
+      padding: 20px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .address-card:hover { border-color: #ddd; }
+    .address-card.selected {
+      border-color: var(--blue);
+      background: rgba(4, 151, 177, 0.04);
+    }
+    .address-card .check-icon {
+      position: absolute; top: 20px; right: 20px;
+      color: var(--blue);
+      display: none;
+    }
+    .address-card.selected .check-icon { display: block; }
+    .address-card .addr-tag {
+      display: inline-block;
+      background: var(--gray);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    .address-card p { margin: 0; font-size: 0.93rem; line-height: 1.7; color: #444; }
+
+    /* Inline Add Address */
+    .btn-outline-blue {
+      background: none;
+      border: 2px solid var(--blue);
+      color: var(--blue);
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top:20px;
+    }
+    .btn-outline-blue:hover { background: var(--blue); color: white; }
+
+    .addr-form { display: none; flex-direction: column; gap: 14px; margin-top: 20px; padding-top:20px; border-top:1px dashed #ddd; }
+    .addr-form.open { display: flex; }
+    .addr-form input, .addr-form select {
+      padding: 13px 16px; border: 1.5px solid #eee; border-radius: 10px; font-family: inherit; font-size: 0.93rem; background: var(--gray); outline: none; transition: 0.25s;
+    }
+    .addr-form input:focus, .addr-form select:focus {
+      border-color: var(--blue); background: white; box-shadow: 0 0 0 4px rgba(4,151,177,0.08);
+    }
+    .addr-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    
+    .btn-blue {
+      background: var(--blue); color: white; border: none; border-radius: 10px; padding: 12px 28px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+    }
+    .btn-blue:hover { background: var(--blue2); transform: translateY(-2px); }
+
+    /* ── PAYMENT ───────────────────────────────────────── */
+    .payment-options {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .payment-option {
+      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+      border: 2px solid #eee; border-radius: 12px; cursor: pointer; transition: 0.2s;
+    }
+    .payment-option.selected { border-color: var(--blue); background: rgba(4,151,177,0.04); }
+    .payment-option input[type="radio"] { accent-color: var(--blue); transform: scale(1.2); }
+    .payment-option label { font-size: 1rem; font-weight: 600; cursor: pointer; flex:1; }
+
+    /* ── ORDER SUMMARY ─────────────────────────────────── */
+    .summary-card {
+      background: white; border-radius: 20px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #eee; position: sticky; top: 40px;
+    }
+    .summary-card h2 { font-size: 1.4rem; font-weight: 800; margin: 0 0 20px; }
+    
+    .summary-items { max-height: 350px; overflow-y: auto; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom:10px; }
+    .summary-item { display: flex; gap: 12px; margin-bottom: 16px; }
+    .summary-item img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 1px solid #eee; }
+    .summary-item-info { flex: 1; }
+    .summary-item-info h4 { margin: 0 0 4px; font-size: 0.9rem; font-weight: 600; line-height: 1.3; }
+    .summary-item-info p { margin: 0; font-size: 0.8rem; color: #777; }
+    .summary-item-price { font-weight: 700; font-size: 0.95rem; }
+
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem; color:#555; }
+    .summary-total { font-size: 1.25rem; font-weight: 800; color: var(--black); border-top: 1px dashed #ccc; padding-top: 16px; margin-top: 10px;}
+    
+    .btn-place-order { width: 100%; background: var(--blue); color: white; padding: 18px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 800; margin-top: 24px; cursor: pointer; box-shadow: 0 8px 24px rgba(4,151,177,0.25); transition:0.3s; }
+    .btn-place-order:hover { background: var(--blue2); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(4,151,177,0.35); }
+    .btn-place-order:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; color: #666; }
+
+    #pageLoading { text-align: center; padding: 100px 20px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 900px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+      .address-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
+        <span class="logo-text">Maya<span>Pets</span></span>
+      </a>
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" class="search-bar" placeholder="Search for pet food, brands..."/>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-icon-btn" id="authBtn" title="My Account">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── LOADING GATE ────────────────────────────────────────── -->
+  <div id="pageLoading">
+    <div style="width:48px;height:48px;border:3px solid #eee;border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 20px;"></div>
+    <p style="color:#888;">Preparing your checkout securely...</p>
+  </div>
+
+  <!-- ── CHECKOUT PAGE ───────────────────────────────────────── -->
+  <div class="checkout-page" id="checkoutContent" style="display:none;">
+    
+    <div class="checkout-header">
+      <h1>Secure Checkout</h1>
+    </div>
+
+    <div class="checkout-layout">
+      <!-- LEFT -->
+      <div class="checkout-left">
+        
+        <!-- ADDRESS -->
+        <div class="checkout-section">
+          <div class="addr-header-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 class="section-title" style="margin:0;"><span class="material-symbols-outlined">location_on</span> 1. Delivery Address</h3>
+            <button class="btn-location" onclick="fillCurrentLocation()" style="background:none; border:1px solid var(--blue); color:var(--blue); padding:6px 12px; border-radius:8px; font-size:0.8rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:16px;">my_location</span> Use Current Location
+            </button>
+          </div>
+          
+          <div class="address-grid" id="addressList">
+            <!-- Rendered by JS -->
+          </div>
+
+          <button class="btn-outline-blue" id="addAddrBtn" onclick="toggleAddrForm()">+ Add New Address</button>
+          
+          <div class="addr-form" id="addrForm">
+            <div id="locationLoader" style="display:none; font-size:0.8rem; color:var(--blue); margin-bottom:10px; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">sync</span> Detecting your location...
+            </div>
+            <div class="addr-form-row">
+              <input type="text" id="aName" placeholder="Full Name" />
+              <input type="email" id="aEmail" placeholder="Email Address" />
+            </div>
+            <div class="addr-form-row">
+              <input type="tel" id="aPhone" placeholder="Phone Number" />
+              <div style="display:flex; gap:10px; width:100%;">
+                <input type="text" id="aPincode" placeholder="Pincode" style="flex:1;" />
+              </div>
+            </div>
+            <input type="text" id="aLine1" placeholder="Address Line 1 (House / Flat / Street)" />
+            <input type="text" id="aLine2" placeholder="Address Line 2 (Area / Landmark)" />
+            <div class="addr-form-row">
+              <input type="text" id="aCity" placeholder="City" />
+              <select id="aState">
+                <option value="">-- Select State --</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                <option value="Ladakh">Ladakh</option>
+                <option value="Lakshadweep">Lakshadweep</option>
+                <option value="Puducherry">Puducherry</option>
+              </select>
+            </div>
+            <div class="addr-form-row" style="grid-template-columns: 1fr;">
+              <select id="aType" style="width:100%;">
+                <option value="Home">🏠 Home</option>
+                <option value="Work">🏢 Work</option>
+                <option value="Other">📍 Other</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn-blue" onclick="saveAddress()">Save Address</button>
+              <button class="btn-outline-blue" style="margin-top:0;" onclick="toggleAddrForm()">Cancel</button>
+            </div>
+            <div id="addrMsg" style="font-size:0.85rem;color:green;display:none;margin-top:10px;"></div>
+          </div>
+        </div>
+
+        <!-- PAYMENT -->
+        <div class="checkout-section">
+          <h3 class="section-title"><span class="material-symbols-outlined">payments</span> 2. Payment Method</h3>
+          <div class="payment-options">
+            <label class="payment-option selected" id="opt-cod">
+              <input type="radio" name="payment" value="COD" checked>
+              <span>Cash on Delivery (COD)</span>
+            </label>
+            <p style="font-size:0.85rem; color:#666; margin-top:10px;">Note: Currently only Cash on Delivery is available for all orders.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="checkout-right">
+        <div class="summary-card">
+          <h2>Order Summary</h2>
+          <div class="summary-items" id="summaryItems">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="summary-row">
+            <span>Items Total</span>
+            <span id="subtotalVal">₹0</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span style="color:var(--blue); font-weight:700;">FREE</span>
+          </div>
+          <div class="summary-row summary-total">
+            <span>Grand Total</span>
+            <span id="totalVal">₹0</span>
+          </div>
+
+          <button class="btn-place-order" id="placeOrderBtn" onclick="placeOrder()">Place Order</button>
+          <div id="orderErrorMsg" style="color:var(--red);font-size:0.9rem;font-weight:600;margin-top:15px;text-align:center;display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="cart.js"></script>
+
+  <!-- Firebase Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTDb-RiuIKmXC4MJJQgSidWbLylNO-NHw",
+      authDomain: "mayapetsproject.firebaseapp.com",
+      projectId: "mayapetsproject",
+      storageBucket: "mayapetsproject.firebasestorage.app",
+      messagingSenderId: "988493888178",
+      appId: "1:988493888178:web:a1984309337782333a27ab"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let userAddresses = [];
+    let selectedAddressIndex = null;
+    let checkoutItems = [];
+    let grandTotal = 0;
+
+    // Load Cart Data FIRST
+    function loadCheckoutData() {
+      const mode = localStorage.getItem('mayaPetsCheckoutMode');
+      const checkoutData = localStorage.getItem('mayaPetsCheckoutItems');
+
+      if (mode && checkoutData) {
+        checkoutItems = JSON.parse(checkoutData);
+      } else {
+        checkoutItems = getCart(); // Fallback to main cart
+      }
+
+      if (checkoutItems.length === 0) {
+        window.location.href = 'cart.html';
+        return;
+      }
+      renderSummary();
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      document.getElementById('pageLoading').style.display = 'none';
+      if (!user) {
+        // Rediret to login then back to checkout
+        window.location.href = 'login.html?redirect=checkout.html';
+        return;
+      }
+
+      currentUser = user;
+      document.getElementById('checkoutContent').style.display = 'block';
+
+      // Nav avatar
+      const name = user.displayName || user.email.split('@')[0];
+      const btn = document.getElementById('authBtn');
+      const initial = name.charAt(0).toUpperCase();
+      btn.innerHTML = `<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;">${initial}</div>`;
+      btn.onclick = () => window.location.href = 'profile.html';
+
+      loadCheckoutData();
+      await fetchAddresses();
+    });
+
+    window.toggleAddrForm = function() {
+      const form = document.getElementById('addrForm');
+      const btn  = document.getElementById('addAddrBtn');
+      const open = form.classList.toggle('open');
+      btn.innerText = open ? '✕ Cancel' : '+ Add New Address';
+      
+      // Auto-fill Name & Email if form is opening
+      if (open && currentUser) {
+        document.getElementById('aName').value = currentUser.displayName || '';
+        document.getElementById('aEmail').value = currentUser.email || '';
+      }
+    };
+
+    window.fillCurrentLocation = function() {
+      const loader = document.getElementById('locationLoader');
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser");
+        return;
+      }
+
+      loader.style.display = 'flex';
+      // Ensure form is open
+      const form = document.getElementById('addrForm');
+      if (!form.classList.contains('open')) toggleAddrForm();
+
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+          const data = await res.json();
+          if (data && data.address) {
+            const addr = data.address;
+            document.getElementById('aCity').value = addr.city || addr.town || addr.village || '';
+            document.getElementById('aPincode').value = addr.postcode || '';
+            
+            // Map state
+            const stateVal = addr.state || '';
+            const stateSelect = document.getElementById('aState');
+            for(let i=0; i<stateSelect.options.length; i++) {
+              if (stateSelect.options[i].value.toLowerCase() === stateVal.toLowerCase()) {
+                stateSelect.selectedIndex = i;
+                break;
+              }
+            }
+            
+            // Suggestions for line 1
+            document.getElementById('aLine1').value = `${addr.road || ''} ${addr.suburb || ''}`.trim();
+          }
+        } catch (e) {
+          console.error("Geocoding error", e);
+        } finally {
+          loader.style.display = 'none';
+        }
+      }, (err) => {
+        loader.style.display = 'none';
+        alert("Unable to retrieve your location. Please check your permissions.");
+      });
+    };
+
+    async function fetchAddresses() {
+      const ref = doc(db, 'users', currentUser.uid);
+      const snap = await getDoc(ref);
+      userAddresses = snap.exists() ? (snap.data().addresses || []) : [];
+      renderAddresses();
+    }
+
+    function renderAddresses() {
+      const list = document.getElementById('addressList');
+      if (userAddresses.length === 0) {
+        list.innerHTML = '<p style="grid-column: 1/-1; color:#888;">No saved addresses found. Please add a new delivery address.</p>';
+        selectedAddressIndex = null;
+        return;
+      }
+
+      // Default select first address if none selected
+      if (selectedAddressIndex === null || selectedAddressIndex >= userAddresses.length) {
+        selectedAddressIndex = 0;
+      }
+
+      list.innerHTML = userAddresses.map((a, i) => `
+        <div class="address-card ${i === selectedAddressIndex ? 'selected' : ''}" onclick="selectAddress(${i})">
+          <span class="material-symbols-outlined check-icon">check_circle</span>
+          <span class="addr-tag">${a.type}</span>
+          <p><strong>${a.name}</strong> • ${a.phone}</p>
+          <p style="margin-top:8px">${a.line1}${a.line2 ? ', ' + a.line2 : ''}</p>
+          <p>${a.city}, ${a.state} – <span style="font-weight:700">${a.pincode}</span></p>
+        </div>
+      `).join('');
+    }
+
+    window.selectAddress = function(index) {
+      selectedAddressIndex = index;
+      renderAddresses();
+    }
+
+    window.saveAddress = async function() {
+      const btn = document.querySelector('#addrForm .btn-blue');
+      const originalText = btn.innerText;
+      
+      const name    = document.getElementById('aName').value.trim();
+      const email   = document.getElementById('aEmail').value.trim();
+      const phone   = document.getElementById('aPhone').value.trim();
+      const line1   = document.getElementById('aLine1').value.trim();
+      const line2   = document.getElementById('aLine2').value.trim();
+      const city    = document.getElementById('aCity').value.trim();
+      const state   = document.getElementById('aState').value.trim();
+      const pincode = document.getElementById('aPincode').value.trim();
+      const type    = document.getElementById('aType').value;
+      const msg     = document.getElementById('addrMsg');
+
+      if (!name || !phone || !line1 || !city || !state || !pincode) {
+        msg.style.color = 'var(--red)';
+        msg.innerText   = '⚠️ Complete all required fields.';
+        msg.style.display = 'block';
+        return;
+      }
+
+      try {
+        btn.innerText = 'Saving...';
+        btn.disabled = true;
+
+        const newAddr = { name, email, phone, line1, line2, city, state, pincode, type };
+        const ref = doc(db, 'users', currentUser.uid);
+        const snap = await getDoc(ref);
+        const currentAddrs = snap.exists() ? (snap.data().addresses || []) : [];
+        currentAddrs.push(newAddr);
+        
+        await setDoc(ref, { addresses: currentAddrs }, { merge: true });
+
+        userAddresses = currentAddrs;
+        selectedAddressIndex = userAddresses.length - 1; // Auto-select the NEW address
+        
+        msg.style.color = 'green';
+        msg.innerText   = '✅ Address Saved Successfully!';
+        msg.style.display = 'block';
+
+        // Reset form fields
+        ['aName','aEmail','aPhone','aLine1','aLine2','aCity','aPincode'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        
+        setTimeout(() => { 
+          msg.style.display = 'none'; 
+          toggleAddrForm(); 
+          renderAddresses(); // Refresh the list UI
+          btn.innerText = originalText;
+          btn.disabled = false;
+        }, 800);
+
+      } catch (err) {
+        console.error("Save Address Error:", err);
+        msg.style.color = 'var(--red)';
+        
+        if (err.code === 'permission-denied') {
+          msg.innerHTML = `
+            ❌ <b>Permission Denied!</b><br/>
+            Your Firebase Database is locked. To fix this:<br/>
+            1. Go to <b>Firebase Console > Firestore > Rules</b><br/>
+            2. Paste these rules:<br/>
+            <pre style="background:#eee; padding:10px; border-radius:8px; margin-top:10px; font-size:0.75rem; overflow-x:auto;">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}</pre>
+            3. Click <b>Publish</b>.
+          `;
+        } else {
+          msg.innerText = '❌ Error: ' + (err.code || err.message || 'Saving failed. Check Firebase console.');
+        }
+        
+        msg.style.display = 'block';
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
+    };
+
+    function renderSummary() {
+      const container = document.getElementById('summaryItems');
+      grandTotal = 0;
+      
+      container.innerHTML = checkoutItems.map(item => {
+        const itemTotal = item.price * item.qty;
+        grandTotal += itemTotal;
+        return `
+          <div class="summary-item">
+            <img src="${item.image}" alt="${item.name}">
+            <div class="summary-item-info">
+              <h4>${item.name}</h4>
+              <p>Qty: ${item.qty} • ${item.unit}</p>
+            </div>
+            <div class="summary-item-price">₹${itemTotal.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('subtotalVal').innerText = `₹${grandTotal.toLocaleString()}`;
+      document.getElementById('totalVal').innerText = `₹${grandTotal.toLocaleString()}`;
+    }
+
+    window.placeOrder = async function() {
+      const errorMsg = document.getElementById('orderErrorMsg');
+      errorMsg.style.display = 'none';
+
+      if (selectedAddressIndex === null || !userAddresses[selectedAddressIndex]) {
+        errorMsg.innerText = "Please select or add a delivery address.";
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('placeOrderBtn');
+      btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">sync</span> Processing...';
+      btn.disabled = true;
+
+      const orderId = 'MP-' + Math.floor(100000 + Math.random() * 900000);
+      const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+      const orderDate = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
+      const addr = userAddresses[selectedAddressIndex];
+      
+      const newOrder = {
+        orderId: orderId,
+        date: orderDate,
+        total: grandTotal,
+        paymentMethod: "COD",
+        address: addr,
+        items: checkoutItems,
+        status: "Ordered",
+        timestamp: Date.now()
+      };
+
+      try {
+        // 1. Save to Firestore for records
+        const ref = doc(db, 'users', currentUser.uid);
+        const snap = await getDoc(ref);
+        const currentOrders = snap.exists() ? (snap.data().orders || []) : [];
+        currentOrders.unshift(newOrder);
+        await setDoc(ref, { orders: currentOrders }, { merge: true });
+
+        // 2. Construct WhatsApp Message
+        const itemDetails = checkoutItems.map(it => `- ${it.name} x ${it.qty} (₹${(it.price * it.qty).toLocaleString()})`).join('\n');
+        
+        const waMessage = `🛒 *New Order from MayaPets*\n` +
+                          `Order ID: ${orderId}\n` +
+                          `--------------------------\n` +
+                          `*Items:*\n${itemDetails}\n` +
+                          `--------------------------\n` +
+                          `*Total Amount:* ₹${grandTotal.toLocaleString()}\n` +
+                          `*Payment Mode:* Cash on Delivery (COD)\n` +
+                          `--------------------------\n` +
+                          `*Delivery Address:*\n` +
+                          `${addr.name} | ${addr.phone}\n` +
+                          `${addr.line1}${addr.line2 ? ', ' + addr.line2 : ''}\n` +
+                          `${addr.city}, ${addr.state} - ${addr.pincode}`;
+
+        const encodedMsg = encodeURIComponent(waMessage);
+        const waUrl = `https://wa.me/919700023344?text=${encodedMsg}`;
+
+        // 3. Cleanup Cart
+        const mode = localStorage.getItem('mayaPetsCheckoutMode');
+        if (mode === 'cart' || !mode) {
+          localStorage.removeItem('mayaPetsCart');
+        } else if (mode === 'single') {
+          const removedId = localStorage.getItem('mayaPetsCheckoutSingleId');
+          removeFromCart(removedId);
+        }
+        localStorage.removeItem('mayaPetsCheckoutItems');
+        localStorage.removeItem('mayaPetsCheckoutMode');
+        localStorage.removeItem('mayaPetsCheckoutSingleId');
+
+        // 4. Redirect to WhatsApp
+        btn.innerHTML = 'Redirecting to WhatsApp...';
+        setTimeout(() => {
+          window.location.href = waUrl;
+        }, 1000);
+
+      } catch (e) {
+        console.error(e);
+        errorMsg.innerText = "An error occurred placing your order. Please try again.";
+        errorMsg.style.display = 'block';
+        btn.innerHTML = 'Place Order';
+        btn.disabled = false;
+      }
+    };
+  </script>
+
+  <script>
+    function toggleAddrForm() {
+      const form = document.getElementById('addrForm');
+      const btn  = document.getElementById('addAddrBtn');
+      const open = form.classList.toggle('open');
+      btn.innerText = open ? '✕ Cancel' : '+ Add New Address';
+    }
+
+    function selectPayment(id) {
+      document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+      document.getElementById(id).classList.add('selected');
+    }
+  </script>
+
+</body>
+</html>

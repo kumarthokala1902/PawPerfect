@@ -219,6 +219,7 @@
     let currentProduct = null;
     let selectedWeightIndex = 0;
     let selectedRating = 5;
+    let pdpQty = 1;
 
     function initPDP() {
       const params = new URLSearchParams(window.location.search);
@@ -244,10 +245,13 @@
       const container = document.getElementById('pdpMain');
       const hasWeights = currentProduct.weightOptions && currentProduct.weightOptions.length > 0;
       
-      const price = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].p : currentProduct.price;
-      const oldPrice = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].o : currentProduct.oldPrice;
+      const basePrice = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].p : currentProduct.price;
+      const baseOldPrice = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].o : currentProduct.oldPrice;
       const discount = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].d : currentProduct.discount;
       const weightLabel = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].w : currentProduct.cat;
+
+      const price = basePrice * pdpQty;
+      const oldPrice = baseOldPrice * pdpQty;
 
       container.innerHTML = `
         <div class="pdp-gallery">
@@ -267,17 +271,26 @@
 
           ${hasWeights ? renderWeightSelector() : ''}
 
-          <div style="margin-top: 40px; display: flex; gap: 20px;">
-            <button class="btn-primary" style="padding: 18px 40px; font-size: 1.1rem;" onclick="handleAddToCart()">
+          <div style="margin-top: 25px;">
+            <label style="font-weight:700; font-size:0.9rem; color:#555; display:block; margin-bottom:8px;">Quantity</label>
+            <div class="qty-stepper" style="display:inline-flex; align-items:center; background:#fff; border:1.5px solid #eee; border-radius:10px; padding:4px;">
+              <button style="border:none; background:var(--gray); border-radius:6px; font-size:1.2rem; cursor:pointer; width:36px; height:36px; display:flex; align-items:center; justify-content:center;" onclick="updatePdpQty(-1)">−</button>
+              <span id="pdpQtyVal" style="font-weight:700; font-size:1.1rem; width:45px; text-align:center;">${pdpQty}</span>
+              <button style="border:none; background:var(--gray); border-radius:6px; font-size:1.2rem; cursor:pointer; width:36px; height:36px; display:flex; align-items:center; justify-content:center;" onclick="updatePdpQty(1)">+</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; display: flex; gap: 16px;">
+            <button class="btn-primary" style="padding: 16px 24px; font-size: 1.05rem; flex:1; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="handleAddToCart(event)">
               <span class="material-symbols-outlined">shopping_cart</span> Add to Cart
             </button>
-            <button class="btn-secondary" style="padding: 18px 40px; font-size: 1.1rem;">
-              <span class="material-symbols-outlined">favorite</span>
+            <button class="btn-secondary" style="padding: 16px 24px; font-size: 1.05rem; flex:1; background:var(--yellow); color:var(--black); border:none; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:800; box-shadow:0 8px 20px rgba(0,0,0,0.05);" onclick="handleBuyNow()">
+              <span class="material-symbols-outlined">flash_on</span> Buy Now
             </button>
           </div>
 
-          <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 16px; border-left: 4px solid var(--blue);">
-            <p style="font-size: 0.95rem; color: #444; line-height: 1.6;">
+          <div style="margin-top: 35px; padding: 16px; background: #f8f9fa; border-radius: 12px; border-left: 4px solid var(--blue);">
+            <p style="font-size: 0.9rem; color: #444; line-height: 1.6; margin:0;">
               <span style="font-weight: 800; color: var(--blue);">FREE DELIVERY</span> on orders above ₹499. <br>
               Delivered within <span style="font-weight: 700;">2-3 business days</span>.
             </p>
@@ -317,7 +330,12 @@
       renderProductInfo();
     }
 
-    function handleAddToCart() {
+    function updatePdpQty(delta) {
+      pdpQty = Math.max(1, pdpQty + delta);
+      renderProductInfo();
+    }
+
+    function handleAddToCart(event) {
       const hasWeights = currentProduct.weightOptions && currentProduct.weightOptions.length > 0;
       const price = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].p : currentProduct.price;
       const weightLabel = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].w : currentProduct.cat;
@@ -327,12 +345,12 @@
         price: price,
         image: currentProduct.image,
         brand: currentProduct.brand,
-        qty: 1,
+        qty: pdpQty,
         unit: 'Qty'
       });
       
       // Optional visual feedback
-      const btn = event.currentTarget;
+      const btn = event.currentTarget || event.target;
       const originalText = btn.innerHTML;
       btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Added!';
       btn.style.background = '#00c853';
@@ -340,6 +358,26 @@
         btn.innerHTML = originalText;
         btn.style.background = '';
       }, 2000);
+    }
+
+    function handleBuyNow() {
+      const hasWeights = currentProduct.weightOptions && currentProduct.weightOptions.length > 0;
+      const price = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].p : currentProduct.price;
+      const weightLabel = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].w : currentProduct.cat;
+
+      const buyNowItem = {
+        id: 'buynow_' + Date.now(),
+        name: `${currentProduct.name} (${weightLabel})`,
+        price: price,
+        brand: currentProduct.brand,
+        image: currentProduct.image,
+        qty: pdpQty,
+        unit: 'Qty'
+      };
+      
+      localStorage.setItem('mayaPetsCheckoutItems', JSON.stringify([buyNowItem]));
+      localStorage.setItem('mayaPetsCheckoutMode', 'buynow');
+      window.location.href = 'checkout.html';
     }
 
     function switchTab(event, tabId) {

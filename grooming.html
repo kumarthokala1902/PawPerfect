@@ -9,6 +9,22 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     body { font-family: 'Poppins', sans-serif; background: var(--gray); color: var(--black); line-height: 1.6; }
+    /* Page Hero CSS */
+    .page-hero { padding: 0 !important; max-width: 100% !important; margin: 0 !important; }
+    .hero-card-white { background: #ffffff !important; color: var(--black) !important; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05) !important; border: none !important; border-radius: 0 !important; overflow: hidden; padding: 60px 5vw 40px !important; transform: none !important; position: relative;}
+    .hero-card-white:hover { transform: none !important; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05) !important; }
+    .hero-card-white::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 40%, rgba(4, 151, 177, 0.03) 50%, transparent 60%) !important; animation: shimmerEffect 6s infinite linear; pointer-events: none; }
+    .pt-title-dark { color: var(--black) !important; font-size: 4rem; font-weight: 900; line-height: 1; margin: 0; letter-spacing: -2px; }
+    .pt-sub-dark { color: #4a5568 !important; font-size: 1.25rem; font-weight: 500; line-height: 1.6; padding-top: 15px; margin: 0;}
+    .pt-btn-dark { display: inline-block; background: var(--blue) !important; color: white !important; border: none !important; box-shadow: 0 10px 25px rgba(4, 151, 177, 0.2) !important; padding: 16px 40px; border-radius: 14px; font-weight: 700; text-decoration: none; margin-top: 20px; transition: 0.3s;}
+    .pt-btn-dark:hover { background: var(--blue2) !important; transform: translateY(-3px) scale(1.02) !important; color: white !important; box-shadow: 0 15px 35px rgba(4, 151, 177, 0.3) !important; }
+    .hero-content-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 40px; position: relative; z-index: 2; max-width: 1300px; margin: 0 auto; }
+    .hero-text-side { flex: 1; max-width: 600px; text-align: left; }
+    .hero-img-side { flex: 1.2; display: flex; justify-content: flex-end; align-items: center; }
+    .hero-img-side img { width: 100%; max-width: 550px; max-height: 400px; object-fit: cover; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12); animation: gentleFloat 6s ease-in-out infinite; }
+    @keyframes gentleFloat { 0% { transform: translateY(0); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0); } }
+    @media (max-width: 850px) { .hero-content-wrapper { flex-direction: column; text-align: center; gap: 20px; } .hero-text-side { display: flex; flex-direction: column; align-items: center; text-align: center; } .hero-img-side img { max-width: 400px; } .pt-title-dark { font-size: 3rem; } }
+
     header { padding: 60px 5vw 40px; text-align: center; }
     h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 10px; }
     .subtitle { color: #666; font-size: 1.1rem; }
@@ -84,10 +100,21 @@
   </script>
 
 
-  <header>
-    <h1>Grooming Essentials</h1>
-    <p class="subtitle">Spa-quality grooming products for a clean and happy pet.</p>
-  </header>
+  <section class="page-hero" style="margin-bottom: 40px;">
+    <div class="hero-card hero-card-white">
+      <div class="hero-content-wrapper">
+        <div class="hero-text-side">
+          <div class="hero-badge" style="background: var(--yellow); padding: 8px 20px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; display: inline-block; margin-bottom: 10px; color: var(--black); text-transform: uppercase;">Spa Specials</div>
+          <h1 class="pt-title-dark">Grooming Essentials</h1>
+          <p class="pt-sub-dark">Spa-quality grooming products for a clean and happy pet.</p>
+          <a href="#productsGrid" class="pt-btn-dark">Shop Grooming</a>
+        </div>
+        <div class="hero-img-side">
+          <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1200&q=80" alt="Grooming Essentials">
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div class="products-grid" id="productsGrid">
     <!-- Products will be injected by JS -->

@@ -75,15 +75,40 @@ function updateCartBadge() {
 // ─── PRODUCT MODAL LOGIC ──────────────────────────────
 let currentModalProduct = null;
 
-function openProductModal(name, price, brand, image, discount, oldPrice, description, features, unit = 'Qty') {
+function openProductModal(productIdOrName, price, brand, image, discount, oldPrice, description, features, unit = 'Qty', weightOptions = null) {
+  // Overload: if first arg is an ID and others are missing, fetch from ALL_PRODUCTS
+  if (arguments.length === 1 && typeof productIdOrName === 'string') {
+    const products = typeof getStoredProducts === 'function' ? getStoredProducts() : [];
+    const p = products.find(prod => prod.id === productIdOrName);
+    if (p) {
+      productIdOrName = p.name;
+      price = p.price;
+      brand = p.brand;
+      image = p.image;
+      discount = p.discount;
+      oldPrice = p.oldPrice;
+      description = p.desc;
+      features = p.features;
+      unit = p.unit;
+      weightOptions = p.weightOptions;
+    }
+  }
+
   currentModalProduct = { 
-    name, 
+    name: productIdOrName, 
     basePrice: parseInt(String(price).replace(/[^\d]/g, '')), 
     brand, 
     image, 
     unit, 
-    qty: 1 
+    qty: 1,
+    weightOptions,
+    selectedWeightIndex: 0
   };
+
+  // If weights exist, override basePrice with first option
+  if (weightOptions && weightOptions.length > 0) {
+    currentModalProduct.basePrice = weightOptions[0].p;
+  }
 
   let modal = document.getElementById('productModal');
   if (!modal) {
@@ -93,8 +118,36 @@ function openProductModal(name, price, brand, image, discount, oldPrice, descrip
     document.body.appendChild(modal);
   }
 
-  const featuresList = features.split('|').map(f => `<li>${f.trim()}</li>`).join('');
-  const unitLabel = unit === 'KG' ? 'Price per KG' : 'Unit Price';
+  renderModalInner();
+
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function renderModalInner() {
+  const modal = document.getElementById('productModal');
+  if (!modal || !currentModalProduct) return;
+
+  const { name, brand, image, unit, qty, basePrice, weightOptions, selectedWeightIndex } = currentModalProduct;
+  const featuresList = (currentModalProduct.features || '').split('|').map(f => `<li>${f.trim()}</li>`).join('');
+  const totalPrice = basePrice * qty;
+
+  const weightSelectorHtml = weightOptions ? `
+    <div class="modal-weight-selector" style="margin-bottom: 20px;">
+      <label style="font-weight:700; font-size:0.9rem; margin-bottom:8px; display:block;">Select Weight</label>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        ${weightOptions.map((opt, idx) => `
+          <div class="weight-chip ${idx === selectedWeightIndex ? 'active' : ''}" 
+               style="padding:8px 16px; border:2px solid ${idx === selectedWeightIndex ? 'var(--blue)' : '#eee'}; 
+                      border-radius:10px; cursor:pointer; font-weight:700; font-size:0.85rem;
+                      background:${idx === selectedWeightIndex ? 'rgba(4,151,177,0.05)' : 'white'}"
+               onclick="selectModalWeight(${idx})">
+            ${opt.w} <span style="display:block; font-size:0.75rem; color:#888;">₹${opt.p}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  ` : '';
 
   modal.innerHTML = `
     <div class="modal-container">
@@ -108,37 +161,50 @@ function openProductModal(name, price, brand, image, discount, oldPrice, descrip
         <span class="modal-brand">${brand}</span>
         <h2 class="modal-title">${name}</h2>
         <div class="modal-price-row">
-          <span class="modal-price" id="modalDisplayPrice">₹${currentModalProduct.basePrice}</span>
-          <span class="modal-savings">Save ${discount}</span>
+          <span class="modal-price" id="modalDisplayPrice">₹${totalPrice.toLocaleString()}</span>
         </div>
-        <span class="price-unit-label">${unitLabel}: ₹${currentModalProduct.basePrice}</span>
         
-        <div class="qty-section">
-          <label style="font-weight:700; font-size:0.9rem">${unit === 'KG' ? 'Select Weight (KG)' : 'Quantity'}</label>
+        ${weightSelectorHtml}
+
+        <div class="qty-section" style="margin-bottom: 25px;">
+          <label style="font-weight:700; font-size:0.9rem; display:block; margin-bottom:8px;">Quantity</label>
           <div class="qty-stepper">
             <button class="qty-btn" onclick="updateModalQty(-1)">−</button>
-            <span class="qty-val" id="modalQtyVal">1</span>
+            <span class="qty-val" id="modalQtyVal">${qty}</span>
             <button class="qty-btn" onclick="updateModalQty(1)">+</button>
           </div>
         </div>
 
-        <div class="modal-features">
-          <h4>About this item</h4>
-          <p style="font-size:0.9rem; color:#555; margin-bottom:15px">${description}</p>
-          <ul>${featuresList}</ul>
-          <p style="margin-top:15px; color:green; font-weight:700; font-size:0.9rem">In Stock</p>
-        </div>
-        
-        <div class="modal-actions">
-          <button class="btn-buy-now" onclick="handleBuyNow()">Buy Now</button>
-          <button class="btn-add-detail" onclick="handleAddToCart()">Add to Cart</button>
+        <div class="modal-actions" style="display:flex; gap:12px; margin-top: auto;">
+          <button class="btn-buy-now" onclick="handleBuyNow()" style="flex:1; background:var(--yellow); color:var(--black); border:none; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; font-size:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.05);">Buy Now</button>
+          <button class="btn-add-detail" onclick="handleModalAddToCart()" style="flex:1; background:var(--blue); color:white; border:none; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; font-size:1rem; box-shadow:0 8px 20px rgba(4,151,177,0.15);">Add to Cart</button>
         </div>
       </div>
     </div>
   `;
+}
 
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+window.selectModalWeight = function(idx) {
+  if (!currentModalProduct || !currentModalProduct.weightOptions) return;
+  currentModalProduct.selectedWeightIndex = idx;
+  currentModalProduct.basePrice = currentModalProduct.weightOptions[idx].p;
+  renderModalInner();
+}
+
+window.handleModalAddToCart = function() {
+  if (!currentModalProduct) return;
+  const p = currentModalProduct;
+  const weightSuffix = (p.weightOptions && p.weightOptions[p.selectedWeightIndex]) ? ` (${p.weightOptions[p.selectedWeightIndex].w})` : '';
+  
+  addToCart({
+    name: p.name + weightSuffix,
+    price: p.basePrice,
+    brand: p.brand,
+    image: p.image,
+    qty: p.qty,
+    unit: p.unit
+  });
+  closeProductModal();
 }
 
 function updateModalQty(delta) {
@@ -156,21 +222,27 @@ function updateModalQty(delta) {
 }
 
 function handleAddToCart() {
-  if (!currentModalProduct) return;
-  addToCart({
-    name: currentModalProduct.name,
-    price: currentModalProduct.basePrice, // Store unit price
-    brand: currentModalProduct.brand,
-    image: currentModalProduct.image,
-    qty: currentModalProduct.qty,
-    unit: currentModalProduct.unit
-  });
-  closeProductModal();
+  handleModalAddToCart();
 }
 
 function handleBuyNow() {
-  handleAddToCart();
-  window.location.href = 'cart.html';
+  if (!currentModalProduct) return;
+  const p = currentModalProduct;
+  const weightSuffix = (p.weightOptions && p.weightOptions[p.selectedWeightIndex]) ? ` (${p.weightOptions[p.selectedWeightIndex].w})` : '';
+
+  const buyNowItem = {
+    id: 'buynow_' + Date.now(),
+    name: p.name + weightSuffix,
+    price: p.basePrice,
+    brand: p.brand,
+    image: p.image,
+    qty: p.qty,
+    unit: p.unit
+  };
+  localStorage.setItem('mayaPetsCheckoutItems', JSON.stringify([buyNowItem]));
+  localStorage.setItem('mayaPetsCheckoutMode', 'buynow');
+  closeProductModal();
+  window.location.href = 'checkout.html';
 }
 
 function closeProductModal() {
@@ -182,20 +254,24 @@ function closeProductModal() {
   currentModalProduct = null;
 }
 
-// ─── ORDER FLOWS (MOCK) ───────────────────────────
+// ─── ORDER FLOWS (REDIRECT TO CHECKOUT) ───────────────────────────
 function orderItem(id) {
-  alert("Order Placed Successfully for this item! Thank you for shopping with MayaPets.");
-  removeFromCart(id);
-  location.reload();
+  const cart = getCart();
+  const item = cart.find(i => String(i.id) === String(id));
+  if (item) {
+    localStorage.setItem('mayaPetsCheckoutItems', JSON.stringify([item]));
+    localStorage.setItem('mayaPetsCheckoutMode', 'single');
+    localStorage.setItem('mayaPetsCheckoutSingleId', id);
+    window.location.href = 'checkout.html';
+  }
 }
 
 function orderAll() {
   const cart = getCart();
   if (cart.length === 0) return alert("Your cart is empty!");
-  alert("Success! Your order for " + cart.length + " items has been placed. Check your email for confirmation.");
-  localStorage.removeItem(CART_STORAGE_KEY);
-  updateCartBadge();
-  location.reload();
+  localStorage.setItem('mayaPetsCheckoutItems', JSON.stringify(cart));
+  localStorage.setItem('mayaPetsCheckoutMode', 'cart');
+  window.location.href = 'checkout.html';
 }
 
 // Global modal closer on overlay click

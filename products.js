@@ -175,15 +175,6 @@ function getStoredProducts() {
   return [...ALL_PRODUCTS, ...extra];
 }
 
-// Global modal state
-let activeProduct = null;
-let currentWeightIndex = 0;
-
-// Navigation logic for PDP
-function showProductDetail(productId) {
-  window.location.href = `product-detail.html?id=${productId}`;
-}
-
 // Review Persistence Logic
 function getProductReviews(productId) {
   const stored = localStorage.getItem(`reviews_${productId}`);
@@ -201,109 +192,23 @@ function saveProductReview(productId, review) {
   localStorage.setItem(`reviews_${productId}`, JSON.stringify(current));
 }
 
-// Global modal logic (Legacy - still useful for quick previews)
+// Navigation logic for PDP
+function showProductDetail(productId) {
+  window.location.href = `product-detail.html?id=${productId}`;
+}
+
+// Global modal logic (Legacy proxy to cart.js)
 function openProductModal(productId) {
-  const products = getStoredProducts();
-  activeProduct = products.find(p => p.id === productId);
-  if (!activeProduct) return;
-
-  currentWeightIndex = 0; // Default to first weight option if available
-
-  let modal = document.getElementById('productDetailModal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'productDetailModal';
-    modal.className = 'modal';
-    document.body.appendChild(modal);
+  // Use the refined cart.js logic
+  if(typeof window.openProductModal === 'function') {
+    window.openProductModal(productId);
   }
-
-  renderModalContent(modal);
-  modal.style.display = "flex";
-  document.body.style.overflow = 'hidden';
-}
-
-function renderModalContent(modal) {
-  const p = activeProduct;
-  const opt = p.weightOptions ? p.weightOptions[currentWeightIndex] : null;
-  
-  const currentPrice = opt ? opt.p : p.price;
-  const currentOldPrice = opt ? opt.o : p.oldPrice;
-  const currentDiscount = opt ? opt.d : p.discount;
-  const currentWeight = opt ? opt.w : (p.unit === 'KG' ? p.cat.split('•')[1]?.trim() : '');
-
-  modal.innerHTML = `
-    <div class="modal-content">
-      <span class="close-modal" onclick="closeProductModal()">&times;</span>
-      <div class="modal-grid">
-        <div class="modal-img-box">
-          <img src="${p.image}" alt="${p.name}">
-        </div>
-        <div class="modal-info" id="modalInfo">
-          <span class="prod-brand">${p.brand}</span>
-          <h2 class="modal-title">${p.name} ${currentWeight ? `(${currentWeight})` : ''}</h2>
-          
-          <div class="modal-price-box">
-            <span class="prod-price" id="modalPrice">₹${currentPrice.toLocaleString()}</span>
-            <span class="prod-old-price" id="modalOldPrice">₹${currentOldPrice.toLocaleString()}</span>
-            <span class="discount-badge" id="modalDiscount">${currentDiscount} OFF</span>
-          </div>
-
-          ${p.weightOptions ? `
-            <label class="weight-selector-label">Size: <span id="selectedWeightText">${opt.w} (Pack of 1)</span></label>
-            <div class="weight-selector-grid">
-              ${p.weightOptions.map((w, idx) => `
-                <div class="weight-card ${idx === currentWeightIndex ? 'active' : ''}" onclick="selectProductWeight(${idx})">
-                  <span class="weight-card-value">${w.w}</span>
-                  <span class="weight-card-price">₹${w.p.toLocaleString()} <span class="weight-card-old-price">₹${w.o.toLocaleString()}</span></span>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-
-          <p class="modal-desc">${p.desc}</p>
-          <div class="modal-features">
-            ${p.features.split('|').map(f => `<span><i class="material-symbols-outlined" style="font-size:16px">verified</i> ${f.trim()}</span>`).join('')}
-          </div>
-          
-          <div class="modal-actions" style="margin-top:20px; display:flex; gap:12px;">
-            <button class="prod-btn" style="flex:1" onclick="handleAddToCart()">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function selectProductWeight(index) {
-  currentWeightIndex = index;
-  const modal = document.getElementById('productDetailModal');
-  if (modal) renderModalContent(modal);
-}
-
-function handleAddToCart() {
-  const p = activeProduct;
-  const opt = p.weightOptions ? p.weightOptions[currentWeightIndex] : null;
-
-  const item = {
-    name: p.name + (opt ? ` (${opt.w})` : ''),
-    price: opt ? opt.p : p.price,
-    image: p.image,
-    brand: p.brand,
-    qty: 1,
-    unit: opt ? 'Qty' : p.unit
-  };
-
-  addToCart(item);
-  closeProductModal();
 }
 
 function closeProductModal() {
-  const modal = document.getElementById('productDetailModal');
-  if (modal) modal.style.display = "none";
-  document.body.style.overflow = 'auto';
-  activeProduct = null;
+  if(typeof window.closeProductModal === 'function') {
+    window.closeProductModal();
+  }
 }
 
 // Global Search Logic

@@ -577,19 +577,18 @@
     window.handleLogout = async function() {
       if (confirm('Are you sure you want to log out?')) {
         try {
-          const logoutBtn = document.querySelector('.logout-item span:not(.si-icon span)');
-          const sidebar   = document.querySelector('.logout-item');
-          if (sidebar) sidebar.innerHTML = '<div style="padding:18px 22px;color:var(--red);font-weight:700;">Logging out...</div>';
+          // Disable button visually
+          const logoutBtn = document.querySelector('.logout-item');
+          if (logoutBtn) {
+            logoutBtn.style.pointerEvents = 'none';
+            logoutBtn.style.opacity = '0.5';
+          }
 
+          // Await standard sign out
           await signOut(auth);
 
-          // Set flag so login page doesn't auto-redirect logged-out users back
-          sessionStorage.setItem('justLoggedOut', '1');
-
-          // Small delay so Firebase auth state fully clears before redirect
-          setTimeout(() => {
-            window.location.replace('login.html');
-          }, 400);
+          // Redirect to login
+          window.location.href = 'login.html';
         } catch(err) {
           console.error('Logout error:', err);
           alert('Something went wrong. Please try again.');

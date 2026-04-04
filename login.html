@@ -331,13 +331,8 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // If user is already logged in AND did NOT just log out, redirect to home
+    // If user is already logged in, redirect to home
     onAuthStateChanged(auth, (user) => {
-      const justLoggedOut = sessionStorage.getItem('justLoggedOut');
-      if (justLoggedOut) {
-        sessionStorage.removeItem('justLoggedOut');
-        return; // Stay on this page
-      }
       if (user) {
         window.location.href = "index.html";
       }

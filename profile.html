@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Account — MayaPets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    :root { --blue:#0497B1; --blue2:#037286; --red:#ff3b3b; --black:#111; --gray:#f5f7fc; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin:0; font-family:'Poppins',sans-serif; background:#f8f9fb; color:var(--black); }
+
+    /* ── PAGE LAYOUT ───────────────────────────────────── */
+    .profile-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Greeting */
+    .profile-greeting {
+      margin-bottom: 32px;
+    }
+    .profile-greeting h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin: 0 0 4px;
+      color: var(--black);
+    }
+    .profile-greeting p {
+      font-size: 0.88rem;
+      color: #888;
+      margin: 0;
+    }
+
+    /* ── TWO-COLUMN LAYOUT ─────────────────────────────── */
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── LEFT SIDEBAR ──────────────────────────────────── */
+    .profile-sidebar {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      border: 1px solid #eee;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.2s;
+      font-size: 0.97rem;
+      font-weight: 500;
+      color: #333;
+    }
+    .sidebar-item:last-child { border-bottom: none; }
+    .sidebar-item:hover { background: #f5f8ff; color: var(--blue); }
+    .sidebar-item.active {
+      background: rgba(4, 151, 177, 0.07);
+      color: var(--blue);
+      border-left: 3px solid var(--blue);
+      font-weight: 700;
+    }
+    .sidebar-item .si-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .sidebar-item .si-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: background 0.2s;
+    }
+    .sidebar-item.active .si-icon,
+    .sidebar-item:hover .si-icon { background: rgba(4,151,177,0.12); }
+    .sidebar-item .chevron { color: #bbb; font-size: 18px; }
+    .sidebar-item.active .chevron,
+    .sidebar-item:hover .chevron { color: var(--blue); }
+    .logout-item { color: var(--red) !important; }
+    .logout-item:hover { background: rgba(255,59,59,0.05) !important; color: var(--red) !important; }
+    .logout-item .chevron { color: var(--red) !important; }
+
+    /* ── RIGHT PANEL ───────────────────────────────────── */
+    .profile-panel {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      min-height: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      border: 1px solid #eee;
+    }
+
+    .panel-section { display: none; }
+    .panel-section.active { display: block; }
+
+    .panel-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin: 0 0 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+    }
+    .empty-state span { font-size: 56px; display: block; margin-bottom: 20px; }
+    .empty-state h3 { font-size: 1.2rem; font-weight: 700; color: var(--black); margin-bottom: 8px; }
+    .empty-state p { font-size: 0.9rem; margin-bottom: 24px; }
+    .btn-blue {
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 28px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+    .btn-blue:hover { background: var(--blue2); transform: translateY(-2px); }
+
+    /* ── ADDRESS SECTION ───────────────────────────────── */
+    .address-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .address-card {
+      border: 1.5px solid #eee;
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .address-card:hover { border-color: var(--blue); }
+
+    .address-card .addr-tag {
+      display: inline-block;
+      background: var(--gray);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    .address-card p { margin: 0; font-size: 0.93rem; line-height: 1.7; color: #444; }
+    .address-card .addr-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .btn-outline {
+      background: none;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      color: #555;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-outline.danger:hover { border-color: var(--red); color: var(--red); }
+
+    /* Add address form */
+    .addr-form { display: none; flex-direction: column; gap: 14px; margin-top: 20px; }
+    .addr-form.open { display: flex; }
+    .addr-form input, .addr-form select, .addr-form textarea {
+      padding: 13px 16px;
+      border: 1.5px solid #eee;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.93rem;
+      outline: none;
+      background: var(--gray);
+      transition: all 0.25s;
+    }
+    .addr-form input:focus, .addr-form select:focus, .addr-form textarea:focus {
+      border-color: var(--blue);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(4,151,177,0.08);
+    }
+    .addr-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .addr-form-btns { display: flex; gap: 10px; }
+
+    /* ── SETTINGS SECTION ──────────────────────────────── */
+    .settings-group { margin-bottom: 28px; }
+    .settings-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+    .settings-group input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid #eee;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.93rem;
+      background: var(--gray);
+      outline: none;
+      transition: all 0.25s;
+    }
+    .settings-group input:focus {
+      border-color: var(--blue);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(4,151,177,0.08);
+    }
+    .settings-group input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── LOADING STATE ─────────────────────────────────── */
+    #profileLoading {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+    }
+    #notLoggedIn {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    @media (max-width: 800px) {
+      .profile-layout { grid-template-columns: 1fr; }
+      .addr-form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
+        <span class="logo-text">Maya<span>Pets</span></span>
+      </a>
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" class="search-bar" placeholder="Search for pet food, brands..."/>
+      </div>
+      <ul class="nav-links">
+        <li><a href="pet-food.html">Pet Food</a></li>
+        <li><a href="pharmacy.html">Pharmacy</a></li>
+        <li><a href="accessories.html">Accessories</a></li>
+        <li><a href="grooming.html">Grooming</a></li>
+        <li><a href="about-us.html">About Us</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="nav-icon-btn" id="authBtn" style="color:var(--blue);" title="My Account">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+        <a href="cart.html" class="nav-icon-btn" style="text-decoration:none">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── LOADING GATE ────────────────────────────────────────── -->
+  <div id="pageLoading" style="text-align:center;padding:100px 20px;">
+    <div style="width:48px;height:48px;border:3px solid #eee;border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 20px;"></div>
+    <p style="color:#888;">Loading your profile...</p>
+  </div>
+
+  <!-- ── NOT LOGGED IN ───────────────────────────────────────── -->
+  <div id="notLoggedIn" style="display:none;">
+    <span style="font-size:56px;display:block;margin-bottom:20px;">🔒</span>
+    <h2 style="font-weight:800;">Please Sign In</h2>
+    <p style="color:#888;margin-bottom:24px;">You need to be logged in to view your account.</p>
+    <a href="login.html" class="btn-blue" style="text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:1rem;background:var(--blue);color:white;display:inline-block;">Sign In / Register</a>
+  </div>
+
+  <!-- ── PROFILE PAGE ────────────────────────────────────────── -->
+  <div class="profile-page" id="profileContent" style="display:none;">
+
+    <div class="profile-greeting">
+      <h1>Hi, <span id="greetName">there</span> 👋</h1>
+      <p id="greetEmail">Logged in to your MayaPets account</p>
+    </div>
+
+    <div class="profile-layout">
+
+      <!-- LEFT SIDEBAR -->
+      <div class="profile-sidebar">
+        <div class="sidebar-item active" onclick="showSection('orders')">
+          <div class="si-left">
+            <div class="si-icon"><span class="material-symbols-outlined" style="font-size:20px;">shopping_bag</span></div>
+            <span>My Orders</span>
+          </div>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('address')">
+          <div class="si-left">
+            <div class="si-icon"><span class="material-symbols-outlined" style="font-size:20px;">location_on</span></div>
+            <span>Address Book</span>
+          </div>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('settings')">
+          <div class="si-left">
+            <div class="si-icon"><span class="material-symbols-outlined" style="font-size:20px;">manage_accounts</span></div>
+            <span>Account Settings</span>
+          </div>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('faq')">
+          <div class="si-left">
+            <div class="si-icon"><span class="material-symbols-outlined" style="font-size:20px;">help_outline</span></div>
+            <span>FAQ / Contact Us</span>
+          </div>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </div>
+        <div class="sidebar-item logout-item" onclick="handleLogout()">
+          <div class="si-left">
+            <div class="si-icon" style="background:rgba(255,59,59,0.08)"><span class="material-symbols-outlined" style="font-size:20px;color:var(--red);">logout</span></div>
+            <span>Log Out</span>
+          </div>
+          <span class="material-symbols-outlined chevron">chevron_right</span>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="profile-panel">
+
+        <!-- ORDERS -->
+        <div class="panel-section active" id="sec-orders">
+          <div class="panel-title">My Orders</div>
+          <div class="empty-state">
+            <span>📦</span>
+            <h3>No Orders Yet</h3>
+            <p>You haven't placed any orders. Start shopping for your pet!</p>
+            <a href="pet-food.html"><button class="btn-blue">Shop Now</button></a>
+          </div>
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="panel-section" id="sec-address">
+          <div class="panel-title">Address Book</div>
+
+          <div class="address-list" id="addressList">
+            <!-- addresses injected by JS -->
+          </div>
+
+          <button class="btn-blue" id="addAddrBtn" onclick="toggleAddrForm()" style="margin-top:20px;">
+            + Add New Address
+          </button>
+
+          <!-- Add Address Form -->
+          <div class="addr-form" id="addrForm">
+            <div class="addr-form-row">
+              <input type="text" id="aName" placeholder="Full Name" />
+              <input type="tel" id="aPhone" placeholder="Phone Number" />
+            </div>
+            <input type="text" id="aLine1" placeholder="Address Line 1 (House / Flat / Street)" />
+            <input type="text" id="aLine2" placeholder="Address Line 2 (Area / Landmark)" />
+            <div class="addr-form-row">
+              <input type="text" id="aCity" placeholder="City" />
+              <input type="text" id="aState" placeholder="State" />
+            </div>
+            <div class="addr-form-row">
+              <input type="text" id="aPincode" placeholder="Pincode" />
+              <select id="aType">
+                <option value="Home">🏠 Home</option>
+                <option value="Work">🏢 Work</option>
+                <option value="Other">📍 Other</option>
+              </select>
+            </div>
+            <div class="addr-form-btns">
+              <button class="btn-blue" onclick="saveAddress()">Save Address</button>
+              <button class="btn-outline" onclick="toggleAddrForm()">Cancel</button>
+            </div>
+            <div id="addrMsg" style="font-size:0.85rem;color:green;display:none;"></div>
+          </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="panel-section" id="sec-settings">
+          <div class="panel-title">Account Settings</div>
+          <div class="settings-group">
+            <label>Display Name</label>
+            <input type="text" id="settingsName" placeholder="Your name"/>
+          </div>
+          <div class="settings-group">
+            <label>Email Address</label>
+            <input type="email" id="settingsEmail" placeholder="Email" disabled/>
+          </div>
+          <button class="btn-blue" onclick="saveSettings()">Save Changes</button>
+          <div id="settingsMsg" style="font-size:0.85rem;color:green;margin-top:12px;display:none;"></div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="panel-section" id="sec-faq">
+          <div class="panel-title">FAQ / Contact Us</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <details style="border:1px solid #eee;border-radius:12px;padding:16px;">
+              <summary style="font-weight:700;cursor:pointer;font-size:0.97rem;">How do I track my order?</summary>
+              <p style="margin:12px 0 0;color:#555;font-size:0.9rem;">Once your order is shipped, you will receive a tracking email with the courier details. You can also check the orders section of your account.</p>
+            </details>
+            <details style="border:1px solid #eee;border-radius:12px;padding:16px;">
+              <summary style="font-weight:700;cursor:pointer;font-size:0.97rem;">What is the return policy?</summary>
+              <p style="margin:12px 0 0;color:#555;font-size:0.9rem;">We offer a 7-day return policy for unopened items. Contact us at customercare@taiyoogroup.in to initiate a return.</p>
+            </details>
+            <details style="border:1px solid #eee;border-radius:12px;padding:16px;">
+              <summary style="font-weight:700;cursor:pointer;font-size:0.97rem;">How can I contact support?</summary>
+              <p style="margin:12px 0 0;color:#555;font-size:0.9rem;">📞 +91 9840825735<br>✉️ customercare@taiyoogroup.in<br>🌐 www.taiyoogroup.in</p>
+            </details>
+            <details style="border:1px solid #eee;border-radius:12px;padding:16px;">
+              <summary style="font-weight:700;cursor:pointer;font-size:0.97rem;">How long is delivery?</summary>
+              <p style="margin:12px 0 0;color:#555;font-size:0.9rem;">Standard delivery takes 3–5 business days. Express delivery is available in select cities within 1–2 days.</p>
+            </details>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+
+  <!-- Firebase + Profile Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTDb-RiuIKmXC4MJJQgSidWbLylNO-NHw",
+      authDomain: "mayapetsproject.firebaseapp.com",
+      projectId: "mayapetsproject",
+      storageBucket: "mayapetsproject.firebasestorage.app",
+      messagingSenderId: "988493888178",
+      appId: "1:988493888178:web:a1984309337782333a27ab"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      document.getElementById('pageLoading').style.display = 'none';
+      if (!user) {
+        document.getElementById('notLoggedIn').style.display = 'block';
+        return;
+      }
+
+      currentUser = user;
+      document.getElementById('profileContent').style.display = 'block';
+
+      // Greet
+      const name = user.displayName || user.email.split('@')[0];
+      document.getElementById('greetName').innerText = name;
+      document.getElementById('greetEmail').innerText = 'Logged in as ' + user.email;
+
+      // Nav avatar
+      const btn = document.getElementById('authBtn');
+      const initial = name.charAt(0).toUpperCase();
+      btn.innerHTML = `<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;">${initial}</div>`;
+      btn.onclick = () => window.location.href = 'profile.html';
+
+      // Settings fields
+      document.getElementById('settingsName').value  = user.displayName || '';
+      document.getElementById('settingsEmail').value = user.email;
+
+      // Load addresses
+      await loadAddresses();
+    });
+
+    // ── Addresses ────────────────────────────────────────
+    async function loadAddresses() {
+      const ref  = doc(db, 'users', currentUser.uid);
+      const snap = await getDoc(ref);
+      const data = snap.exists() ? snap.data() : {};
+      renderAddresses(data.addresses || []);
+    }
+
+    function renderAddresses(addresses) {
+      const list = document.getElementById('addressList');
+      if (!addresses.length) {
+        list.innerHTML = '<p style="color:#888;font-size:0.9rem;">No addresses saved yet.</p>';
+        return;
+      }
+      list.innerHTML = addresses.map((a, i) => `
+        <div class="address-card">
+          <span class="addr-tag">${a.type}</span>
+          <p><strong>${a.name}</strong> &nbsp;|&nbsp; ${a.phone}</p>
+          <p>${a.line1}${a.line2 ? ', ' + a.line2 : ''},<br>${a.city}, ${a.state} – ${a.pincode}</p>
+          <div class="addr-actions">
+            <button class="btn-outline danger" onclick="deleteAddress(${i})">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.saveAddress = async function() {
+      const name    = document.getElementById('aName').value.trim();
+      const phone   = document.getElementById('aPhone').value.trim();
+      const line1   = document.getElementById('aLine1').value.trim();
+      const line2   = document.getElementById('aLine2').value.trim();
+      const city    = document.getElementById('aCity').value.trim();
+      const state   = document.getElementById('aState').value.trim();
+      const pincode = document.getElementById('aPincode').value.trim();
+      const type    = document.getElementById('aType').value;
+      const msg     = document.getElementById('addrMsg');
+
+      if (!name || !phone || !line1 || !city || !state || !pincode) {
+        msg.style.color = 'var(--red)';
+        msg.innerText   = '⚠️ Please fill in all required fields.';
+        msg.style.display = 'block';
+        return;
+      }
+
+      const newAddr = { name, phone, line1, line2, city, state, pincode, type };
+      const ref = doc(db, 'users', currentUser.uid);
+      const snap = await getDoc(ref);
+      const current = snap.exists() ? (snap.data().addresses || []) : [];
+      current.push(newAddr);
+      await setDoc(ref, { addresses: current }, { merge: true });
+
+      msg.style.color   = 'green';
+      msg.innerText     = '✅ Address saved!';
+      msg.style.display = 'block';
+
+      // Reset form
+      ['aName','aPhone','aLine1','aLine2','aCity','aState','aPincode'].forEach(id => document.getElementById(id).value = '');
+      setTimeout(() => { msg.style.display='none'; toggleAddrForm(); loadAddresses(); }, 1200);
+    };
+
+    window.deleteAddress = async function(index) {
+      if (!confirm('Delete this address?')) return;
+      const ref  = doc(db, 'users', currentUser.uid);
+      const snap = await getDoc(ref);
+      const addrs = snap.exists() ? (snap.data().addresses || []) : [];
+      addrs.splice(index, 1);
+      await setDoc(ref, { addresses: addrs }, { merge: true });
+      renderAddresses(addrs);
+    };
+
+    // ── Settings ──────────────────────────────────────────
+    window.saveSettings = async function() {
+      const name = document.getElementById('settingsName').value.trim();
+      const msg  = document.getElementById('settingsMsg');
+      if (!name) return;
+      await updateProfile(currentUser, { displayName: name });
+      await setDoc(doc(db, 'users', currentUser.uid), { name }, { merge: true });
+      document.getElementById('greetName').innerText = name;
+      msg.innerText     = '✅ Profile updated!';
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 2000);
+    };
+
+    // ── Logout ────────────────────────────────────────────
+    window.handleLogout = async function() {
+      if (confirm('Are you sure you want to log out?')) {
+        try {
+          const logoutBtn = document.querySelector('.logout-item span:not(.si-icon span)');
+          const sidebar   = document.querySelector('.logout-item');
+          if (sidebar) sidebar.innerHTML = '<div style="padding:18px 22px;color:var(--red);font-weight:700;">Logging out...</div>';
+
+          await signOut(auth);
+
+          // Set flag so login page doesn't auto-redirect logged-out users back
+          sessionStorage.setItem('justLoggedOut', '1');
+
+          // Small delay so Firebase auth state fully clears before redirect
+          setTimeout(() => {
+            window.location.replace('login.html');
+          }, 400);
+        } catch(err) {
+          console.error('Logout error:', err);
+          alert('Something went wrong. Please try again.');
+        }
+      }
+    };
+  </script>
+
+  <!-- Non-module UI helpers -->
+  <script>
+    function showSection(name) {
+      document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+      document.getElementById('sec-' + name).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function toggleAddrForm() {
+      const form = document.getElementById('addrForm');
+      const btn  = document.getElementById('addAddrBtn');
+      const open = form.classList.toggle('open');
+      btn.innerText = open ? '✕ Cancel' : '+ Add New Address';
+    }
+  </script>
+
+  <script src="cart.js"></script>
+  <script src="products.js"></script>
+</body>
+</html>

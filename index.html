@@ -9,6 +9,7 @@
     rel="stylesheet" />
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="styles.css" />
   <style>
     *,
     *::before,
@@ -41,361 +42,242 @@
       overflow-x: hidden;
     }
 
-    /* ─── NAVBAR ───────────────────────────────────────────── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: var(--white);
-      box-shadow: 0 2px 24px rgba(0, 0, 0, .07);
+    /* Standardized navbar styles are now in styles.css */
+
+    .nav-actions {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    .nav-icon-btn {
+      position: relative;
+      background: none;
+      border: none;
+      color: var(--black);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+
+    .nav-icon-btn:hover {
+      color: var(--blue);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: var(--red);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+    }
+
+    @media (max-width: 1100px) {
+      .nav-links { display: none; }
+    }
+
+    /* ─── HERO CAROUSEL ────────────────────────────────────────── */
+    .hero-carousel {
+      position: relative;
+      margin-top: 24px;
       padding: 0 5vw;
-      height: 68px;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--blue);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-
-    .logo-text {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--black);
-      letter-spacing: -0.5px;
-    }
-
-    .logo-text span {
-      color: var(--blue);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      font-size: .9rem;
-      font-weight: 500;
-      color: var(--black);
+    .carousel-container {
       position: relative;
-      padding-bottom: 2px;
-      transition: color .25s;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--blue);
-      transition: width .3s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--blue);
-    }
-
-    .nav-links a:hover::after {
       width: 100%;
-    }
-
-    .btn-nav {
-      background: var(--yellow);
-      color: var(--black);
-      font-weight: 700;
-      font-size: .88rem;
-      border: none;
-      border-radius: 50px;
-      padding: 10px 24px;
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-      text-decoration: none;
-    }
-
-    .btn-nav:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 214, 0, .4);
-    }
-
-    /* ─── HERO ──────────────────────────────────────────────── */
-    .hero {
-      position: relative;
+      border-radius: 32px;
       overflow: hidden;
-      background: var(--white);
-      min-height: 92vh;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+      background: var(--gray);
+    }
+
+    .carousel-track {
       display: flex;
-      align-items: center;
-    }
-
-    .hero-wave {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 340px;
-      background: var(--blue);
-      clip-path: ellipse(120% 100% at 50% 0%);
-      z-index: 0;
-    }
-
-    .hero-wave::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #0497B1 0%, #037286 100%);
-      opacity: .9;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
       width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 120px 5vw 80px;
-      gap: 40px;
+      cursor: grab;
     }
 
-    .hero-left {
-      flex: 1;
-      max-width: 580px;
+    .carousel-track:active {
+      cursor: grabbing;
     }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, .15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, .3);
-      color: var(--white);
-      font-size: .8rem;
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 50px;
-      margin-bottom: 24px;
-      animation: fadeUp .6s ease both;
-    }
-
-    .hero-badge .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--yellow);
-    }
-
-    .hero-h1 {
-      font-size: clamp(2.4rem, 5vw, 3.8rem);
-      font-weight: 900;
-      line-height: 1.1;
-      letter-spacing: -1.5px;
-      color: var(--white);
-      animation: fadeUp .6s .1s ease both;
-    }
-
-    .hero-h1 .accent {
-      color: var(--yellow);
-    }
-
-    .hero-h1 .red {
-      color: #ff6b6b;
-    }
-
-    .hero-sub {
-      margin-top: 20px;
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: rgba(255, 255, 255, .82);
-      line-height: 1.7;
-      animation: fadeUp .6s .2s ease both;
-    }
-
-    .hero-ctas {
-      margin-top: 36px;
+    .carousel-card {
+      min-width: 100%;
+      height: 480px;
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      animation: fadeUp .6s .3s ease both;
+      padding: 0 80px;
+      overflow: hidden;
+      transition: opacity 0.6s;
     }
 
-    .btn-primary {
-      background: var(--yellow);
-      color: var(--black);
-      font-weight: 700;
-      font-size: 1rem;
-      border: none;
-      border-radius: 50px;
-      padding: 14px 36px;
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-      text-decoration: none;
+    .carousel-card:not(.active) {
+      opacity: 0.5;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 10;
+      max-width: 550px;
+      color: var(--white);
+      transform: translateY(20px);
+      transition: all 0.7s .2s ease-out;
+      opacity: 0;
+    }
+
+    .carousel-card.active .card-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .card-badge {
       display: inline-block;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 28px rgba(255, 214, 0, .5);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--white);
-      font-weight: 600;
-      font-size: 1rem;
-      border: 2px solid rgba(255, 255, 255, .5);
+      background: var(--yellow);
+      color: var(--black);
+      padding: 8px 20px;
       border-radius: 50px;
-      padding: 12px 30px;
-      cursor: pointer;
-      transition: all .25s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 25px rgba(255, 214, 0, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, .12);
-      border-color: white;
-    }
-
-    .hero-stats {
-      margin-top: 48px;
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-      animation: fadeUp .6s .4s ease both;
-    }
-
-    .stat-num {
-      font-size: 1.8rem;
+    .card-title {
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
       font-weight: 900;
-      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 18px;
+      letter-spacing: -2px;
     }
 
-    .stat-num span {
-      color: var(--yellow);
+    .card-subtitle {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 36px;
+      line-height: 1.6;
     }
 
-    .stat-label {
-      font-size: .78rem;
-      color: rgba(255, 255, 255, .7);
-      margin-top: 2px;
+    .btn-caro {
+      background: var(--white);
+      color: var(--black);
+      padding: 16px 40px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-block;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
 
-    .hero-right {
-      flex: 1;
-      max-width: 500px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: floatIn .8s .2s ease both;
-      position: relative;
+    .btn-caro:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      background: var(--blue);
+      color: white;
     }
 
-    .hero-img-wrap {
-      width: 420px;
-      height: 420px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, .12);
-      backdrop-filter: blur(8px);
-      border: 2px solid rgba(255, 255, 255, .2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
+    .card-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
     }
 
-    .hero-img-wrap::before {
+    .card-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 8s linear;
+    }
+
+    .carousel-card.active .card-bg img {
+      transform: scale(1.1);
+    }
+
+    /* Gradient Overlay */
+    .card-bg::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 40% 40%, rgba(255, 214, 0, .15), transparent 60%);
+      background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.1) 100%);
     }
 
-    .hero-emoji {
-      font-size: 160px;
-      line-height: 1;
-      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, .2));
-    }
-
-    .floating-card {
-      position: absolute;
-      background: var(--white);
-      border-radius: 16px;
-      padding: 14px 18px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, .12);
+    /* Indicators */
+    .carousel-indicators {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: .82rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .fc1 {
-      bottom: 30px;
-      left: -30px;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    .fc2 {
-      top: 50px;
-      right: -20px;
-      animation: float 3s .8s ease-in-out infinite;
-    }
-
-    .fc3 {
-      top: 50%;
-      right: -40px;
-      animation: float 3s 1.5s ease-in-out infinite;
-    }
-
-    .fc-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 18px;
+      gap: 14px;
+      margin-top: 28px;
+      margin-bottom: 10px;
     }
 
-    .fc-icon.blue {
-      background: #e8f0ff;
+    .caro-dot {
+      width: 45px;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
     }
 
-    .fc-icon.yell {
-      background: #fff9d6;
+    .caro-dot.active {
+      background: #d0d0d0;
     }
 
-    .fc-icon.red {
-      background: #ffe8e8;
+    .caro-dot-progress {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0%;
+      background: var(--blue);
+    }
+
+    /* Mobile overrides */
+    @media (max-width: 768px) {
+      .hero-carousel {
+        margin-top: 15px;
+        padding: 0 15px;
+      }
+      .carousel-container {
+        border-radius: 24px;
+      }
+      .carousel-card {
+        height: 420px;
+        padding: 40px;
+      }
+      .card-title {
+        font-size: 2.2rem;
+        letter-spacing: -1px;
+      }
+      .card-subtitle {
+        font-size: 1rem;
+        margin-bottom: 25px;
+      }
+      .btn-caro {
+        padding: 12px 30px;
+        font-size: 0.9rem;
+      }
     }
 
     /* ─── BRAND STRIP ───────────────────────────────────────── */
@@ -506,97 +388,184 @@
 
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
       margin-top: 48px;
+    }
+
+    /* Horizontal Scroll Layout */
+    .products-grid.scrollable {
+      display: flex;
+      overflow-x: auto;
+      gap: 24px;
+      padding: 20px 5px 40px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+      scrollbar-color: var(--blue) transparent;
+    }
+
+    .products-grid.scrollable::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .products-grid.scrollable::-webkit-scrollbar-track {
+      background: #eee;
+      border-radius: 10px;
+    }
+
+    .products-grid.scrollable::-webkit-scrollbar-thumb {
+      background: var(--blue);
+      border-radius: 10px;
+    }
+
+    .products-grid.scrollable .prod-card {
+      min-width: 300px;
+      scroll-snap-align: start;
     }
 
     .prod-card {
       background: var(--white);
       border-radius: 24px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, .05);
-      transition: transform .3s, box-shadow .3s;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
     .prod-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 24px 60px rgba(4, 151, 177, .12);
+      transform: translateY(-12px);
+      box-shadow: 0 30px 60px rgba(4, 151, 177, .15);
+    }
+
+    /* Product Badges */
+    .prod-badges {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .discount-badge {
+      background: var(--red);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 50px;
+      box-shadow: 0 4px 10px rgba(255, 59, 59, 0.3);
+    }
+
+    .bestseller-badge {
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 50px;
+      box-shadow: 0 4px 10px rgba(255, 214, 0, 0.3);
     }
 
     .prod-img {
-      height: 180px;
+      height: 240px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 80px;
+      overflow: hidden;
+      background: #f9f9f9;
+      padding: 20px;
     }
 
-    .prod-img.b1 {
-      background: linear-gradient(135deg, #e8f0ff, #ccdeff);
+    .prod-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.5s;
     }
 
-    .prod-img.b2 {
-      background: linear-gradient(135deg, #fff9d6, #ffe680);
-    }
-
-    .prod-img.b3 {
-      background: linear-gradient(135deg, #ffe8e8, #ffb3b3);
-    }
-
-    .prod-img.b4 {
-      background: linear-gradient(135deg, #e6faf0, #a8edcc);
+    .prod-card:hover .prod-img img {
+      transform: scale(1.1);
     }
 
     .prod-body {
-      padding: 22px 22px 28px;
+      padding: 24px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
 
-    .prod-tag {
-      font-size: .72rem;
+    .prod-brand {
+      font-size: .75rem;
       font-weight: 700;
       color: var(--blue);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
+      margin-bottom: 4px;
     }
 
     .prod-name {
-      font-size: 1.05rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      margin: 6px 0;
+      color: var(--black);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .prod-cat {
+      font-size: 0.8rem;
+      color: #777;
+      margin-bottom: 16px;
+    }
+
+    .prod-price-box {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .prod-price {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 900;
-      color: var(--blue);
+      color: var(--black);
     }
 
-    .prod-price span {
-      font-size: .8rem;
+    .prod-old-price {
+      font-size: 0.95rem;
       font-weight: 500;
-      color: #999;
+      color: #aaa;
       text-decoration: line-through;
-      margin-left: 6px;
     }
 
     .prod-btn {
-      margin-top: 16px;
       width: 100%;
       background: var(--blue);
       color: var(--white);
       border: none;
       border-radius: 50px;
-      padding: 12px;
-      font-size: .88rem;
-      font-weight: 600;
+      padding: 14px;
+      font-size: .9rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: background .2s;
-      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .prod-btn:hover {
       background: var(--blue2);
+      transform: scale(1.02);
+    }
+
+    .prod-btn:active {
+      transform: scale(0.98);
     }
 
     /* ─── CARE ─────────────────────────────────────────────── */
@@ -1290,75 +1259,132 @@
 
   <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
   <nav>
-    <a class="logo" href="#">
-      <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="white"><path d="M197-640q-41 0-70-29.5t-29-70.5q0-42 29-71t70-29q41 0 71 29t30 71q0 41-30 70.5T197-640Zm566 0q-42 0-71-29.5t-29-70.5q0-42 29-71t71-29q42 0 71 29t29 71q0 41-29 70.5T763-640ZM350-736q-34 0-58.5-24t-24.5-59q0-34 24.5-58.5T350-902q35 0 59.5 24.5T434-819q0 35-24.5 59T350-736Zm260 0q-35 0-59.5-24t-24.5-59q0-34 24.5-58.5T610-902q35 0 59 24.5T693-819q0 35-24 59t-59 24ZM480-120q-76 0-143.5-20T215-201q-45-28-59-96t-5-121q7-41 26.5-74.5T226-554q57-41 126.5-44T480-575q58-23 127.5-20T734-554q28 28 47.5 61.5T808-418q9 53-5 121t-59 96q-54 41-121.5 61T480-120Z"/></svg></div>
-      <span class="logo-text">Maya<span>Pets</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="#products">Products</a></li>
-      <li><a href="#care">Puppy Care</a></li>
-      <li><a href="#breeds">Dog Breeds</a></li>
-      <li><a href="#samples">Free Samples</a></li>
-      <li><a href="#expert">Ask an Expert</a></li>
-      <li><a href="#why">About Us</a></li>
-    </ul>
-    <a href="#cta" class="btn-nav">Shop Now →</a>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
+        <span class="logo-text">Maya<span>Pets</span></span>
+      </a>
+
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" class="search-bar" id="typingSearchBar" placeholder="Search for products, brands...">
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="pet-food.html">Pet Food</a></li>
+        <li><a href="pharmacy.html">Pharmacy</a></li>
+        <li><a href="accessories.html">Accessories</a></li>
+        <li><a href="grooming.html">Grooming</a></li>
+        <li><a href="about-us.html">About Us</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+        <a href="cart.html" class="nav-icon-btn" style="text-decoration:none" title="Cart">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+      </div>
+    </div>
   </nav>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    const app = initializeApp({
+      apiKey: "AIzaSyBTDb-RiuIKmXC4MJJQgSidWbLylNO-NHw",
+      authDomain: "mayapetsproject.firebaseapp.com",
+      projectId: "mayapetsproject",
+      storageBucket: "mayapetsproject.firebasestorage.app",
+      messagingSenderId: "988493888178",
+      appId: "1:988493888178:web:a1984309337782333a27ab"
+    });
+    const auth = getAuth(app);
+    const btn = document.getElementById('authBtn');
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const name = user.displayName || user.email;
+        const initial = name.charAt(0).toUpperCase();
+        btn.innerHTML = `<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;">${initial}</div>`;
+        btn.title = `Hi ${name} — View Account`;
+        btn.onclick = () => window.location.href = 'profile.html';
+      } else {
+        btn.innerHTML = `<span class="material-symbols-outlined">person</span>`;
+        btn.title = 'Sign In';
+        btn.onclick = () => window.location.href = 'login.html';
+      }
+    });
+  </script>
+
+  <script src="products.js"></script>
+
   <!-- ══ HERO ════════════════════════════════════════════════ -->
-  <section class="hero">
-    <div class="hero-wave"></div>
-    <div class="hero-inner">
-      <div class="hero-left">
-        <div class="hero-badge"><span class="dot"></span> #1 Rated Pet Nutrition Brand 2025</div>
-        <h1 class="hero-h1">
-          Give Your Pet<br>
-          <span class="accent">Pure Happiness</span><br>
-          Every <span class="red">Day.</span>
-        </h1>
-        <p class="hero-sub">
-          Premium, vet-approved nutrition crafted for your furry family members.<br>
-          Real ingredients. Real love. Delivered to your door.
-        </p>
-        <div class="hero-ctas">
-          <a href="#products" class="btn-primary">🛒 Explore Products</a>
-          <a href="#why" class="btn-outline">▶ Watch Our Story</a>
+  <!-- ══ HERO CAROUSEL ════════════════════════════════════════ -->
+  <section class="hero-carousel">
+    <div class="carousel-container">
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Card 1: Pet Food -->
+        <div class="carousel-card active">
+          <div class="card-content">
+            <span class="card-badge">Up to 22% Off</span>
+            <h1 class="card-title">Pet Food</h1>
+            <p class="card-subtitle">Premium nutrition trusted by pet parents for a healthier, happier life.</p>
+            <a href="#products" class="btn-caro">Shop Now</a>
+          </div>
+          <div class="card-bg">
+            <img src="images/pet_food_banner.png" alt="Pet Food">
+          </div>
         </div>
-        <div class="hero-stats">
-          <div class="stat">
-            <div class="stat-num">2M<span>+</span></div>
-            <div class="stat-label">Happy Pets Fed</div>
+
+        <!-- Card 2: Pharmacy -->
+        <div class="carousel-card">
+          <div class="card-content">
+            <span class="card-badge">Flat 15% Off</span>
+            <h1 class="card-title">Pharmacy</h1>
+            <p class="card-subtitle">Expert pet healthcare and wellness essentials delivered to your doorstep.</p>
+            <a href="#cta" class="btn-caro">Consult Now</a>
           </div>
-          <div class="stat">
-            <div class="stat-num">50<span>+</span></div>
-            <div class="stat-label">Product Varieties</div>
+          <div class="card-bg">
+            <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=1200&q=80" alt="Pet Pharmacy">
           </div>
-          <div class="stat">
-            <div class="stat-num">4.9<span>★</span></div>
-            <div class="stat-label">Average Rating</div>
+        </div>
+
+        <!-- Card 3: Accessories -->
+        <div class="carousel-card">
+          <div class="card-content">
+            <span class="card-badge">Up to 30% Off</span>
+            <h1 class="card-title">Accessories</h1>
+            <p class="card-subtitle">Style meets comfort with our premium collection of collars, harnesses, and more.</p>
+            <a href="#products" class="btn-caro">Explore Gear</a>
+          </div>
+          <div class="card-bg">
+            <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&w=1200&q=80" alt="Pet Accessories">
+          </div>
+        </div>
+
+        <!-- Card 4: Grooming Essentials -->
+        <div class="carousel-card">
+          <div class="card-content">
+            <span class="card-badge">Up to 20% Off</span>
+            <h1 class="card-title">Grooming Essentials</h1>
+            <p class="card-subtitle">Keep your pets fresh and clean with our professional-grade grooming kits.</p>
+            <a href="#care" class="btn-caro">Groom Now</a>
+          </div>
+          <div class="card-bg">
+            <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1200&q=80" alt="Grooming Essentials">
           </div>
         </div>
       </div>
-      <div class="hero-right">
-        <div class="hero-img-wrap">
-          <img src="images/hero_dog.png" alt="Happy Golden Retriever"
-            style="width: 100%; height: 100%; object-fit: cover; z-index: 1;">
-        </div>
-        <div class="floating-card fc1">
-          <div class="fc-icon blue">✅</div>
-          <div>
-            <div style="font-size:.82rem;font-weight:700">Vet Approved</div>
-            <div style="font-size:.72rem;color:#888">100% Safe Formula</div>
-          </div>
-        </div>
-        <div class="floating-card fc2">
-          <div class="fc-icon yell">🚀</div>
-          <div>
-            <div style="font-size:.82rem;font-weight:700">Fast Delivery</div>
-            <div style="font-size:.72rem;color:#888">Same Day Dispatch</div>
-          </div>
-        </div>
-      </div>
+    </div>
+
+    <!-- Indicators -->
+    <div class="carousel-indicators" id="carouselIndicators">
+      <div class="caro-dot active" data-index="0"><div class="caro-dot-progress"></div></div>
+      <div class="caro-dot" data-index="1"><div class="caro-dot-progress"></div></div>
+      <div class="caro-dot" data-index="2"><div class="caro-dot-progress"></div></div>
+      <div class="caro-dot" data-index="3"><div class="caro-dot-progress"></div></div>
     </div>
   </section>
 
@@ -1398,61 +1424,131 @@
     <div style="max-width:1200px;margin:0 auto;">
       <div class="products-header reveal">
         <div>
-          <span class="section-tag">Our Products</span>
-          <h2 class="section-h2">Bestselling <span class="blue">Favourites</span></h2>
+          <span class="section-tag">Bestselling Favourites</span>
+          <h2 class="section-h2">Top Picks for Your <span class="blue">Pet</span></h2>
         </div>
-        <a href="#" class="btn-primary" style="white-space:nowrap">View All →</a>
+        <a href="pet-food.html" class="btn-primary" style="white-space:nowrap">View All →</a>
       </div>
-      <div class="products-grid">
-        <div class="prod-card reveal">
-          <div class="prod-img" style="height: 240px; background: none; overflow: hidden; padding: 0;">
-            <img src="images/product_chicken.png" style="width: 100%; height: 100%; object-fit: cover;"
-              alt="Chicken Product">
+      
+      <div class="products-grid scrollable">
+
+        <!-- 1. Countryside -->
+        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=pf35'" style="cursor:pointer;">
+          <div class="card-header-overlay">
+            <div class="brand-icon-mini">CS</div>
+            <div class="discount-badge-round">15%<span>OFF</span></div>
+          </div>
+          <div class="prod-img">
+            <img src="images/Country-Side/Countryside-Adult Fish And Rice.png" alt="Countryside Adult Fish & Rice">
           </div>
           <div class="prod-body">
-            <div class="prod-tag">Adult Dog</div>
-            <div class="prod-name">Chicken & Rice Classic</div>
-            <div class="prod-price">₹649 <span>₹799</span></div>
-            <button class="prod-btn">Add to Cart</button>
+            <span class="prod-brand">Countryside</span>
+            <h3 class="prod-name">Adult Fish &amp; Rice</h3>
+            <span class="prod-cat">Dog Food</span>
+            <div class="prod-price-box">
+              <span class="prod-price">₹1,350</span>
+              <span class="prod-old-price">₹1,600</span>
+            </div>
+            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'Adult Fish & Rice', price: 1350, image: 'images/Country-Side/Countryside-Adult Fish And Rice.png', brand: 'Countryside', qty: 1, unit: 'KG'})">
+              <span class="material-symbols-outlined">shopping_bag</span> Add to Cart
+            </button>
           </div>
         </div>
-        <div class="prod-card reveal">
-          <div class="prod-img" style="height: 240px; background: none; overflow: hidden; padding: 0;">
-            <img src="images/product_salmon.png" style="width: 100%; height: 100%; object-fit: cover;"
-              alt="Salmon Product">
+
+        <!-- 2. Defender -->
+        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=pf30'" style="cursor:pointer;">
+          <div class="card-header-overlay">
+            <div class="brand-icon-mini">DF</div>
+            <div class="discount-badge-round">19%<span>OFF</span></div>
+          </div>
+          <div class="prod-img">
+            <img src="images/Defenderr/Defender-Starter Mother and Pup.png" alt="Defender Starter">
           </div>
           <div class="prod-body">
-            <div class="prod-tag">Premium</div>
-            <div class="prod-name">Salmon & Veggie Feast</div>
-            <div class="prod-price">₹849 <span>₹999</span></div>
-            <button class="prod-btn">Add to Cart</button>
+            <span class="prod-brand">Defender</span>
+            <h3 class="prod-name">Starter - Mother and Pup</h3>
+            <span class="prod-cat">Dog Food</span>
+            <div class="prod-price-box">
+              <span class="prod-price">₹1,450</span>
+              <span class="prod-old-price">₹1,800</span>
+            </div>
+            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'Starter Mother and Pup', price: 1450, image: 'images/Defenderr/Defender-Starter Mother and Pup.png', brand: 'Defender', qty: 1, unit: 'KG'})">
+              <span class="material-symbols-outlined">shopping_bag</span> Add to Cart
+            </button>
           </div>
         </div>
-        <div class="prod-card reveal">
-          <div class="prod-img" style="height: 240px; background: none; overflow: hidden; padding: 0;">
-            <img src="images/product_cat.png" style="width: 100%; height: 100%; object-fit: cover;"
-              alt="Cat Food Product">
+
+        <!-- 3. Royal Canin -->
+        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=rc1'" style="cursor:pointer;">
+          <div class="card-header-overlay">
+            <div class="brand-icon-mini" style="color:red; font-weight:900;">RC</div>
+            <div class="discount-badge-round">14%<span>OFF</span></div>
+          </div>
+          <div class="prod-img">
+            <img src="images/RoyalCanin/RoyalCanin-puppy-minirange-800g-980.png" alt="Royal Canin Puppy Mini">
           </div>
           <div class="prod-body">
-            <div class="prod-tag">Cat Food</div>
-            <div class="prod-name">Tuna Delight for Cats</div>
-            <div class="prod-price">₹549 <span>₹699</span></div>
-            <button class="prod-btn">Add to Cart</button>
+            <span class="prod-brand" style="color:red;">Royal Canin</span>
+            <h3 class="prod-name">Puppy (Mini Range) 800g</h3>
+            <span class="prod-cat">Dog Food • 800g</span>
+            <div class="prod-price-box">
+              <span class="prod-price">₹980</span>
+              <span class="prod-old-price">₹1,150</span>
+            </div>
+            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'Puppy Mini Range 800g', price: 980, image: 'images/RoyalCanin/RoyalCanin-puppy-minirange-800g-980.png', brand: 'Royal Canin', qty: 1, unit: 'KG'})">
+              <span class="material-symbols-outlined">shopping_bag</span> Add to Cart
+            </button>
           </div>
         </div>
-        <div class="prod-card reveal">
-          <div class="prod-img" style="height: 240px; background: none; overflow: hidden; padding: 0;">
-            <img src="images/product_puppy.png" style="width: 100%; height: 100%; object-fit: cover;"
-              alt="Puppy Product">
+
+        <!-- 4. MIOW -->
+        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=pf15'" style="cursor:pointer;">
+          <div class="card-header-overlay">
+            <div class="brand-icon-mini" style="color:#0077b5;">MW</div>
+            <div class="discount-badge-round">25%<span>OFF</span></div>
+          </div>
+          <div class="prod-img">
+            <img src="images/MIOW/miow-ocean-fish-adult.png" alt="MIOW Ocean Fish Adult">
           </div>
           <div class="prod-body">
-            <div class="prod-tag">Puppy</div>
-            <div class="prod-name">Puppy Growth Formula</div>
-            <div class="prod-price">₹749 <span>₹899</span></div>
-            <button class="prod-btn">Add to Cart</button>
+            <span class="prod-brand" style="color:#0077b5;">MIOW</span>
+            <h3 class="prod-name">Ocean Fish Adult</h3>
+            <span class="prod-cat">Cat Food</span>
+            <div class="prod-price-box">
+              <span class="prod-price">₹899</span>
+              <span class="prod-old-price">₹1,200</span>
+            </div>
+            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'MIOW Ocean Fish Adult', price: 899, image: 'images/MIOW/miow-ocean-fish-adult.png', brand: 'MIOW', qty: 1, unit: 'KG'})">
+              <span class="material-symbols-outlined">shopping_bag</span> Add to Cart
+            </button>
           </div>
         </div>
+
+        <!-- 5. Bairo -->
+        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=pf1'" style="cursor:pointer;">
+          <div class="card-header-overlay">
+            <div class="brand-icon-mini" style="color:#511b15;">BR</div>
+            <div class="discount-badge-round">20%<span>OFF</span></div>
+          </div>
+          <div class="prod-img">
+            <img src="images/Barioo/Bario-Adult EC-Chicken and rice.png" alt="Bairo Adult EC Chicken">
+          </div>
+          <div class="prod-body">
+            <span class="prod-brand" style="color:#511b15;">Bairo</span>
+            <h3 class="prod-name">Adult EC Chicken &amp; Rice</h3>
+            <span class="prod-cat">Dog Food</span>
+            <div class="prod-price-box">
+              <span class="prod-price">₹1,120</span>
+              <span class="prod-old-price">₹1,400</span>
+            </div>
+            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'Bairo Adult EC Chicken & Rice', price: 1120, image: 'images/Barioo/Bario-Adult EC-Chicken and rice.png', brand: 'Bairo', qty: 1, unit: 'KG'})">
+              <span class="material-symbols-outlined">shopping_bag</span> Add to Cart
+            </button>
+          </div>
+        </div>
+
       </div>
+
     </div>
   </section>
 
@@ -1629,56 +1725,85 @@
 
   <!-- ══ FOOTER ═══════════════════════════════════════════════ -->
   <footer>
-    <div style="max-width:1200px;margin:0 auto;">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a class="logo" href="#" style="display:inline-flex">
-            <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="white"><path d="M197-640q-41 0-70-29.5t-29-70.5q0-42 29-71t70-29q41 0 71 29t70 29q41 0 71-29t30-71q0-41-30-70.5T197-640Zm566 0q-42 0-71-29.5t-29-70.5q0-42 29-71t71-29q42 0 71 29t29 71q0 41-29 70.5T763-640ZM350-736q-34 0-58.5-24t-24.5-59q0-34 24.5-58.5T350-902q35 0 59.5 24.5T434-819q0 35-24.5 59T350-736Zm260 0q-35 0-59.5-24t-24.5-59q0-34 24.5-58.5T610-902q35 0 59 24.5T693-819q0 35-24 59t-59 24ZM480-120q-76 0-143.5-20T215-201q-45-28-59-96t-5-121q7-41 26.5-74.5T226-554q57-41 126.5-44T480-575q58-23 127.5-20T734-554q28 28 47.5 61.5T808-418q9 53-5 121t-59 96q-54 41-121.5 61T480-120Z"/></svg></div>
-            <span class="logo-text">Maya<span>Pets</span></span>
-          </a>
-          <p>Premium pet nutrition crafted with love and science. Trusted by over 2 million pet owners across India.</p>
-          <div class="footer-social">
-            <a class="social-btn" href="#">📘</a>
-            <a class="social-btn" href="#">📸</a>
-            <a class="social-btn" href="#">🐦</a>
-            <a class="social-btn" href="#">▶️</a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>Products</h4>
-          <ul>
-            <li><a href="#">Dog Food</a></li>
-            <li><a href="#">Cat Food</a></li>
-            <li><a href="#">Puppy Range</a></li>
-            <li><a href="#">Treats & Snacks</a></li>
-            <li><a href="#">Supplements</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Our Story</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Press</a></li>
-            <li><a href="#">Blog</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Support</h4>
-          <ul>
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Track Order</a></li>
-            <li><a href="#">Returns</a></li>
-            <li><a href="#">Vet Helpline</a></li>
-            <li><a href="#">Contact Us</a></li>
-          </ul>
+    <div class="footer-inner">
+      <div class="footer-col" style="flex: 1.5;">
+        <a class="logo" href="index.html" style="display:inline-flex; margin-bottom: 20px;">
+          <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
+          <span class="logo-text">Maya<span>Pets</span></span>
+        </a>
+        <p>Premium pet nutrition crafted with love and science. Trusted by over 2 million pet owners across India. We deliver health and happiness to your doorstep.</p>
+        <div class="footer-social-pill" style="justify-content: flex-start; margin-top: 20px;">
+          <a href="#" class="social-pill-btn fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-pill-btn ig"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-pill-btn ln"><i class="fab fa-linkedin-in"></i></a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <span>@ 2026 FortuMars AI Technologies and Business Solutions Pvt. Ltd. All rights are reserved.</span>
-        <span class="footer-badge">🔒 SSL Secured</span>
-        <span>Privacy · Terms · Sitemap</span>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="pet-food.html">Pet Food</a></li>
+          <li><a href="pharmacy.html">Pharmacy</a></li>
+          <li><a href="accessories.html">Accessories</a></li>
+          <li><a href="grooming.html">Grooming</a></li>
+          <li><a href="#">Treats & Snacks</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about-us.html">About Us</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Vet Helpline</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Card -->
+      <div class="footer-contact-card">
+        <div class="contact-item">
+          <span class="material-symbols-outlined">location_on</span>
+          <div class="contact-text">17A, South Mada Street, Kolathur,<br>Chennai - 600099.</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">call</span>
+          <div class="contact-text">Helpline: +91 9840825735</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">mail</span>
+          <div class="contact-text">customercare@taiyoogroup.in</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">language</span>
+          <div class="contact-text">www.taiyoogroup.in</div>
+        </div>
+
+        <div class="qr-section">
+          <img src="images/qr_code.png" class="qr-code-img" alt="Scan to Follow">
+          <div class="qr-tagline">Scan the QR Code to Follow us</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 MayaPets Premium. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <span>Privacy Policy</span>
+        <span>Terms of Service</span>
+        <span>Sitemap</span>
       </div>
     </div>
   </footer>
@@ -1703,7 +1828,168 @@
         ? '0 4px 30px rgba(0,0,0,.12)'
         : '0 2px 24px rgba(0,0,0,.07)';
     });
+
+    // ─── HERO CAROUSEL LOGIC ───────────────────────────────────
+    const track = document.getElementById('carouselTrack');
+    const cards = Array.from(track.children);
+    const indicators = document.getElementById('carouselIndicators');
+    const dots = Array.from(indicators.children);
+    
+    let currentIndex = 0;
+    let isDragging = false;
+    let startPos = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+    let animationID = 0;
+    let autoScrollInterval;
+    const intervalTime = 4000;
+
+    function initCarousel() {
+      startAutoScroll();
+      updateDots();
+      
+      // Touch events
+      track.addEventListener('touchstart', touchStart);
+      track.addEventListener('touchend', touchEnd);
+      track.addEventListener('touchmove', touchMove);
+      
+      // Mouse events
+      track.addEventListener('mousedown', touchStart);
+      track.addEventListener('mouseup', touchEnd);
+      track.addEventListener('mouseleave', touchEnd);
+      track.addEventListener('mousemove', touchMove);
+      
+      // Prevent context menu
+      window.oncontextmenu = function(e) {
+        if(e.target.closest('.hero-carousel')) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }
+    }
+
+    function touchStart(event) {
+      isDragging = true;
+      startPos = getPositionX(event);
+      animationID = requestAnimationFrame(animation);
+      track.classList.add('grabbing');
+      pauseAutoScroll();
+    }
+
+    function touchEnd() {
+      isDragging = false;
+      cancelAnimationFrame(animationID);
+      const movedBy = currentTranslate - prevTranslate;
+
+      if (movedBy < -100 && currentIndex < cards.length - 1) currentIndex += 1;
+      if (movedBy > 100 && currentIndex > 0) currentIndex -= 1;
+      
+      // Infinite loop back logic
+      if (movedBy < -100 && currentIndex === cards.length - 1) {
+          // Stay on last, then it will auto-loop back via autoScroll
+      }
+
+      setPositionByIndex();
+      track.classList.remove('grabbing');
+      resumeAutoScroll();
+    }
+
+    function touchMove(event) {
+      if (isDragging) {
+        const currentPosition = getPositionX(event);
+        currentTranslate = prevTranslate + currentPosition - startPos;
+      }
+    }
+
+    function getPositionX(event) {
+      return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+    }
+
+    function animation() {
+      setSliderTransform();
+      if (isDragging) requestAnimationFrame(animation);
+    }
+
+    function setSliderTransform() {
+      track.style.transform = `translateX(${currentTranslate}px)`;
+    }
+
+    function setPositionByIndex() {
+      currentTranslate = currentIndex * -window.innerWidth * 0.9; // Adjusted for padding
+      // Better way: use card width
+      const cardWidth = cards[0].offsetWidth;
+      currentTranslate = currentIndex * -cardWidth;
+      prevTranslate = currentTranslate;
+      setSliderTransform();
+      updateActiveCard();
+      updateDots();
+    }
+
+    function updateActiveCard() {
+      cards.forEach((card, index) => {
+        card.classList.toggle('active', index === currentIndex);
+      });
+    }
+
+    function updateDots() {
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+        const progress = dot.querySelector('.caro-dot-progress');
+        progress.style.transition = 'none';
+        progress.style.width = '0%';
+        
+        if (index === currentIndex) {
+          setTimeout(() => {
+            progress.style.transition = `width ${intervalTime}ms linear`;
+            progress.style.width = '100%';
+          }, 50);
+        }
+      });
+    }
+
+    function nextSlide() {
+      if (currentIndex < cards.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      setPositionByIndex();
+    }
+
+    function startAutoScroll() {
+      autoScrollInterval = setInterval(nextSlide, intervalTime);
+    }
+
+    function pauseAutoScroll() {
+      clearInterval(autoScrollInterval);
+    }
+
+    function resumeAutoScroll() {
+      pauseAutoScroll();
+      startAutoScroll();
+    }
+
+    // Dot navigation
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        currentIndex = index;
+        setPositionByIndex();
+        resumeAutoScroll();
+      });
+    });
+
+    // Resize handler
+    window.addEventListener('resize', setPositionByIndex);
+
+    initCarousel();
+
+    // Typing animation removed - now in products.js for site-wide use
+
+    // ─── CART LOGIC ──────────────────────────────────────────
+    // All cart state now managed in cart.js
   </script>
+  <script src="cart.js"></script>
 </body>
 
 </html>

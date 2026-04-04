@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - MayaPets</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #fcfcfc; }
+  </style>
+</head>
+<body onload="initPDP()">
+
+  <!-- ══ NAVIGATION ════════════════════════════════════════════ -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
+        <span class="logo-text">Maya<span>Pets</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="pet-food.html">Pet Food</a>
+        <a href="pharmacy.html">Pharmacy</a>
+        <a href="accessories.html">Accessories</a>
+        <a href="grooming.html">Grooming</a>
+        <a href="about-us.html">About Us</a>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+        <a href="cart.html" class="nav-icon-btn" style="text-decoration:none" title="Cart">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    const app = initializeApp({
+      apiKey: "AIzaSyBTDb-RiuIKmXC4MJJQgSidWbLylNO-NHw",
+      authDomain: "mayapetsproject.firebaseapp.com",
+      projectId: "mayapetsproject",
+      storageBucket: "mayapetsproject.firebasestorage.app",
+      messagingSenderId: "988493888178",
+      appId: "1:988493888178:web:a1984309337782333a27ab"
+    });
+    const auth = getAuth(app);
+    const btn = document.getElementById('authBtn');
+    if (btn) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const name = user.displayName || user.email;
+          const initial = name.charAt(0).toUpperCase();
+          btn.innerHTML = `<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;">${initial}</div>`;
+          btn.title = `Hi ${name} — View Account`;
+          btn.onclick = () => window.location.href = 'profile.html';
+        } else {
+          btn.innerHTML = `<span class="material-symbols-outlined">person</span>`;
+          btn.title = 'Sign In';
+          btn.onclick = () => window.location.href = 'login.html';
+        }
+      });
+    }
+  </script>
+
+  <!-- ══ MAIN CONTENT ══════════════════════════════════════════ -->
+  <main class="pdp-container" id="pdpMain">
+    <!-- Content injected via JS -->
+    <div class="pdp-gallery">
+      <div class="skeleton" style="height: 500px; border-radius: 32px;"></div>
+    </div>
+    <div class="pdp-info">
+      <div class="skeleton" style="height: 20px; width: 100px; margin-bottom: 20px;"></div>
+      <div class="skeleton" style="height: 40px; width: 300px; margin-bottom: 20px;"></div>
+      <div class="skeleton" style="height: 30px; width: 150px; margin-bottom: 40px;"></div>
+      <div class="skeleton" style="height: 100px; width: 100%; margin-bottom: 40px;"></div>
+    </div>
+  </main>
+
+  <!-- ══ TABS SECTION ══════════════════════════════════════════ -->
+  <section class="pdp-tabs-wrapper">
+    <div class="nav-container">
+      <div class="tabs-nav">
+        <div class="tab-link active" onclick="switchTab(event, 'descTab')">Description</div>
+        <div class="tab-link" onclick="switchTab(event, 'aboutTab')">About Product</div>
+        <div class="tab-link" onclick="switchTab(event, 'reviewsTab')">Reviews</span></div>
+      </div>
+
+      <div id="descTab" class="tab-content active">
+        <div id="pdpFullDesc" style="max-width: 800px; line-height: 1.8; color: #555;"></div>
+      </div>
+
+      <div id="aboutTab" class="tab-content">
+        <div id="pdpFeatures" style="max-width: 800px;"></div>
+      </div>
+
+      <div id="reviewsTab" class="tab-content">
+        <div style="max-width: 800px;">
+          <div id="reviewsList"></div>
+          
+          <div class="review-form-container">
+            <h3>Write a Review</h3>
+            <div style="margin-bottom: 15px;">
+              <span style="font-weight: 700; display: block; margin-bottom: 8px;">Your Rating</span>
+              <div id="starInput" style="color: var(--yellow); cursor: pointer; font-size: 24px;">
+                <span class="material-symbols-outlined" onclick="setStarRating(1)">star</span>
+                <span class="material-symbols-outlined" onclick="setStarRating(2)">star</span>
+                <span class="material-symbols-outlined" onclick="setStarRating(3)">star</span>
+                <span class="material-symbols-outlined" onclick="setStarRating(4)">star</span>
+                <span class="material-symbols-outlined" onclick="setStarRating(5)">star</span>
+              </div>
+            </div>
+            <input type="text" id="reviewerName" class="form-input" placeholder="Your Name">
+            <textarea id="reviewText" class="form-input" rows="4" placeholder="Share your experience..."></textarea>
+            <button class="btn-primary" onclick="submitReview()">Submit Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col" style="flex: 1.5;">
+        <a class="logo" href="index.html" style="display:inline-flex; margin-bottom: 20px;">
+          <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
+          <span class="logo-text">Maya<span>Pets</span></span>
+        </a>
+        <p>Premium pet nutrition crafted with love and science. Trusted by over 2 million pet owners across India. We deliver health and happiness to your doorstep.</p>
+        <div class="footer-social-pill" style="justify-content: flex-start; margin-top: 20px;">
+          <a href="#" class="social-pill-btn fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-pill-btn ig"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-pill-btn ln"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="pet-food.html">Pet Food</a></li>
+          <li><a href="pharmacy.html">Pharmacy</a></li>
+          <li><a href="accessories.html">Accessories</a></li>
+          <li><a href="grooming.html">Grooming</a></li>
+          <li><a href="#">Treats & Snacks</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about-us.html">About Us</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Vet Helpline</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Card -->
+      <div class="footer-contact-card">
+        <div class="contact-item">
+          <span class="material-symbols-outlined">location_on</span>
+          <div class="contact-text">17A, South Mada Street, Kolathur,<br>Chennai - 600099.</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">call</span>
+          <div class="contact-text">Helpline: +91 9840825735</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">mail</span>
+          <div class="contact-text">customercare@taiyoogroup.in</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">language</span>
+          <div class="contact-text">www.taiyoogroup.in</div>
+        </div>
+
+        <div class="qr-section">
+          <img src="images/qr_code.png" class="qr-code-img" alt="Scan to Follow">
+          <div class="qr-tagline">Scan the QR Code to Follow us</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 MayaPets Premium. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <span>Privacy Policy</span>
+        <span>Terms of Service</span>
+        <span>Sitemap</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ SCRIPTS ═══════════════════════════════════════════════ -->
+  <script src="cart.js"></script>
+  <script src="products.js"></script>
+  <script>
+    let currentProduct = null;
+    let selectedWeightIndex = 0;
+    let selectedRating = 5;
+
+    function initPDP() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (!id) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      currentProduct = getStoredProducts().find(p => p.id === id);
+      if (!currentProduct) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      document.title = `${currentProduct.name} - MayaPets`;
+      renderProductInfo();
+      renderReviews();
+      updateCartBadge();
+    }
+
+    function renderProductInfo() {
+      const container = document.getElementById('pdpMain');
+      const hasWeights = currentProduct.weightOptions && currentProduct.weightOptions.length > 0;
+      
+      const price = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].p : currentProduct.price;
+      const oldPrice = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].o : currentProduct.oldPrice;
+      const discount = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].d : currentProduct.discount;
+      const weightLabel = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].w : currentProduct.cat;
+
+      container.innerHTML = `
+        <div class="pdp-gallery">
+          <div class="pdp-image">
+            <img src="${currentProduct.image}" alt="${currentProduct.name}">
+          </div>
+        </div>
+        <div class="pdp-info">
+          <span class="pdp-brand">${currentProduct.brand}</span>
+          <h1 class="pdp-title">${currentProduct.name} ${hasWeights ? `(${weightLabel})` : ''}</h1>
+          
+          <div class="pdp-price-box">
+            <span class="pdp-price">₹${price.toLocaleString()}</span>
+            <span class="pdp-old-price">₹${oldPrice.toLocaleString()}</span>
+            <span class="pdp-discount">${discount} OFF</span>
+          </div>
+
+          ${hasWeights ? renderWeightSelector() : ''}
+
+          <div style="margin-top: 40px; display: flex; gap: 20px;">
+            <button class="btn-primary" style="padding: 18px 40px; font-size: 1.1rem;" onclick="handleAddToCart()">
+              <span class="material-symbols-outlined">shopping_cart</span> Add to Cart
+            </button>
+            <button class="btn-secondary" style="padding: 18px 40px; font-size: 1.1rem;">
+              <span class="material-symbols-outlined">favorite</span>
+            </button>
+          </div>
+
+          <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 16px; border-left: 4px solid var(--blue);">
+            <p style="font-size: 0.95rem; color: #444; line-height: 1.6;">
+              <span style="font-weight: 800; color: var(--blue);">FREE DELIVERY</span> on orders above ₹499. <br>
+              Delivered within <span style="font-weight: 700;">2-3 business days</span>.
+            </p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('pdpFullDesc').innerText = currentProduct.desc;
+      document.getElementById('pdpFeatures').innerHTML = `
+        <ul style="list-style: none; padding: 0;">
+          ${currentProduct.features.split('|').map(f => `
+            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 12px; font-weight: 600;">
+              <span class="material-symbols-outlined" style="color: var(--blue);">check_circle</span>
+              ${f.trim()}
+            </li>
+          `).join('')}
+        </ul>
+      `;
+    }
+
+    function renderWeightSelector() {
+      return `
+        <label class="weight-selector-label">Select Weight: <span>${currentProduct.weightOptions[selectedWeightIndex].w}</span></label>
+        <div class="weight-selector-grid">
+          ${currentProduct.weightOptions.map((opt, idx) => `
+            <div class="weight-card ${selectedWeightIndex === idx ? 'active' : ''}" onclick="selectWeight(${idx})">
+              <span class="weight-card-value">${opt.w}</span>
+              <span class="weight-card-price">₹${opt.p.toLocaleString()}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function selectWeight(index) {
+      selectedWeightIndex = index;
+      renderProductInfo();
+    }
+
+    function handleAddToCart() {
+      const hasWeights = currentProduct.weightOptions && currentProduct.weightOptions.length > 0;
+      const price = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].p : currentProduct.price;
+      const weightLabel = hasWeights ? currentProduct.weightOptions[selectedWeightIndex].w : currentProduct.cat;
+      
+      addToCart({
+        name: `${currentProduct.name} (${weightLabel})`,
+        price: price,
+        image: currentProduct.image,
+        brand: currentProduct.brand,
+        qty: 1,
+        unit: 'Qty'
+      });
+      
+      // Optional visual feedback
+      const btn = event.currentTarget;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Added!';
+      btn.style.background = '#00c853';
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+      }, 2000);
+    }
+
+    function switchTab(event, tabId) {
+      document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function renderReviews() {
+      const reviews = getProductReviews(currentProduct.id);
+      const list = document.getElementById('reviewsList');
+      if (reviews.length === 0) {
+        list.innerHTML = '<p style="color: #666; margin-bottom: 30px;">No reviews yet. Be the first to share your thoughts!</p>';
+        return;
+      }
+
+      list.innerHTML = reviews.map(r => `
+        <div class="review-item">
+          <img src="${r.avatar || `https://ui-avatars.com/api/?name=${r.user}&background=random`}" class="user-avatar" alt="${r.user}">
+          <div class="review-body">
+            <div class="review-meta">
+              <span class="user-name">${r.user}</span>
+              <span class="review-date">${r.date}</span>
+            </div>
+            <div class="star-rating">
+              ${Array(5).fill(0).map((_, i) => `<span class="material-symbols-outlined" style="font-size: 18px; ${i < r.rating ? 'font-variation-settings: \'FILL\' 1;' : ''}">star</span>`).join('')}
+            </div>
+            <p style="color: #555; line-height: 1.6;">${r.body}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setStarRating(rating) {
+      selectedRating = rating;
+      const stars = document.getElementById('starInput').children;
+      for (let i = 0; i < stars.length; i++) {
+        stars[i].style.fontVariationSettings = i < rating ? "'FILL' 1" : "'FILL' 0";
+      }
+    }
+
+    function submitReview() {
+      const name = document.getElementById('reviewerName').value;
+      const body = document.getElementById('reviewText').value;
+
+      if (!name || !body) {
+        alert('Please fill in your name and comment.');
+        return;
+      }
+
+      const newReview = {
+        user: name,
+        rating: selectedRating,
+        date: 'Just now',
+        body: body,
+        avatar: null
+      };
+
+      saveProductReview(currentProduct.id, newReview);
+      renderReviews();
+
+      // Clear form
+      document.getElementById('reviewerName').value = '';
+      document.getElementById('reviewText').value = '';
+      setStarRating(5);
+      
+      alert('Thank you for your review!');
+    }
+  </script>
+
+</body>
+</html>

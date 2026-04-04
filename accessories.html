@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Accessories — MayaPets Premium Gear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: var(--gray); color: var(--black); line-height: 1.6; }
+    header { padding: 60px 5vw 40px; text-align: center; }
+    h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 10px; }
+    .subtitle { color: #666; font-size: 1.1rem; }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px; padding: 0 5vw 80px; max-width: 1300px; margin: 0 auto;
+    }
+    footer { background: #111; color: white; padding: 40px 5vw; text-align: center; font-size: 0.9rem; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <a class="logo" href="index.html">
+        <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
+        <span class="logo-text">Maya<span>Pets</span></span>
+      </a>
+
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" class="search-bar" id="typingSearchBar" placeholder="Search for products, brands...">
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="pet-food.html">Pet Food</a></li>
+        <li><a href="pharmacy.html">Pharmacy</a></li>
+        <li><a href="accessories.html" style="color:var(--blue)">Accessories</a></li>
+        <li><a href="grooming.html">Grooming</a></li>
+        <li><a href="about-us.html">About Us</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+        <a href="cart.html" class="nav-icon-btn" style="text-decoration:none" title="Cart">
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    const app = initializeApp({
+      apiKey: "AIzaSyBTDb-RiuIKmXC4MJJQgSidWbLylNO-NHw",
+      authDomain: "mayapetsproject.firebaseapp.com",
+      projectId: "mayapetsproject",
+      storageBucket: "mayapetsproject.firebasestorage.app",
+      messagingSenderId: "988493888178",
+      appId: "1:988493888178:web:a1984309337782333a27ab"
+    });
+    const auth = getAuth(app);
+    const btn = document.getElementById('authBtn');
+    if (btn) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const name = user.displayName || user.email;
+          const initial = name.charAt(0).toUpperCase();
+          btn.innerHTML = `<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;">${initial}</div>`;
+          btn.title = `Hi ${name} — View Account`;
+          btn.onclick = () => window.location.href = 'profile.html';
+        } else {
+          btn.innerHTML = `<span class="material-symbols-outlined">person</span>`;
+          btn.title = 'Sign In';
+          btn.onclick = () => window.location.href = 'login.html';
+        }
+      });
+    }
+  </script>
+
+
+  <header>
+    <h1>Pet Accessories</h1>
+    <p class="subtitle">Elevate your pet's lifestyle with premium gear and toys.</p>
+  </header>
+
+  <div class="products-grid" id="productsGrid">
+    <!-- Products will be injected by JS -->
+  </div>
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col" style="flex: 1.5;">
+        <a class="logo" href="index.html" style="display:inline-flex; margin-bottom: 20px;">
+          <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
+          <span class="logo-text">Maya<span>Pets</span></span>
+        </a>
+        <p>Premium pet nutrition crafted with love and science. Trusted by over 2 million pet owners across India. We deliver health and happiness to your doorstep.</p>
+        <div class="footer-social-pill" style="justify-content: flex-start; margin-top: 20px;">
+          <a href="#" class="social-pill-btn fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-pill-btn ig"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-pill-btn ln"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="pet-food.html">Pet Food</a></li>
+          <li><a href="pharmacy.html">Pharmacy</a></li>
+          <li><a href="accessories.html">Accessories</a></li>
+          <li><a href="grooming.html">Grooming</a></li>
+          <li><a href="#">Treats & Snacks</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about-us.html">About Us</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" style="min-width: 150px;">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Vet Helpline</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Card -->
+      <div class="footer-contact-card">
+        <div class="contact-item">
+          <span class="material-symbols-outlined">location_on</span>
+          <div class="contact-text">17A, South Mada Street, Kolathur,<br>Chennai - 600099.</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">call</span>
+          <div class="contact-text">Helpline: +91 9840825735</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">mail</span>
+          <div class="contact-text">customercare@taiyoogroup.in</div>
+        </div>
+        <div class="contact-item">
+          <span class="material-symbols-outlined">language</span>
+          <div class="contact-text">www.taiyoogroup.in</div>
+        </div>
+
+        <div class="qr-section">
+          <img src="images/qr_code.png" class="qr-code-img" alt="Scan to Follow">
+          <div class="qr-tagline">Scan the QR Code to Follow us</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 MayaPets Premium. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <span>Privacy Policy</span>
+        <span>Terms of Service</span>
+        <span>Sitemap</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="cart.js"></script>
+  <script src="products.js"></script>
+  <script>
+    function init() {
+      const products = getStoredProducts().filter(p => p.category === 'Accessories');
+      renderProducts(products);
+      updateCartBadge();
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('productsGrid');
+      if (products.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><h2>No products found</h2><p>Check back later!</p></div>';
+        return;
+      }
+
+      grid.innerHTML = products.map(p => `
+        <div class="prod-card" onclick="showProductDetail('${p.id}')">
+          <div class="card-header-overlay">
+            <div class="brand-icon-mini">${p.brand.substring(0,2).toUpperCase()}</div>
+            <div class="discount-badge-round">${p.discount}${p.discount.includes('%') ? '<span>OFF</span>' : ''}</div>
+          </div>
+          <div class="prod-img"><img src="${p.image}" alt="${p.name}"></div>
+          <div class="prod-body">
+            <span class="prod-brand">${p.brand}</span>
+            <h3 class="prod-name">${p.name}</h3>
+            <span class="prod-cat">${p.cat}</span>
+            <div class="prod-price-box">
+              <span class="prod-price">₹${p.price.toLocaleString()}</span>
+              <span class="prod-old-price">₹${p.oldPrice.toLocaleString()}</span>
+            </div>
+            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: '${p.name}', price: ${p.price}, image: '${p.image}', brand: '${p.brand}', qty: 1, unit: '${p.unit}'})">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
+</body>
+</html>

@@ -14,7 +14,16 @@ function saveCart(cart) {
   window.dispatchEvent(new Event('cartUpdated'));
 }
 
+function checkAuth() {
+  if (!window.isUserLoggedIn) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
 function addToCart(product) {
+  if (!checkAuth()) return;
   const cart = getCart();
   // Ensure qty is a valid number
   const qtyToAdd = parseInt(product.qty) || 1;
@@ -176,8 +185,12 @@ function renderModalInner() {
         </div>
 
         <div class="modal-actions" style="display:flex; gap:12px; margin-top: auto;">
-          <button class="btn-buy-now" onclick="handleBuyNow()" style="flex:1; background:var(--yellow); color:var(--black); border:none; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; font-size:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.05);">Buy Now</button>
-          <button class="btn-add-detail" onclick="handleModalAddToCart()" style="flex:1; background:var(--blue); color:white; border:none; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; font-size:1rem; box-shadow:0 8px 20px rgba(4,151,177,0.15);">Add to Cart</button>
+          <button class="btn-buy-now ${!window.isUserLoggedIn ? 'auth-required' : ''}" onclick="handleBuyNow()" style="flex:1; background:var(--yellow); color:var(--black); border:none; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; font-size:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.05);">
+            ${!window.isUserLoggedIn ? 'Sign In to Buy' : 'Buy Now'}
+          </button>
+          <button class="btn-add-detail ${!window.isUserLoggedIn ? 'auth-required' : ''}" onclick="handleModalAddToCart()" style="flex:1; background:var(--blue); color:white; border:none; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; font-size:1rem; box-shadow:0 8px 20px rgba(4,151,177,0.15);">
+            ${!window.isUserLoggedIn ? 'Sign In to Add' : 'Add to Cart'}
+          </button>
         </div>
       </div>
     </div>
@@ -192,6 +205,7 @@ window.selectModalWeight = function(idx) {
 }
 
 window.handleModalAddToCart = function() {
+  if (!checkAuth()) return;
   if (!currentModalProduct) return;
   const p = currentModalProduct;
   const weightSuffix = (p.weightOptions && p.weightOptions[p.selectedWeightIndex]) ? ` (${p.weightOptions[p.selectedWeightIndex].w})` : '';
@@ -226,6 +240,7 @@ function handleAddToCart() {
 }
 
 function handleBuyNow() {
+  if (!checkAuth()) return;
   if (!currentModalProduct) return;
   const p = currentModalProduct;
   const weightSuffix = (p.weightOptions && p.weightOptions[p.selectedWeightIndex]) ? ` (${p.weightOptions[p.selectedWeightIndex].w})` : '';

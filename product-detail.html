@@ -25,19 +25,18 @@
       </a>
       <div class="nav-links">
         <a href="pet-food.html">Pet Food</a>
-        <a href="pharmacy.html">Pharmacy</a>
         <a href="accessories.html">Accessories</a>
         <a href="grooming.html">Grooming</a>
         <a href="about-us.html">About Us</a>
       </div>
       <div class="nav-actions">
-        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
-          <span class="material-symbols-outlined">person</span>
-        </button>
         <a href="cart.html" class="nav-icon-btn" style="text-decoration:none" title="Cart">
           <span class="material-symbols-outlined">shopping_bag</span>
           <span class="cart-badge" id="cartBadge">0</span>
         </a>
+        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
+          <span class="material-symbols-outlined">person</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -57,6 +56,7 @@
     const btn = document.getElementById('authBtn');
     if (btn) {
       onAuthStateChanged(auth, (user) => {
+        window.isUserLoggedIn = !!user;
         if (user) {
           const name = user.displayName || user.email;
           const initial = name.charAt(0).toUpperCase();
@@ -68,6 +68,7 @@
           btn.title = 'Sign In';
           btn.onclick = () => window.location.href = 'login.html';
         }
+        if (typeof renderProductInfo === 'function' && currentProduct) renderProductInfo();
       });
     }
   </script>
@@ -148,7 +149,6 @@
         <h4>Products</h4>
         <ul>
           <li><a href="pet-food.html">Pet Food</a></li>
-          <li><a href="pharmacy.html">Pharmacy</a></li>
           <li><a href="accessories.html">Accessories</a></li>
           <li><a href="grooming.html">Grooming</a></li>
           <li><a href="#">Treats & Snacks</a></li>
@@ -273,11 +273,11 @@
           </div>
 
           <div style="margin-top: 30px; display: flex; gap: 16px;">
-            <button class="btn-primary" style="padding: 16px 24px; font-size: 1.05rem; flex:1; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="handleAddToCart(event)">
-              <span class="material-symbols-outlined">shopping_cart</span> Add to Cart
+            <button class="btn-primary ${!window.isUserLoggedIn ? 'auth-required' : ''}" style="padding: 16px 24px; font-size: 1.05rem; flex:1; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="handleAddToCart(event)">
+              <span class="material-symbols-outlined">shopping_cart</span> ${!window.isUserLoggedIn ? 'Sign In to Add' : 'Add to Cart'}
             </button>
-            <button class="btn-secondary" style="padding: 16px 24px; font-size: 1.05rem; flex:1; background:var(--yellow); color:var(--black); border:none; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:800; box-shadow:0 8px 20px rgba(0,0,0,0.05);" onclick="handleBuyNow()">
-              <span class="material-symbols-outlined">flash_on</span> Buy Now
+            <button class="btn-secondary ${!window.isUserLoggedIn ? 'auth-required' : ''}" style="padding: 16px 24px; font-size: 1.05rem; flex:1; background:var(--yellow); color:var(--black); border:none; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:800; box-shadow:0 8px 20px rgba(0,0,0,0.05);" onclick="handleBuyNow()">
+              <span class="material-symbols-outlined">flash_on</span> ${!window.isUserLoggedIn ? 'Sign In to Buy' : 'Buy Now'}
             </button>
           </div>
 

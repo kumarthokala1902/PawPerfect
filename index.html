@@ -1273,20 +1273,19 @@
 
       <ul class="nav-links">
         <li><a href="pet-food.html">Pet Food</a></li>
-        <li><a href="pharmacy.html">Pharmacy</a></li>
         <li><a href="accessories.html">Accessories</a></li>
         <li><a href="grooming.html">Grooming</a></li>
         <li><a href="about-us.html">About Us</a></li>
       </ul>
 
       <div class="nav-actions">
-        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
-          <span class="material-symbols-outlined">person</span>
-        </button>
         <a href="cart.html" class="nav-icon-btn" style="text-decoration:none" title="Cart">
           <span class="material-symbols-outlined">shopping_bag</span>
           <span class="cart-badge" id="cartBadge">0</span>
         </a>
+        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
+          <span class="material-symbols-outlined">person</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -1305,6 +1304,7 @@
     const auth = getAuth(app);
     const btn = document.getElementById('authBtn');
     onAuthStateChanged(auth, (user) => {
+      window.isUserLoggedIn = !!user;
       if (user) {
         const name = user.displayName || user.email;
         const initial = name.charAt(0).toUpperCase();
@@ -1316,7 +1316,21 @@
         btn.title = 'Sign In';
         btn.onclick = () => window.location.href = 'login.html';
       }
+      syncProductButtons();
     });
+
+    function syncProductButtons() {
+      const buyBtns = document.querySelectorAll('.prod-btn');
+      buyBtns.forEach(b => {
+        if (window.isUserLoggedIn) {
+          b.classList.remove('auth-required');
+          b.innerText = 'Add to Cart';
+        } else {
+          b.classList.add('auth-required');
+          b.innerText = 'Sign In to Add';
+        }
+      });
+    }
   </script>
 
   <script src="products.js"></script>
@@ -1339,18 +1353,6 @@
           </div>
         </div>
 
-        <!-- Card 2: Pharmacy -->
-        <div class="carousel-card">
-          <div class="card-content">
-            <span class="card-badge">Flat 15% Off</span>
-            <h1 class="card-title">Pharmacy</h1>
-            <p class="card-subtitle">Expert pet healthcare and wellness essentials delivered to your doorstep.</p>
-            <a href="#cta" class="btn-caro">Consult Now</a>
-          </div>
-          <div class="card-bg">
-            <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=1200&q=80" alt="Pet Pharmacy">
-          </div>
-        </div>
 
         <!-- Card 3: Accessories -->
         <div class="carousel-card">
@@ -1509,7 +1511,7 @@
             <div class="discount-badge-round">25%<span>OFF</span></div>
           </div>
           <div class="prod-img">
-            <img src="images/MIOW/miow-ocean-fish-adult.png" alt="MIOW Ocean Fish Adult">
+            <img src="images/MIOW/miow-ocean-fish-now.png" alt="MIOW Ocean Fish Adult">
           </div>
           <div class="prod-body">
             <span class="prod-brand" style="color:#0077b5;">MIOW</span>
@@ -1519,7 +1521,7 @@
               <span class="prod-price">₹899</span>
               <span class="prod-old-price">₹1,200</span>
             </div>
-            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'MIOW Ocean Fish Adult', price: 899, image: 'images/MIOW/miow-ocean-fish-adult.png', brand: 'MIOW', qty: 1, unit: 'KG'})">
+            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'MIOW Ocean Fish Adult', price: 899, image: 'images/MIOW/miow-ocean-fish-now.png', brand: 'MIOW', qty: 1, unit: 'KG'})">
               <span class="material-symbols-outlined">shopping_bag</span> Add to Cart
             </button>
           </div>
@@ -1744,7 +1746,6 @@
         <h4>Products</h4>
         <ul>
           <li><a href="pet-food.html">Pet Food</a></li>
-          <li><a href="pharmacy.html">Pharmacy</a></li>
           <li><a href="accessories.html">Accessories</a></li>
           <li><a href="grooming.html">Grooming</a></li>
           <li><a href="#">Treats & Snacks</a></li>

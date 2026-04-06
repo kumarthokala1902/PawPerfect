@@ -34,7 +34,7 @@
     .timeline { display:flex; justify-content:space-between; position:relative; margin: 40px 0 20px; }
     .timeline::before { content:''; position:absolute; top:20px; left:0; right:0; height:4px; background:#e0e0e0; z-index:1; border-radius:50px; }
     
-    .timeline-step { position:relative; z-index:2; text-align:center; width:25%; }
+    .timeline-step { position:relative; z-index:2; text-align:center; width:20%; }
     .timeline-icon { width:44px; height:44px; background:#e0e0e0; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-weight:bold; transition:0.3s; border:4px solid white; box-shadow:0 0 0 1px #e0e0e0; }
     .timeline-label { font-size:0.85rem; font-weight:700; color:#888; }
     .timeline-date { font-size:0.75rem; color:#aaa; margin-top:4px; }
@@ -68,6 +68,51 @@
 
     #pageLoading { text-align: center; padding: 100px 20px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PRINT / PDF INVOICE STYLES ─────────────────────── */
+    @media print {
+      /* Hide all website chrome */
+      header, .btn-back-profile, .page-title > div:last-child,
+      .card:first-of-type /* tracking card */ { display: none !important; }
+
+      body { background: white !important; font-family: 'Arial', sans-serif; color: #000; }
+      .page-container { max-width: 100%; margin: 0; padding: 0 20px; }
+
+      /* Invoice Header */
+      .invoice-print-header {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 3px solid #0497B1;
+        padding-bottom: 20px;
+        margin-bottom: 24px;
+      }
+      .invoice-print-header .brand-name { font-size: 1.8rem; font-weight: 900; color: #0497B1; }
+      .invoice-print-header .brand-sub { font-size: 0.85rem; color: #555; margin-top: 4px; }
+      .invoice-print-header .invoice-label { text-align: right; }
+      .invoice-print-header .invoice-label h2 { font-size: 1.4rem; font-weight: 900; margin: 0; text-transform: uppercase; letter-spacing: 2px; color: #111; }
+      .invoice-print-header .invoice-label p { font-size: 0.85rem; color: #555; margin: 4px 0 0; }
+
+      /* Remove card decoration for print */
+      .card { box-shadow: none !important; border: 1px solid #ddd !important; border-radius: 8px !important; padding: 20px !important; margin-bottom: 16px !important; break-inside: avoid; }
+      .card h2 { font-size: 1rem !important; border-bottom: 1px solid #eee !important; }
+
+      /* Hide tracking timeline in print */
+      #trackingTimeline, .timeline, .timeline-progress { display: none !important; }
+      .card:has(#trackingTimeline) { display: none !important; }
+
+      .details-grid { grid-template-columns: 1fr 1fr; }
+      .order-summary-box { background: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      /* Hide item images in print to save space */
+      .item-img { display: none; }
+
+      /* Page setup */
+      @page { margin: 15mm; size: A4; }
+    }
+
+    /* This is hidden on screen but shown on print */
+    .invoice-print-header { display: none; }
   </style>
 </head>
 <body>
@@ -95,9 +140,22 @@
         <p id="displayOrderId">Loading...</p>
       </div>
       <div>
-        <button class="btn-outline" style="border:1.5px solid #ddd; background:white; cursor:pointer; padding:10px 20px; border-radius:10px; font-weight:600; font-family:inherit; color:#444;" onclick="window.print()">
-          <span class="material-symbols-outlined" style="font-size:18px; vertical-align:text-bottom;">print</span> Print Invoice
+        <button class="btn-outline" id="printInvoiceBtn" style="border:1.5px solid #0497B1; background:white; cursor:pointer; padding:10px 20px; border-radius:10px; font-weight:700; font-family:inherit; color:#0497B1; display:flex; align-items:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='#0497B1';this.style.color='white'" onmouseout="this.style.background='white';this.style.color='#0497B1'" onclick="printInvoice()">
+          <span class="material-symbols-outlined" style="font-size:18px;">download</span> Download Invoice
         </button>
+      </div>
+    </div>
+
+    <!-- PRINT INVOICE HEADER (hidden on screen, shown in print) -->
+    <div class="invoice-print-header" id="invoicePrintHeader">
+      <div>
+        <div class="brand-name">🐾 MayaPets</div>
+        <div class="brand-sub">Premium Pet Nutrition & Accessories<br>mayapets.com | support@mayapets.com</div>
+      </div>
+      <div class="invoice-label">
+        <h2>Invoice</h2>
+        <p id="printInvoiceDate">Date: —</p>
+        <p id="printInvoiceId">Order: —</p>
       </div>
     </div>
 
@@ -108,23 +166,28 @@
       <div class="timeline" id="trackingTimeline">
         <div class="timeline-progress" id="timelineProgress" style="width:0%;"></div>
         
-        <div class="timeline-step completed" id="stepOrdered">
-          <div class="timeline-icon"><span class="material-symbols-outlined">check</span></div>
+        <div class="timeline-step" id="stepOrdered">
+          <div class="timeline-icon"><span class="material-symbols-outlined" id="iconOrdered">shopping_basket</span></div>
           <div class="timeline-label">Ordered</div>
           <div class="timeline-date" id="dateOrdered">--</div>
         </div>
+        <div class="timeline-step" id="stepConfirmed">
+          <div class="timeline-icon"><span class="material-symbols-outlined" id="iconConfirmed">check_circle</span></div>
+          <div class="timeline-label">Confirmed</div>
+          <div class="timeline-date" id="dateConfirmed">--</div>
+        </div>
         <div class="timeline-step" id="stepShipped">
-          <div class="timeline-icon"><span class="material-symbols-outlined">inventory_2</span></div>
+          <div class="timeline-icon"><span class="material-symbols-outlined" id="iconShipped">inventory_2</span></div>
           <div class="timeline-label">Shipped</div>
           <div class="timeline-date" id="dateShipped">--</div>
         </div>
         <div class="timeline-step" id="stepOut">
-          <div class="timeline-icon"><span class="material-symbols-outlined">directions_car</span></div>
+          <div class="timeline-icon"><span class="material-symbols-outlined" id="iconOut">directions_car</span></div>
           <div class="timeline-label">Out for Delivery</div>
           <div class="timeline-date" id="dateOut">--</div>
         </div>
         <div class="timeline-step" id="stepDelivered">
-          <div class="timeline-icon"><span class="material-symbols-outlined">home</span></div>
+          <div class="timeline-icon"><span class="material-symbols-outlined" id="iconDelivered">home</span></div>
           <div class="timeline-label">Delivered</div>
           <div class="timeline-date" id="dateDelivered">--</div>
         </div>
@@ -207,18 +270,32 @@
       const docRef = doc(db, 'users', user.uid);
       const snap = await getDoc(docRef);
       
+      let baseOrder = null;
       if(snap.exists()) {
-        const orders = snap.data().orders || [];
-        const order = orders.find(o => o.orderId === orderIdToFind);
-        if(order) {
-          renderOrderDetails(order);
-          document.getElementById('pageLoading').style.display = 'none';
-          document.getElementById('detailsContent').style.display = 'block';
-        } else {
-          document.getElementById('pageLoading').innerHTML = '<h2 style="color:red;">Order Not Found</h2>';
+        const ordersFromFB = snap.data().orders || [];
+        baseOrder = ordersFromFB.find(o => o.orderId === orderIdToFind);
+      }
+
+      // Overwrite/Fallback with local admin updates
+      try {
+        const localOrdersRaw = localStorage.getItem('mayaAdminOrders');
+        if (localOrdersRaw) {
+          const localOrders = JSON.parse(localOrdersRaw);
+          const localMatch = localOrders.find(lo => lo.orderId === orderIdToFind);
+          if (localMatch) {
+            baseOrder = localMatch; 
+          }
         }
+      } catch (err) {
+        console.error("Local sync error on order details:", err);
+      }
+
+      if (baseOrder) {
+        renderOrderDetails(baseOrder);
+        document.getElementById('pageLoading').style.display = 'none';
+        document.getElementById('detailsContent').style.display = 'block';
       } else {
-        document.getElementById('pageLoading').innerHTML = '<h2 style="color:red;">User Data Not Found</h2>';
+        document.getElementById('pageLoading').innerHTML = '<h2 style="color:red;">Order Not Found</h2>';
       }
     });
 
@@ -246,29 +323,68 @@
         <p>Status: <strong style="color:var(--green)">Success</strong></p>
       `;
 
-      // Timeline logic (Dummy progression for presentation)
-      const status = o.status.toLowerCase();
+      // Status & Timeline mapping
+      const status = (o.status || 'Pending').toLowerCase();
+      const ts     = o.statusTimestamps || {};
+      
       let progress = 0;
       
+      // Helper to format timestamps from admin panel
+      const fmtTs = (key) => {
+        if (!ts[key]) return '--';
+        const d = new Date(ts[key]);
+        return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      };
+
       document.getElementById('dateOrdered').innerText = formattedDate;
+      document.getElementById('dateConfirmed').innerText = fmtTs('Confirmed') || fmtTs('Processing') || '--';
+      document.getElementById('dateShipped').innerText = fmtTs('Shipped') || '--';
+      document.getElementById('dateOut').innerText = fmtTs('Out for Delivery') || '--';
+      document.getElementById('dateDelivered').innerText = fmtTs('Delivered') || '--';
 
-      if(status === 'ordered') {
-        progress = 12;
-        document.getElementById('stepShipped').classList.add('active');
-        document.getElementById('dateShipped').innerHTML = '<i>Processing</i>';
-      } else if (status === 'shipped') {
-        progress = 50;
-        document.getElementById('stepShipped').classList.add('completed');
-        document.getElementById('stepShipped').classList.remove('active');
-        document.getElementById('stepOut').classList.add('active');
-      } else if (status === 'delivered') {
-        progress = 100;
-        document.getElementById('stepShipped').classList.add('completed');
-        document.getElementById('stepOut').classList.add('completed');
-        document.getElementById('stepDelivered').classList.add('completed');
+      const steps = ['ordered', 'confirmed', 'shipped', 'out', 'delivered'];
+      const mark = (id, state) => {
+        const el = document.getElementById('step' + id.charAt(0).toUpperCase() + id.slice(1));
+        if (!el) return;
+        el.classList.remove('active', 'completed');
+        if (state) el.classList.add(state);
+      };
+
+      if (status === 'cancelled') {
+        document.getElementById('trackingTimeline').innerHTML = `
+          <div style="background:rgba(239,68,68,0.1); color:var(--red); padding:20px; border-radius:12px; text-align:center; width:100%; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <span class="material-symbols-outlined">cancel</span> This order has been cancelled.
+          </div>`;
+      } else {
+        // Status Logic
+        if (status === 'pending' || status === 'ordered') {
+          progress = 0;
+          mark('ordered', 'active');
+        } else if (status === 'confirmed' || status === 'processing') {
+          progress = 25;
+          mark('ordered', 'completed');
+          mark('confirmed', 'active');
+        } else if (status === 'shipped') {
+          progress = 50;
+          mark('ordered', 'completed');
+          mark('confirmed', 'completed');
+          mark('shipped', 'active');
+        } else if (status === 'out for delivery') {
+          progress = 75;
+          mark('ordered', 'completed');
+          mark('confirmed', 'completed');
+          mark('shipped', 'completed');
+          mark('out', 'active');
+        } else if (status === 'delivered') {
+          progress = 100;
+          mark('ordered', 'completed');
+          mark('confirmed', 'completed');
+          mark('shipped', 'completed');
+          mark('out', 'completed');
+          mark('delivered', 'completed');
+        }
+        document.getElementById('timelineProgress').style.width = progress + '%';
       }
-
-      document.getElementById('timelineProgress').style.width = progress + '%';
 
       // Items
       let itemsHtml = '';
@@ -290,7 +406,24 @@
       // Totals
       document.getElementById('displaySubtotal').innerText = `₹${(o.total || 0).toLocaleString()}`;
       document.getElementById('displayTotal').innerText = `₹${(o.total || 0).toLocaleString()}`;
+
+      // Store order reference for print function
+      window._currentOrder = o;
     }
+
+    // ── PRINT INVOICE FUNCTION ──────────────────────────────────
+    window.printInvoice = function() {
+      const o = window._currentOrder;
+      if (!o) { alert('Order data not loaded yet. Please wait.'); return; }
+
+      // Populate the hidden print header with live data
+      const d = new Date(o.date);
+      const fmtDate = isNaN(d.getTime()) ? o.date : d.toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+      document.getElementById('printInvoiceDate').innerText = `Date: ${fmtDate}`;
+      document.getElementById('printInvoiceId').innerText  = `Order: #${o.orderId}`;
+
+      window.print();
+    };
   </script>
 
 </body>

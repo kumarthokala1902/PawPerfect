@@ -1,18 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>All Pet Food — MayaPets Premium Nutrition</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    body { font-family: 'Poppins', sans-serif; background: var(--gray); color: var(--black); line-height: 1.6; }
-    header { padding: 60px 5vw 40px; text-align: center; }
-    h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 10px; }
-    .subtitle { color: #666; font-size: 1.1rem; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--gray);
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 60px 5vw 40px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 1.1rem;
+    }
+
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -21,10 +43,12 @@
       max-width: 1300px;
       margin: 0 auto;
     }
+
     /* Horizontal Brand Nav Logic */
     .brand-nav-wrapper {
       position: sticky;
-      top: 76px; /* Below navbar */
+      top: 76px;
+      /* Below navbar */
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(15px);
       z-index: 900;
@@ -32,16 +56,24 @@
       border-bottom: 1.5px solid #edf2f7;
       margin-bottom: 40px;
     }
+
     .brand-nav {
       display: flex;
       gap: 20px;
       padding: 0 5vw;
       overflow-x: auto;
       scroll-behavior: smooth;
-      -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
-      scrollbar-width: none; /* Hide scrollbar Firefox */
+      -ms-overflow-style: none;
+      /* Hide scrollbar IE/Edge */
+      scrollbar-width: none;
+      /* Hide scrollbar Firefox */
     }
-    .brand-nav::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
+
+    .brand-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar Chrome/Safari */
 
     .brand-pill {
       flex: 0 0 auto;
@@ -59,35 +91,89 @@
       gap: 10px;
       white-space: nowrap;
     }
-    .brand-pill:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-2px); }
-    .brand-pill.active { background: var(--blue); color: white; border-color: var(--blue); box-shadow: 0 8px 20px rgba(4, 151, 177, 0.25); }
 
-    .brand-pill .mini-logo { height: 20px; width: auto; object-fit: contain; }
-    
+    .brand-pill:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      transform: translateY(-2px);
+    }
+
+    .brand-pill.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+      box-shadow: 0 8px 20px rgba(4, 151, 177, 0.25);
+    }
+
+    .brand-pill .mini-logo {
+      height: 20px;
+      width: auto;
+      object-fit: contain;
+    }
+
     /* Animation for Product Cards */
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     .products-grid .prod-card {
       animation: fadeInUp 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
     }
-    .products-grid .prod-card:nth-child(2) { animation-delay: 0.1s; }
-    .products-grid .prod-card:nth-child(3) { animation-delay: 0.15s; }
-    .products-grid .prod-card:nth-child(4) { animation-delay: 0.2s; }
-    .products-grid .prod-card:nth-child(5) { animation-delay: 0.25s; }
-    .products-grid .prod-card:nth-child(6) { animation-delay: 0.3s; }
+
+    .products-grid .prod-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .products-grid .prod-card:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .products-grid .prod-card:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    .products-grid .prod-card:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    .products-grid .prod-card:nth-child(6) {
+      animation-delay: 0.3s;
+    }
 
 
-    .brand-slot.active { border: 3px solid var(--blue); box-shadow: 0 10px 30px rgba(4, 151, 177, 0.15); transform: translateY(-5px); }
-    .clear-filter-btn { margin: 20px auto; display: none; background: #edf2f7; color: #4a5568; border: none; padding: 8px 24px; border-radius: 50px; font-weight: 700; cursor: pointer; }
-    
+    .brand-slot.active {
+      border: 3px solid var(--blue);
+      box-shadow: 0 10px 30px rgba(4, 151, 177, 0.15);
+      transform: translateY(-5px);
+    }
+
+    .clear-filter-btn {
+      margin: 20px auto;
+      display: none;
+      background: #edf2f7;
+      color: #4a5568;
+      border: none;
+      padding: 8px 24px;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     /* Hero Theme Overrides for Pet Food */
     .pet-food-hero {
       padding: 0 !important;
       max-width: 100% !important;
       margin: 0 !important;
     }
+
     .hero-card-white {
       background: #ffffff !important;
       color: var(--black) !important;
@@ -98,28 +184,38 @@
       padding: 60px 5vw 40px !important;
       transform: none !important;
     }
+
     .hero-card-white:hover {
       transform: none !important;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05) !important;
     }
+
     .hero-card-white::before {
       background: linear-gradient(45deg, transparent 40%, rgba(4, 151, 177, 0.03) 50%, transparent 60%) !important;
     }
-    .pt-title-dark { color: var(--black) !important; }
-    .pt-sub-dark { color: #4a5568 !important; }
+
+    .pt-title-dark {
+      color: var(--black) !important;
+    }
+
+    .pt-sub-dark {
+      color: #4a5568 !important;
+    }
+
     .pt-btn-dark {
       background: var(--blue) !important;
       color: white !important;
       border: none !important;
       box-shadow: 0 10px 25px rgba(4, 151, 177, 0.2) !important;
     }
+
     .pt-btn-dark:hover {
       background: var(--blue2) !important;
       transform: translateY(-3px) scale(1.02) !important;
       color: white !important;
       box-shadow: 0 15px 35px rgba(4, 151, 177, 0.3) !important;
     }
-    
+
     /* Hero Content Flex Layout */
     .hero-content-wrapper {
       display: flex;
@@ -131,16 +227,19 @@
       max-width: 1300px;
       margin: 0 auto;
     }
+
     .hero-text-side {
       flex: 1;
       max-width: 600px;
     }
+
     .hero-img-side {
       flex: 1.2;
       display: flex;
       justify-content: flex-end;
       align-items: center;
     }
+
     .hero-img-side img {
       width: 100%;
       max-width: 550px;
@@ -150,24 +249,34 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
       animation: gentleFloat 6s ease-in-out infinite;
     }
-    
+
     @keyframes gentleFloat {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-      100% { transform: translateY(0); }
+      0% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+
+      100% {
+        transform: translateY(0);
+      }
     }
-    
+
     @media (max-width: 850px) {
       .hero-content-wrapper {
         flex-direction: column;
         text-align: center;
         gap: 20px;
       }
+
       .hero-text-side {
         display: flex;
         flex-direction: column;
         align-items: center;
       }
+
       .hero-img-side img {
         max-width: 400px;
       }
@@ -184,13 +293,15 @@
       backdrop-filter: blur(5px);
       border-radius: 20px;
       border: 1px solid rgba(226, 232, 240, 0.8);
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.02);
       display: flex;
       align-items: center;
       z-index: 2;
     }
+
     /* Fade edges for smooth entry/exit */
-    .marquee-wrapper::before, .marquee-wrapper::after {
+    .marquee-wrapper::before,
+    .marquee-wrapper::after {
       content: '';
       position: absolute;
       top: 0;
@@ -199,15 +310,17 @@
       z-index: 3;
       pointer-events: none;
     }
+
     .marquee-wrapper::before {
       left: 0;
       background: linear-gradient(to right, white, transparent);
     }
+
     .marquee-wrapper::after {
       right: 0;
       background: linear-gradient(to left, white, transparent);
     }
-    
+
     .marquee-content {
       display: flex;
       gap: 30px;
@@ -216,12 +329,21 @@
       animation: marqueeScroll 25s linear infinite;
       width: max-content;
     }
+
     .marquee-wrapper:hover .marquee-content {
       animation-play-state: paused;
     }
+
     @keyframes marqueeScroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(calc(-50% - 15px)); } /* the -15px accounts for half the gap */
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(calc(-50% - 15px));
+      }
+
+      /* the -15px accounts for half the gap */
     }
 
     .marquee-chip {
@@ -237,9 +359,10 @@
       align-items: center;
       justify-content: center;
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
       white-space: nowrap;
     }
+
     .marquee-chip:hover {
       background: var(--yellow);
       color: var(--black);
@@ -248,10 +371,18 @@
       box-shadow: 0 15px 30px rgba(255, 214, 0, 0.3);
       z-index: 5;
     }
-    
-    footer { background: #111; color: white; padding: 40px 5vw; text-align: center; font-size: 0.9rem; margin-top: 40px; }
+
+    footer {
+      background: #111;
+      color: white;
+      padding: 40px 5vw;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 40px;
+    }
   </style>
 </head>
+
 <body>
 
   <nav>
@@ -268,20 +399,19 @@
 
       <ul class="nav-links">
         <li><a href="pet-food.html" style="color:var(--blue)">Pet Food</a></li>
-        <li><a href="pharmacy.html">Pharmacy</a></li>
         <li><a href="accessories.html">Accessories</a></li>
         <li><a href="grooming.html">Grooming</a></li>
         <li><a href="about-us.html">About Us</a></li>
       </ul>
 
       <div class="nav-actions">
-        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
-          <span class="material-symbols-outlined">person</span>
-        </button>
         <a href="cart.html" class="nav-icon-btn" style="text-decoration:none" title="Cart">
           <span class="material-symbols-outlined">shopping_bag</span>
           <span class="cart-badge" id="cartBadge">0</span>
         </a>
+        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
+          <span class="material-symbols-outlined">person</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -300,18 +430,33 @@
     const btn = document.getElementById('authBtn');
     if (btn) {
       onAuthStateChanged(auth, (user) => {
-        if (user) {
-          const name = user.displayName || user.email;
-          const initial = name.charAt(0).toUpperCase();
-          btn.innerHTML = `<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;">${initial}</div>`;
-          btn.title = `Hi ${name} — View Account`;
-          btn.onclick = () => window.location.href = 'profile.html';
+      window.isUserLoggedIn = !!user;
+      if (user) {
+        const name = user.displayName || user.email;
+        const initial = name.charAt(0).toUpperCase();
+        btn.innerHTML = `<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.95rem;">${initial}</div>`;
+        btn.title = `Hi ${name} — View Account`;
+        btn.onclick = () => window.location.href = 'profile.html';
+      } else {
+        btn.innerHTML = `<span class="material-symbols-outlined">person</span>`;
+        btn.title = 'Sign In';
+        btn.onclick = () => window.location.href = 'login.html';
+      }
+      if (typeof syncProductButtons === 'function') syncProductButtons();
+    });
+
+    window.syncProductButtons = function() {
+      const buyBtns = document.querySelectorAll('.prod-btn');
+      buyBtns.forEach(b => {
+        if (window.isUserLoggedIn) {
+          b.classList.remove('auth-required');
+          b.innerText = 'Add to Cart';
         } else {
-          btn.innerHTML = `<span class="material-symbols-outlined">person</span>`;
-          btn.title = 'Sign In';
-          btn.onclick = () => window.location.href = 'login.html';
+          b.classList.add('auth-required');
+          b.innerText = 'Sign In to Add';
         }
       });
+    }
     }
   </script>
 
@@ -322,14 +467,15 @@
         <div class="hero-text-side">
           <div class="hero-badge">Up to 22% Off</div>
           <h1 class="hero-title pt-title-dark">Premium Pet Food</h1>
-          <p class="hero-subtitle pt-sub-dark">Premium nutrition trusted by pet parents for a healthier, happier life.</p>
+          <p class="hero-subtitle pt-sub-dark">Premium nutrition trusted by pet parents for a healthier, happier life.
+          </p>
           <a href="#productsGrid" class="hero-btn pt-btn-dark">Shop Now</a>
         </div>
         <div class="hero-img-side">
           <img src="images/dog_cat_banner.png" alt="Happy pet eating premium food">
         </div>
       </div>
-      
+
       <!-- Scrolling Brand Ticker within Banner -->
       <div class="marquee-wrapper">
         <div class="marquee-content">
@@ -340,9 +486,11 @@
           <div class="marquee-chip" onclick="setFilter('Maximom!')">MAXIMOM!</div>
           <div class="marquee-chip" onclick="setFilter('Defender')">DEFENDER</div>
           <div class="marquee-chip" onclick="setFilter('Countryside')">COUNTRYSIDE</div>
-          <div class="marquee-chip" onclick="setFilter('Royal Canin')"><span style="color:red; font-weight:900;">ROYAL CANIN</span></div>
-          <div class="marquee-chip" onclick="setFilter('Cats\'Up')">CATS'UP</div>
-          
+          <div class="marquee-chip" onclick="setFilter('Royal Canin')"><span style="color:red; font-weight:900;">ROYAL
+              CANIN</span></div>
+          <div class="marquee-chip" onclick="setFilter('Catsup')">CATSUP</div>
+          <div class="marquee-chip" onclick="setFilter('Wagsup')">WAGSUP</div>
+
           <!-- Set 2 (for continuous scroll loop) -->
           <div class="marquee-chip" onclick="setFilter('Bairo')">BAIRO</div>
           <div class="marquee-chip" onclick="setFilter('MIOW')">MIOW</div>
@@ -350,8 +498,10 @@
           <div class="marquee-chip" onclick="setFilter('Maximom!')">MAXIMOM!</div>
           <div class="marquee-chip" onclick="setFilter('Defender')">DEFENDER</div>
           <div class="marquee-chip" onclick="setFilter('Countryside')">COUNTRYSIDE</div>
-          <div class="marquee-chip" onclick="setFilter('Royal Canin')"><span style="color:red; font-weight:900;">ROYAL CANIN</span></div>
-          <div class="marquee-chip" onclick="setFilter('Cats\'Up')">CATS'UP</div>
+          <div class="marquee-chip" onclick="setFilter('Royal Canin')"><span style="color:red; font-weight:900;">ROYAL
+              CANIN</span></div>
+          <div class="marquee-chip" onclick="setFilter('Catsup')">CATSUP</div>
+          <div class="marquee-chip" onclick="setFilter('Wagsup')">WAGSUP</div>
         </div>
       </div>
     </div>
@@ -377,14 +527,14 @@
 
     function renderProducts() {
       const grid = document.getElementById('productsGrid');
-      const filtered = currentFilter 
+      const filtered = currentFilter
         ? window.products.filter(p => p.brand.toLowerCase() === currentFilter.toLowerCase())
         : window.products;
 
       grid.innerHTML = filtered.map(p => `
         <div class="prod-card" onclick="showProductDetail('${p.id}')">
           <div class="card-header-overlay">
-            <div class="brand-icon-mini">${p.badge || p.brand.substring(0,2).toUpperCase()}</div>
+            <div class="brand-icon-mini">${p.badge || p.brand.substring(0, 2).toUpperCase()}</div>
             <div class="discount-badge-round" style="${p.discount === 'BEST VALUE' ? 'background:var(--red)' : ''}">${p.discount}${p.discount.includes('%') ? '<span>OFF</span>' : ''}</div>
           </div>
           <div class="prod-img"><img src="${p.image}" alt="${p.name}"></div>
@@ -396,8 +546,8 @@
               <span class="prod-price">₹${p.price.toLocaleString()}</span>
               <span class="prod-old-price">₹${p.oldPrice.toLocaleString()}</span>
             </div>
-            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: '${p.name}', price: ${p.price}, image: '${p.image}', brand: '${p.brand}', qty: 1, unit: '${p.unit}'})">
-              Add to Cart
+            <button class="prod-btn ${!window.isUserLoggedIn ? 'auth-required' : ''}" onclick="event.stopPropagation(); addToCart({name: '${p.name}', price: ${p.price}, image: '${p.image}', brand: '${p.brand}', qty: 1, unit: '${p.unit}'})">
+              ${!window.isUserLoggedIn ? 'Sign In to Add' : 'Add to Cart'}
             </button>
           </div>
         </div>
@@ -416,7 +566,7 @@
       });
       renderProducts();
       const grid = document.getElementById('productsGrid');
-      if(grid) window.scrollTo({ top: grid.offsetTop - 140, behavior: 'smooth' });
+      if (grid) window.scrollTo({ top: grid.offsetTop - 140, behavior: 'smooth' });
     }
 
 
@@ -430,7 +580,8 @@
           <div class="logo-icon"><span class="material-symbols-outlined">pets</span></div>
           <span class="logo-text">Maya<span>Pets</span></span>
         </a>
-        <p>Premium pet nutrition crafted with love and science. Trusted by over 2 million pet owners across India. We deliver health and happiness to your doorstep.</p>
+        <p>Premium pet nutrition crafted with love and science. Trusted by over 2 million pet owners across India. We
+          deliver health and happiness to your doorstep.</p>
         <div class="footer-social-pill" style="justify-content: flex-start; margin-top: 20px;">
           <a href="#" class="social-pill-btn fb"><i class="fab fa-facebook-f"></i></a>
           <a href="#" class="social-pill-btn ig"><i class="fab fa-instagram"></i></a>
@@ -442,7 +593,6 @@
         <h4>Products</h4>
         <ul>
           <li><a href="pet-food.html">Pet Food</a></li>
-          <li><a href="pharmacy.html">Pharmacy</a></li>
           <li><a href="accessories.html">Accessories</a></li>
           <li><a href="grooming.html">Grooming</a></li>
           <li><a href="#">Treats & Snacks</a></li>
@@ -499,4 +649,5 @@
   </footer>
 
 </body>
+
 </html>

@@ -53,20 +53,19 @@
 
       <ul class="nav-links">
         <li><a href="pet-food.html">Pet Food</a></li>
-        <li><a href="pharmacy.html">Pharmacy</a></li>
         <li><a href="accessories.html" style="color:var(--blue)">Accessories</a></li>
         <li><a href="grooming.html">Grooming</a></li>
         <li><a href="about-us.html">About Us</a></li>
       </ul>
 
       <div class="nav-actions">
-        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
-          <span class="material-symbols-outlined">person</span>
-        </button>
         <a href="cart.html" class="nav-icon-btn" style="text-decoration:none" title="Cart">
           <span class="material-symbols-outlined">shopping_bag</span>
           <span class="cart-badge" id="cartBadge">0</span>
         </a>
+        <button class="nav-icon-btn" id="authBtn" onclick="window.location.href='login.html'" title="Sign In">
+          <span class="material-symbols-outlined">person</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -85,6 +84,7 @@
     const btn = document.getElementById('authBtn');
     if (btn) {
       onAuthStateChanged(auth, (user) => {
+        window.isUserLoggedIn = !!user;
         if (user) {
           const name = user.displayName || user.email;
           const initial = name.charAt(0).toUpperCase();
@@ -95,6 +95,20 @@
           btn.innerHTML = `<span class="material-symbols-outlined">person</span>`;
           btn.title = 'Sign In';
           btn.onclick = () => window.location.href = 'login.html';
+        }
+        if (typeof syncProductButtons === 'function') syncProductButtons();
+      });
+    }
+
+    window.syncProductButtons = function() {
+      const buyBtns = document.querySelectorAll('.prod-btn');
+      buyBtns.forEach(b => {
+        if (window.isUserLoggedIn) {
+          b.classList.remove('auth-required');
+          b.innerText = 'Add to Cart';
+        } else {
+          b.classList.add('auth-required');
+          b.innerText = 'Sign In to Add';
         }
       });
     }
@@ -141,7 +155,6 @@
         <h4>Products</h4>
         <ul>
           <li><a href="pet-food.html">Pet Food</a></li>
-          <li><a href="pharmacy.html">Pharmacy</a></li>
           <li><a href="accessories.html">Accessories</a></li>
           <li><a href="grooming.html">Grooming</a></li>
           <li><a href="#">Treats & Snacks</a></li>
@@ -228,8 +241,8 @@
               <span class="prod-price">₹${p.price.toLocaleString()}</span>
               <span class="prod-old-price">₹${p.oldPrice.toLocaleString()}</span>
             </div>
-            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: '${p.name}', price: ${p.price}, image: '${p.image}', brand: '${p.brand}', qty: 1, unit: '${p.unit}'})">
-              Add to Cart
+            <button class="prod-btn ${!window.isUserLoggedIn ? 'auth-required' : ''}" onclick="event.stopPropagation(); addToCart({name: '${p.name}', price: ${p.price}, image: '${p.image}', brand: '${p.brand}', qty: 1, unit: '${p.unit}'})">
+              ${!window.isUserLoggedIn ? 'Sign In to Add' : 'Add to Cart'}
             </button>
           </div>
         </div>
@@ -238,7 +251,5 @@
 
     window.onload = init;
   </script>
-</body>
-</html>
 </body>
 </html>

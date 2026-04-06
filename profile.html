@@ -227,7 +227,10 @@
       white-space: nowrap;
     }
     .order-status-pill.shipped { background: rgba(255,193,7,0.15); color: #b08d00; }
+    .order-status-pill.confirmed, .order-status-pill.processing { background: rgba(139,92,246,0.12); color: #8b5cf6; }
+    .order-status-pill.out_for_delivery { background: rgba(217,119,6,0.15); color: #d97706; }
     .order-status-pill.delivered { background: rgba(40,167,69,0.15); color: #1e7e34; }
+    .order-status-pill.cancelled { background: rgba(239,68,68,0.12); color: #ef4444; }
     
     .order-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #eee; padding-top:12px; margin-top: 12px; }
     .order-card-price { font-size: 1.1rem; font-weight: 800; color: var(--black); }
@@ -306,19 +309,18 @@
       </div>
       <ul class="nav-links">
         <li><a href="pet-food.html">Pet Food</a></li>
-        <li><a href="pharmacy.html">Pharmacy</a></li>
         <li><a href="accessories.html">Accessories</a></li>
         <li><a href="grooming.html">Grooming</a></li>
         <li><a href="about-us.html">About Us</a></li>
       </ul>
       <div class="nav-actions">
+        <a href="cart.html" class="nav-icon-btn" style="text-decoration:none">
+          <span class="material-symbols-outlined" title="Cart">shopping_bag</span>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </a>
         <button class="nav-icon-btn" id="authBtn" style="color:var(--blue);" title="My Account">
           <span class="material-symbols-outlined">person</span>
         </button>
-        <a href="cart.html" class="nav-icon-btn" style="text-decoration:none">
-          <span class="material-symbols-outlined">shopping_bag</span>
-          <span class="cart-badge" id="cartBadge">0</span>
-        </a>
       </div>
     </div>
   </nav>
@@ -635,8 +637,33 @@
       const ref  = doc(db, 'users', currentUser.uid);
       const snap = await getDoc(ref);
       const data = snap.exists() ? snap.data() : {};
-      renderAddresses(data.addresses || []);
-      renderOrders(data.orders || []);
+      
+      let addresses = data.addresses || [];
+      let orders = data.orders || [];
+
+      // Fallback/Override: Check localStorage for admin updates
+      try {
+        const localOrdersRaw = localStorage.getItem('mayaAdminOrders');
+        if (localOrdersRaw) {
+          const localOrders = JSON.parse(localOrdersRaw);
+          // For each local order, if it's the customer's order, override the firestore status
+          localOrders.forEach(lo => {
+            const idx = orders.findIndex(o => o.orderId === lo.orderId);
+            if (idx !== -1) {
+              // Override existing firestore order with admin's local version
+              orders[idx] = lo;
+            } else if (lo.userId === currentUser.uid) {
+              // If it's a new order created locally not yet in Firestore
+              orders.unshift(lo);
+            }
+          });
+        }
+      } catch (e) {
+        console.error("Profile localStorage sync error:", e);
+      }
+
+      renderAddresses(addresses);
+      renderOrders(orders);
     }
 
     function renderOrders(orders) {
@@ -657,9 +684,7 @@
         const d = new Date(o.date);
         const dateStr = isNaN(d.getTime()) ? o.date : d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
         
-        let statusClass = '';
-        if(o.status.toLowerCase() === 'shipped') statusClass = 'shipped';
-        if(o.status.toLowerCase() === 'delivered') statusClass = 'delivered';
+        const statusClass = (o.status || 'Pending').toLowerCase().replace(/\s+/g, '_');
 
         const firstItem = o.items && o.items[0];
         const extraCount = o.items ? o.items.length - 1 : 0;

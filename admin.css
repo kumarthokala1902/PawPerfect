@@ -135,7 +135,7 @@ body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--t
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease;
-  overflow-y: auto;
+  overflow: hidden; /* Changed from overflow-y: auto to allow footer anchoring */
 }
 .sidebar-brand {
   padding: 28px 24px 24px;
@@ -733,8 +733,115 @@ select.form-control { cursor: pointer; }
   .topbar { padding: 0 18px; }
   .content-area { padding: 20px 18px; }
   #sidebarToggle { display: flex !important; }
+
+  /* Mobile Sidebar Footer Static Anchoring */
+  .sidebar-nav {
+    padding-bottom: 140px; /* Space for the static footer */
+  }
+  .sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--dark); /* Matches sidebar bg */
+    border-top: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 -10px 20px rgba(0,0,0,0.2);
+    z-index: 105;
+  }
+  .sidebar-user {
+    margin-bottom: 5px;
+    background: rgba(255,255,255,0.03); /* Subtle contrast */
+  }
 }
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr; }
   .login-card { padding: 36px 28px; }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   PRINT STYLES (INVOICE)
+   ────────────────────────────────────────────────────────────── */
+@media print {
+  body { background: white !important; color: black !important; }
+  
+  .sidebar, .topbar, .no-print, .sidebar-overlay, .toast, .modal-overlay,
+  .btn-update-status, .status-select, #pendingBadge {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  .content-area {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .section-view {
+    display: none !important;
+  }
+
+  .section-view#sec-customer-details {
+    display: block !important;
+    padding: 20px !important;
+  }
+
+  .panel {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 30px !important;
+  }
+
+  .stats-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 30px !important;
+  }
+
+  .panel-title {
+    font-size: 1.2rem !important;
+    border-bottom: 2px solid #000 !important;
+    color: black !important;
+  }
+
+  .data-table thead th {
+    background: #eee !important;
+    color: black !important;
+    border-bottom: 1px solid black !important;
+  }
+
+  .data-table td {
+    border-bottom: 1px solid #ddd !important;
+    color: black !important;
+  }
+
+  #cd-grandTotal {
+    color: black !important;
+    font-size: 1.5rem !important;
+  }
+
+  /* Add a professional invoice header for print */
+  .section-view#sec-customer-details::before {
+    content: "MAYAPETS — OFFICIAL INVOICE";
+    display: block;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    border-bottom: 3px solid black;
+    padding-bottom: 10px;
+  }
+
+  .section-view#sec-customer-details::after {
+    content: "Thank you for shopping with MayaPets Premium. Visit us at www.mayapets.in";
+    display: block;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 50px;
+    font-style: italic;
+    color: #444;
+  }
 }

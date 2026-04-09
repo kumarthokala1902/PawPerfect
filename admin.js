@@ -887,4 +887,9 @@ window.updateOrderStatusFromDetail = async function(orderId, userId) {
   document.getElementById = originalGet;
   
   // Note: loadOrders() will be called internally by updateOrderStatus which refreshes the context
+  document.getElementById = originalGet;
+};
+
+window.printInvoice = function() {
+  window.print();
 };

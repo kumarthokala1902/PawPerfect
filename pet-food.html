@@ -295,7 +295,9 @@
       margin-top: 50px;
       width: 100%;
       height: 80px;
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
       position: relative;
       background: rgba(247, 250, 252, 0.7);
       backdrop-filter: blur(5px);
@@ -305,6 +307,13 @@
       display: flex;
       align-items: center;
       z-index: 2;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;  /* IE/Edge */
+      cursor: grab;
+    }
+
+    .marquee-wrapper::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
     }
 
     /* Fade edges for smooth entry/exit */
@@ -333,13 +342,12 @@
       display: flex;
       gap: 30px;
       padding-left: 30px;
-      /* Adjust speed with seconds, calc(-50%) shifts precisely half since items are duplicated */
-      animation: marqueeScroll 25s linear infinite;
       width: max-content;
+      transition: none; /* Ensure no conflict with JS scrolling */
     }
 
-    .marquee-wrapper:hover .marquee-content {
-      animation-play-state: paused;
+    .marquee-wrapper:active {
+      cursor: grabbing;
     }
 
     @keyframes marqueeScroll {
@@ -538,9 +546,10 @@
 
     function renderProducts() {
       const grid = document.getElementById('productsGrid');
+      let base = window.products.filter(p => (p.status || 'active') !== 'inactive');
       const filtered = currentFilter
-        ? window.products.filter(p => p.brand.toLowerCase() === currentFilter.toLowerCase())
-        : window.products;
+        ? base.filter(p => p.brand.toLowerCase() === currentFilter.toLowerCase())
+        : base;
 
       grid.innerHTML = filtered.map(p => `
         <div class="prod-card" onclick="showProductDetail('${p.id}')">
@@ -582,7 +591,46 @@
     }
 
 
-    window.onload = init;
+    window.onload = () => {
+      init();
+      initMarqueeScroll();
+    };
+
+    function initMarqueeScroll() {
+      const wrapper = document.querySelector('.marquee-wrapper');
+      const content = document.querySelector('.marquee-content');
+      if (!wrapper || !content) return;
+
+      let isInteracting = false;
+      let scrollSpeed = 0.8; // px per frame
+      let animationId = null;
+
+      function step() {
+        if (!isInteracting) {
+          wrapper.scrollLeft += scrollSpeed;
+          // Loop reset: since content is duplicated (Set 1 + Set 2), 
+          // we reset once we've scrolled past the first set.
+          if (wrapper.scrollLeft >= content.scrollWidth / 2) {
+            wrapper.scrollLeft = 0;
+          }
+        }
+        animationId = requestAnimationFrame(step);
+      }
+
+      // Interaction listeners to pause auto-scroll
+      wrapper.addEventListener('mouseenter', () => isInteracting = true);
+      wrapper.addEventListener('mouseleave', () => isInteracting = false);
+      wrapper.addEventListener('touchstart', () => isInteracting = true, {passive: true});
+      wrapper.addEventListener('touchend', () => isInteracting = false);
+      
+      // Also stop if user manually scrolls (e.g. scrollbar or swipe)
+      wrapper.addEventListener('scroll', () => {
+        // Simple logic: if user scrolls far from predicted auto-scroll, they are interacting
+        // But for simplicity, we mostly rely on touch/mouse events.
+      });
+
+      animationId = requestAnimationFrame(step);
+    }
   </script>
   <!-- ══ FOOTER ═══════════════════════════════════════════════════ -->
   <footer>

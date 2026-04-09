@@ -444,7 +444,7 @@ function initGlobalSearch() {
       return;
     }
 
-    const products = getStoredProducts();
+    const products = getStoredProducts().filter(p => (p.status || 'active') !== 'inactive');
     const filtered = products.filter(p => 
       p.name.toLowerCase().includes(query) || 
       p.brand.toLowerCase().includes(query) ||

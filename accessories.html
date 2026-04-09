@@ -217,7 +217,7 @@
   <script src="products.js"></script>
   <script>
     function init() {
-      const products = getStoredProducts().filter(p => p.category === 'Accessories');
+      const products = getStoredProducts().filter(p => p.category === 'Accessories' && (p.status || 'active') !== 'inactive');
       renderProducts(products);
       updateCartBadge();
     }

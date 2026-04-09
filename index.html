@@ -1452,7 +1452,7 @@
       <div class="products-grid scrollable">
 
         <!-- 1. Countryside -->
-        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=pf35'" style="cursor:pointer;">
+        <div class="prod-card reveal" data-id="pf35" onclick="window.location.href='product-detail.html?id=pf35'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini">CS</div>
             <div class="discount-badge-round">15%<span>OFF</span></div>
@@ -1475,7 +1475,7 @@
         </div>
 
         <!-- 2. Defender -->
-        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=pf30'" style="cursor:pointer;">
+        <div class="prod-card reveal" data-id="pf30" onclick="window.location.href='product-detail.html?id=pf30'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini">DF</div>
             <div class="discount-badge-round">19%<span>OFF</span></div>
@@ -1498,7 +1498,7 @@
         </div>
 
         <!-- 3. Royal Canin -->
-        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=rc1'" style="cursor:pointer;">
+        <div class="prod-card reveal" data-id="rc1" onclick="window.location.href='product-detail.html?id=rc1'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini" style="color:red; font-weight:900;">RC</div>
             <div class="discount-badge-round">14%<span>OFF</span></div>
@@ -1521,7 +1521,7 @@
         </div>
 
         <!-- 4. MIOW -->
-        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=pf15'" style="cursor:pointer;">
+        <div class="prod-card reveal" data-id="pf15" onclick="window.location.href='product-detail.html?id=pf15'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini" style="color:#0077b5;">MW</div>
             <div class="discount-badge-round">25%<span>OFF</span></div>
@@ -1544,7 +1544,7 @@
         </div>
 
         <!-- 5. Bairo -->
-        <div class="prod-card reveal" onclick="window.location.href='product-detail.html?id=pf1'" style="cursor:pointer;">
+        <div class="prod-card reveal" data-id="pf1" onclick="window.location.href='product-detail.html?id=pf1'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini" style="color:#511b15;">BR</div>
             <div class="discount-badge-round">20%<span>OFF</span></div>
@@ -1997,6 +1997,46 @@
 
     // ─── CART LOGIC ──────────────────────────────────────────
     // All cart state now managed in cart.js
+    
+    function syncHomepageProducts() {
+      // Hide deactivated products
+      if (typeof getStoredProducts === 'function') {
+        const allStored = getStoredProducts();
+        document.querySelectorAll('.prod-card[data-id]').forEach(card => {
+          const pid = card.getAttribute('data-id');
+          const pData = allStored.find(p => p.id === pid);
+          if (pData && pData.status === 'inactive') {
+            card.style.display = 'none';
+          } else {
+            card.style.display = 'flex';
+          }
+        });
+      }
+      
+      // Sync buttons with login state
+      const buyBtns = document.querySelectorAll('.prod-btn');
+      buyBtns.forEach(b => {
+        if (window.isUserLoggedIn) {
+          b.classList.remove('auth-required');
+          b.innerHTML = '<span class="material-symbols-outlined">shopping_bag</span> Add to Cart';
+        } else {
+          b.classList.add('auth-required');
+          b.innerHTML = '<span class="material-symbols-outlined">person</span> Sign In to Add';
+        }
+      });
+    }
+    
+    // Call on load and on scroll/reveal if needed, or just standard load
+    window.addEventListener('load', () => {
+      setTimeout(syncHomepageProducts, 100);
+    });
+    
+    // Also hook into our existing auth listener
+    const originalOnAuthStateChanged = onAuthStateChanged;
+    onAuthStateChanged(auth, (user) => {
+      window.isUserLoggedIn = !!user;
+      syncHomepageProducts();
+    });
   </script>
   <script src="cart.js"></script>
 </body>

@@ -391,7 +391,7 @@ window.renderProductsTable = function() {
           <button class="action-btn ab-delete" onclick="deleteProduct('${p.id}','${p.name.replace(/'/g,"\\'")}')">
             <span class="material-symbols-outlined" style="font-size:14px;">delete</span> Delete
           </button>` : ''}
-          <button class="action-btn" style="background:rgba(16,185,129,0.1);color:#059669;" onclick="quickToggleStatus('${p.id}','${st}','${isAdmin}')">
+          <button class="action-btn" style="background:rgba(16,185,129,0.1);color:#059669;" onclick="quickToggleStatus('${p.id}','${st}')">
             <span class="material-symbols-outlined" style="font-size:14px;">${st==='active'?'visibility_off':'visibility'}</span>
             ${st==='active'?'Deactivate':'Activate'}
           </button>
@@ -466,21 +466,25 @@ window.confirmDelete = function() {
   showToast('🗑️ Product deleted.', 'info');
 };
 
-window.quickToggleStatus = function(id, currentStatus, isAdmin) {
+window.quickToggleStatus = function(id, currentStatus) {
   const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-  // We can only toggle admin-added products
-  if (isAdmin !== 'true') {
-    showToast('Built-in products cannot be modified. Duplicate it in Add Product first.', 'error');
-    return;
-  }
   let adminProducts = getAdminProducts();
   const idx = adminProducts.findIndex(p => p.id === id);
+  
   if (idx !== -1) {
     adminProducts[idx].status = newStatus;
-    saveAdminProducts(adminProducts);
-    renderProductsTable();
-    showToast(`Product ${newStatus === 'active' ? 'activated' : 'deactivated'}.`, 'info');
+  } else {
+    // It's a built-in product being modified for the first time
+    const allProducts = getStoredProducts();
+    const baseP = allProducts.find(p => p.id === id);
+    if (baseP) {
+      adminProducts.push({ ...baseP, status: newStatus, isOverride: true });
+    }
   }
+  
+  saveAdminProducts(adminProducts);
+  renderProductsTable();
+  showToast(`Product ${newStatus === 'active' ? 'activated' : 'deactivated'}.`, 'info');
 };
 
 window.closeEditModal = function() {

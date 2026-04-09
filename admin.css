@@ -109,8 +109,22 @@ body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--t
 #adminApp { display: flex; min-height: 100vh; }
 
 /* ──────────────────────────────────────────────────────────────
-   SIDEBAR
+   SIDEBAR & OVERLAY
    ────────────────────────────────────────────────────────────── */
+.sidebar-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+  z-index: 90;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.sidebar-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
 .sidebar {
   width: var(--sidebar-w);
   background: var(--dark);
@@ -710,7 +724,7 @@ select.form-control { cursor: pointer; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .recent-orders-grid { grid-template-columns: 1fr; }
 }
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
   .main-content { margin-left: 0; }

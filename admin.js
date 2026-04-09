@@ -76,6 +76,9 @@ window.doLogout = function() {
   document.getElementById('adminApp').style.display   = 'none';
   document.getElementById('loginPassword').value = '';
   document.getElementById('loginUsername').value = '';
+  document.getElementById('sidebar').classList.remove('open');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (overlay) overlay.classList.remove('open');
 };
 
 function showAdmin() {
@@ -112,10 +115,18 @@ window.switchSection = function(name) {
   if (name === 'dashboard')        refreshDashboard();
   if (name === 'manage-products')  { renderProductsTable(); populateProductFilters(); }
   if (name === 'orders')           loadOrders();
+
+  if (window.innerWidth <= 1024) {
+    document.getElementById('sidebar').classList.remove('open');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (overlay) overlay.classList.remove('open');
+  }
 };
 
 window.toggleSidebar = function() {
   document.getElementById('sidebar').classList.toggle('open');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (overlay) overlay.classList.toggle('open');
 };
 
 // ══════════════════════════════════════════════════════════════

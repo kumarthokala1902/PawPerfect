@@ -404,10 +404,10 @@ function initGlobalSearch() {
     searchInput.parentElement.appendChild(resultsBox);
   }
 
-  // Handle mobile expansion
+  // Handle expansion and close icon visibility
   searchInput.addEventListener('focus', () => {
+    searchContainer.classList.add('active');
     if (window.innerWidth <= 768) {
-      searchContainer.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   });
@@ -467,9 +467,7 @@ function initGlobalSearch() {
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target) && !resultsBox.contains(e.target)) {
       resultsBox.style.display = 'none';
-      if (window.innerWidth <= 768) {
-        searchContainer.classList.remove('active');
-      }
+      searchContainer.classList.remove('active');
     }
   });
 }

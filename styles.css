@@ -215,6 +215,21 @@ nav {
   pointer-events: none;
 }
 
+.search-close {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+  display: none;
+}
+
+.search-container.active .search-close {
+  display: block;
+}
+
 /* ── SEARCH DROPDOWN ───────────────────────────────────────── */
 .search-results-dropdown {
   position: absolute;
@@ -928,133 +943,133 @@ footer {
   .contact-item { justify-content: center; text-align: left; }
   .footer-social-pill { justify-content: center; }
   .footer-bottom { flex-direction: column; gap: 15px; }
-  
-  /* ── MOBILE NAV: SINGLE ROW HEADER ────────────────────── */
-  /* Layout: [Logo] [Search──────────] [Cart] [Profile] */
-  nav { 
-    height: auto !important; 
-    padding: 10px 0 !important; 
-    background: white; 
-    position: sticky; 
-    top: 0;
-    z-index: 1100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-    transition: all 0.3s ease;
-  }
-  .nav-container { 
-    display: flex !important; 
-    flex-wrap: nowrap !important;          /* Single row - no wrapping */
-    flex-direction: row !important;
-    justify-content: space-between !important; 
-    align-items: center !important; 
-    gap: 10px !important;
-    padding: 0 3vw !important;
+
+  /* ══ MOBILE TOP NAV: FIXED ══════════════════════════════════ */
+  nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     width: 100% !important;
-    position: relative;
+    height: 60px !important;
+    padding: 0 !important;
+    background: white !important;
+    z-index: 1100 !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.09) !important;
   }
 
-  /* Hide logo and nav actions when search is active on mobile */
-  .nav-container:has(.search-container.active) .logo,
-  .nav-container:has(.search-container.active) .nav-actions {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    width: 0;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+  .nav-container {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    padding: 0 12px !important;
+    height: 60px !important;
+    width: 100% !important;
   }
 
-  /* 1. Logo — fixed left */
-  .logo { 
-    order: 1 !important; 
+  /* Logo — left */
+  .logo {
+    order: 1 !important;
     flex-shrink: 0 !important;
-    transform: scale(0.85);
-    transform-origin: left center;
-    transition: all 0.3s ease;
+    gap: 6px !important;
   }
 
-  /* 2. Search bar — grows to fill middle space */
-  .search-container { 
+  .logo-icon {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 18px !important;
+    border-radius: 9px !important;
+  }
+
+  .logo-text {
+    font-size: 1.15rem !important;
+  }
+
+  /* ── Search bar — always expanded on mobile ──────────────── */
+  .search-container {
     order: 2 !important;
-    flex: 1 1 0% !important;
+    flex: 1 1 auto !important;
     min-width: 0 !important;
     max-width: none !important;
-    width: auto !important;
-    margin: 0 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    z-index: 10;
+    position: relative !important;
+    margin: 0 4px !important;
   }
 
-  /* Expanded state for mobile search */
-  .search-container.active {
-    position: absolute !important;
-    left: 3vw !important;
-    right: 3vw !important;
-    width: auto !important;
-    flex: none !important;
-  }
-
-  .search-bar { 
-    padding: 9px 40px 9px 38px !important; 
-    font-size: 0.85rem !important;
+  .search-bar {
     width: 100% !important;
+    padding: 8px 36px 8px 34px !important;
+    font-size: 0.82rem !important;
     border-radius: 20px !important;
+    background: #f3f4f6 !important;
+    border: 1.5px solid transparent !important;
+    display: block !important;
   }
 
-  .search-icon { font-size: 18px !important; left: 10px !important; }
+  .search-bar:focus {
+    border-color: var(--blue) !important;
+    background: white !important;
+    box-shadow: 0 4px 16px rgba(4,151,177,0.12) !important;
+  }
 
-  /* New Close Button for mobile search */
+  .search-icon {
+    font-size: 17px !important;
+    left: 9px !important;
+  }
+
   .search-close {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #718096;
-    font-size: 20px !important;
-    cursor: pointer;
-    display: none;
-    z-index: 5;
+    position: absolute !important;
+    right: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 18px !important;
+    color: #888 !important;
+    cursor: pointer !important;
+    display: none !important;
   }
 
   .search-container.active .search-close {
-    display: block;
+    display: block !important;
   }
 
-  /* 3. Cart & Profile — fixed right, in order cart then profile */
-  .nav-actions { 
+  /* Nav actions — right */
+  .nav-actions {
     order: 3 !important;
     flex-shrink: 0 !important;
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 10px !important;
-    transition: all 0.3s ease;
-  }
-  /* Ensure cart comes before profile inside nav-actions */
-  .nav-actions .cart-btn  { order: 1 !important; }
-  .nav-actions #authBtn   { order: 2 !important; }
-
-  /* Shrink icon buttons slightly */
-  .nav-icon-btn { 
-    width: 34px !important; 
-    height: 34px !important;
-    font-size: 20px !important;
+    gap: 6px !important;
   }
 
-  /* Keep the profile avatar a perfect circle — never stretch it */
-  #authBtn > div {
+  .nav-icon-btn {
     width: 34px !important;
     height: 34px !important;
-    min-width: 34px !important;
-    min-height: 34px !important;
-    border-radius: 50% !important;
-    aspect-ratio: 1 / 1 !important;
-    flex-shrink: 0 !important;
+    font-size: 20px !important;
+    padding: 4px !important;
   }
 
-  /* Dropdown alignment for mobile */
+  /* Keep profile avatar a perfect circle */
+  #authBtn > div {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Cart badge positioning */
+  .cart-badge {
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 0.58rem !important;
+    top: -4px !important;
+    right: -4px !important;
+  }
+
+  /* Search dropdown — full width below nav */
   .search-results-dropdown {
     position: fixed !important;
     top: 60px !important;
@@ -1069,33 +1084,50 @@ footer {
     margin-top: 0 !important;
   }
 
-  /* ── MOBILE NAV: BOTTOM BAR (FLOATING) ───────────────── */
-  .nav-links { 
-    position: fixed !important; 
-    bottom: 0 !important; 
-    left: 0 !important; 
-    right: 0 !important; 
-    background: white !important; 
-    display: flex !important; 
-    justify-content: space-around !important; 
-    align-items: center !important; 
-    height: 60px !important; 
-    z-index: 2000 !important; 
+  /* ══ MOBILE BOTTOM NAV: FIXED 5-ITEM BAR ══════════════════ */
+  .nav-links {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    height: 58px !important;
+    background: white !important;
+    box-shadow: 0 -3px 20px rgba(0,0,0,0.08) !important;
+    border-top: 1px solid #eee !important;
+    z-index: 2000 !important;
     padding: 0 !important;
     margin: 0 !important;
-    box-shadow: 0 -4px 25px rgba(0,0,0,0.08) !important;
-    border-top: 1px solid #eee !important;
+    list-style: none !important;
   }
-  .nav-links li { margin: 0 !important; padding: 0 8px !important; }
-  .nav-links li a { 
-    display: flex !important; 
-    flex-direction: column !important; 
-    align-items: center !important; 
-    gap: 3px !important; 
-    font-size: 0.72rem !important; 
-    font-weight: 700 !important; 
+
+  .nav-links li {
+    flex: 1 1 0% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .nav-links li a {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
     color: #718096 !important;
-    transition: all 0.3s ease;
+    text-decoration: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    white-space: nowrap !important;
   }
 
   .nav-links a.active-nav {
@@ -1103,34 +1135,130 @@ footer {
   }
 
   .nav-links a .material-symbols-outlined {
-    display: block !important; /* Show icons in bottom nav */
-    font-size: 24px !important;
+    display: block !important;
+    font-size: 22px !important;
+    line-height: 1 !important;
   }
 
+  /* Show mobile-only items, hide desktop-only */
   .mobile-only {
-    display: block !important;
+    display: flex !important;
   }
-  
+
   .desktop-only {
     display: none !important;
   }
-  .nav-links li a:hover, 
-  .nav-links li a.active-nav { color: var(--blue) !important; }
-  
-  /* Hide 'About Us' from bottom nav on mobile */
-  .nav-links li:last-child { display: none !important; }
+
+  /* Hide "About Us" from bottom nav */
+  .nav-links li:has(a[href="about-us.html"]) {
+    display: none !important;
+  }
+
+  /* ══ BODY OFFSET FOR FIXED NAVBARS ═════════════════════════ */
+  /* Pad body so content is not hidden under the fixed top nav */
+  body {
+    padding-top: 60px !important;
+    padding-bottom: 68px !important;
+  }
+
+
 
   /* ── PRODUCT GRID: 2 COLUMNS ─────────────────────────── */
   .products-grid, .product-grid { 
     grid-template-columns: repeat(2, 1fr) !important; 
-    gap: 12px !important; 
-    padding: 16px 3vw 80px !important;   /* bottom pad for sticky nav bar */
+    gap: 10px !important; 
+    padding: 12px 3vw 80px !important;
   }
-  .prod-card { padding: 12px !important; }
-  .prod-img-wrap { height: 140px !important; }
-  .prod-title { font-size: 0.85rem !important; margin: 8px 0 4px !important; line-clamp: 2 !important; }
-  .prod-price { font-size: 0.95rem !important; }
-  .prod-btn { font-size: 0.8rem !important; padding: 10px !important; }
+
+  /* Compact card */
+  .prod-card { 
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+
+  /* Shrink product image area */
+  .prod-img { 
+    height: 130px !important; 
+    padding: 12px !important;
+  }
+
+  /* Compact body */
+  .prod-body { 
+    padding: 10px 12px 12px !important; 
+  }
+
+  /* Brand label */
+  .prod-brand { 
+    font-size: 0.65rem !important;
+    margin-bottom: 2px !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  /* Product name — clamp to 2 lines */
+  .prod-name { 
+    font-size: 0.82rem !important; 
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    margin-bottom: 4px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  /* Category/weight label */
+  .prod-cat { 
+    font-size: 0.7rem !important; 
+    margin-bottom: 8px !important; 
+    color: #888 !important;
+  }
+
+  /* Price row */
+  .prod-price-box { 
+    gap: 6px !important; 
+    margin-bottom: 10px !important; 
+  }
+
+  .prod-price { 
+    font-size: 1rem !important; 
+    font-weight: 900 !important;
+  }
+
+  .prod-old-price { 
+    font-size: 0.75rem !important; 
+  }
+
+  /* Add to Cart button */
+  .prod-btn { 
+    font-size: 0.75rem !important; 
+    padding: 9px 6px !important;
+    border-radius: 50px !important;
+    gap: 4px !important;
+  }
+
+  .prod-btn .material-symbols-outlined {
+    font-size: 15px !important;
+  }
+
+  /* Discount badge — slightly smaller */
+  .discount-badge-round {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 0.55rem !important;
+  }
+
+  /* Brand icon mini */
+  .brand-icon-mini {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.6rem !important;
+  }
+
+  /* Scrollable horizontal product grid (homepage featured) */
+  .products-grid.scrollable .prod-card {
+    min-width: 160px !important;
+  }
 
   /* Hero section tweaks for mobile */
   .hero-carousel { margin-bottom: 20px; }
@@ -1138,15 +1266,11 @@ footer {
   .card-title { font-size: 2rem !important; }
   .card-subtitle { font-size: 0.9rem !important; }
 
-  /* Bottom padding on entire page for fixed bottom nav */
-  body { padding-bottom: 60px !important; }
-  
-  /* Brand filter bar offsets below single-row header */
-  .brand-nav-wrapper { top: 68px !important; }
+  /* Brand filter bar — sits below fixed top nav (60px height) */
+  .brand-nav-wrapper { top: 60px !important; }
 }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* ══ SEARCH RESULTS DROPDOWN ══════════════════════════════════ */
 .search-results-dropdown {

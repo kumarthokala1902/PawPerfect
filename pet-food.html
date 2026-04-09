@@ -44,6 +44,14 @@
       margin: 0 auto;
     }
 
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        padding: 12px 3vw 80px !important;
+      }
+    }
+
     /* Horizontal Brand Nav Logic */
     .brand-nav-wrapper {
       position: sticky;

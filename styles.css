@@ -820,7 +820,7 @@ footer {
 
 .footer-col ul li a {
   text-decoration: none;
-  color: #718096;
+  color: var(--black);
   font-size: 0.92rem;
   font-weight: 500;
   transition: 0.3s;

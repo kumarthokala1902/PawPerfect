@@ -175,7 +175,8 @@
             </div>
             <div class="form-group">
               <label>Brand *</label>
-              <input class="form-control" id="fp-brand" placeholder="e.g. Royal Canin"/>
+              <input class="form-control" id="fp-brand" list="brand-options" placeholder="e.g. Royal Canin" autocomplete="off"/>
+              <datalist id="brand-options"></datalist>
             </div>
             <div class="form-group">
               <label>Category *</label>
@@ -190,16 +191,16 @@
               <input class="form-control" id="fp-cat" placeholder="e.g. Dog Food, Cat Food"/>
             </div>
             <div class="form-group">
-              <label>Price (₹) *</label>
-              <input class="form-control" id="fp-price" type="number" placeholder="e.g. 999"/>
+              <label>Original Price / MRP (₹) *</label>
+              <input class="form-control" id="fp-price" type="number" placeholder="e.g. 1200"/>
+            </div>
+            <div class="form-group">
+              <label>Discount (%)</label>
+              <input class="form-control" id="fp-discount" type="number" placeholder="e.g. 20"/>
             </div>
             <div class="form-group" style="display:none;">
-              <label>Original / Old Price (₹)</label>
-              <input class="form-control" id="fp-oldprice" type="number" placeholder="e.g. 1200"/>
-            </div>
-            <div class="form-group" style="display:none;">
-              <label>Discount Label</label>
-              <input class="form-control" id="fp-discount" placeholder="e.g. 20%"/>
+              <label>Old Price HIDDEN</label>
+              <input class="form-control" id="fp-oldprice" type="number"/>
             </div>
             <div class="form-group">
               <label>Stock Quantity *</label>

@@ -26,7 +26,7 @@ const db   = getFirestore(app);
 const ADMIN_USER   = 'admin';
 const ADMIN_PASS   = 'admin123';
 const SESSION_KEY  = 'mayaAdminSession';
-const PRODUCTS_KEY = 'mayaAdminProducts';
+const PRODUCTS_KEY = 'mayaPetsExtraProducts';
 const ROWS_PER_PAGE = 10;
 
 // ── STATE ────────────────────────────────────────────────────────
@@ -165,7 +165,10 @@ function saveAdminProducts(products) {
 function getStoredProducts() {
   const base  = (typeof ALL_PRODUCTS !== 'undefined') ? ALL_PRODUCTS : [];
   const admin = getAdminProducts();
-  return [...base, ...admin];
+  const map = new Map();
+  base.forEach(p => map.set(p.id, p));
+  admin.forEach(p => map.set(p.id, p));
+  return Array.from(map.values());
 }
 
 // Make available globally for cart.js
@@ -196,20 +199,21 @@ window.removeWeightRow = function(id) {
   if (el) el.remove();
 };
 
-function getWeightOptions() {
+function getWeightOptions(discountVal) {
   const rows = document.querySelectorAll('#weightOptionsList .weight-option-row');
   const opts = [];
   rows.forEach(row => {
     const wInput = row.querySelector('[id$="_w"]');
     const pInput = row.querySelector('[id$="_p"]');
     if (wInput && pInput && wInput.value.trim() && pInput.value) {
-      const pValue = parseInt(pInput.value);
-      const oValue = Math.ceil(pValue / 0.78);
+      const pValue = parseInt(pInput.value); // This is treated as Original Price
+      const oValue = pValue;
+      const finalPrice = discountVal ? Math.floor(pValue * (1 - (discountVal / 100))) : pValue;
       opts.push({ 
         w: wInput.value.trim(), 
-        p: pValue, 
+        p: finalPrice, 
         o: oValue, 
-        d: '22% OFF' 
+        d: discountVal ? `${discountVal}% OFF` : '' 
       });
     }
   });
@@ -236,9 +240,11 @@ window.saveProduct = function() {
   const brand    = document.getElementById('fp-brand').value.trim();
   const category = document.getElementById('fp-category').value;
   const cat      = document.getElementById('fp-cat').value.trim();
-  const price    = parseInt(document.getElementById('fp-price').value);
-  const oldPrice = Math.ceil(price / 0.78);
-  const discount = '22% OFF';
+  const inputPrice = parseInt(document.getElementById('fp-price').value);
+  const discountVal = parseInt(document.getElementById('fp-discount').value) || 0;
+  const oldPrice = inputPrice;
+  const price    = discountVal ? Math.floor(inputPrice * (1 - (discountVal / 100))) : inputPrice;
+  const discount = discountVal ? `${discountVal}% OFF` : '';
   const stock    = parseInt(document.getElementById('fp-stock').value) || 0;
   const unit     = document.getElementById('fp-unit').value;
   const status   = document.getElementById('fp-status').value;
@@ -259,7 +265,7 @@ window.saveProduct = function() {
     return;
   }
 
-  const weightOptions = getWeightOptions();
+  const weightOptions = getWeightOptions(discountVal);
   const adminProducts = getAdminProducts();
 
   if (editingId) {
@@ -267,10 +273,11 @@ window.saveProduct = function() {
     const idx = adminProducts.findIndex(p => p.id === editingId);
     if (idx !== -1) {
       adminProducts[idx] = { ...adminProducts[idx], name, brand, category, cat, price, oldPrice, discount, stock, unit, status, desc, features, badge, image, weightOptions };
-      saveAdminProducts(adminProducts);
-      showToast('✅ Product updated successfully!', 'success');
+    } else {
+      adminProducts.push({ id: editingId, name, brand, category, cat, price, oldPrice, discount, stock, unit, status, desc, features, badge, image, weightOptions, isOverride: true });
     }
-    // Also try updating in ALL_PRODUCTS array if it's a base product — not possible (static), skip
+    saveAdminProducts(adminProducts);
+    showToast('✅ Product updated successfully!', 'success');
     document.getElementById('editingProductId').value = '';
     document.getElementById('addFormTitle').textContent = 'New Product';
     document.getElementById('saveProductBtnText').textContent = 'Save Product';
@@ -323,6 +330,12 @@ function populateProductFilters() {
   const cur = sel.value;
   sel.innerHTML = '<option value="">All Brands</option>' +
     brands.map(b => `<option value="${b}" ${b === cur ? 'selected' : ''}>${b}</option>`).join('');
+
+  // Also populate the brand datalist for the Add Product form
+  const dataList = document.getElementById('brand-options');
+  if (dataList) {
+    dataList.innerHTML = brands.map(b => `<option value="${b}"></option>`).join('');
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -406,9 +419,8 @@ window.editProduct = function(id) {
   document.getElementById('fp-brand').value    = p.brand || '';
   document.getElementById('fp-category').value = p.category || 'Pet Food';
   document.getElementById('fp-cat').value      = p.cat || '';
-  document.getElementById('fp-price').value    = p.price || '';
-  document.getElementById('fp-oldprice').value = p.oldPrice || '';
-  document.getElementById('fp-discount').value = p.discount || '';
+  document.getElementById('fp-price').value    = p.oldPrice || p.price || '';
+  document.getElementById('fp-discount').value = p.discount ? parseInt(p.discount) : '';
   document.getElementById('fp-stock').value    = p.stock || '';
   document.getElementById('fp-unit').value     = p.unit || 'KG';
   document.getElementById('fp-status').value   = p.status || 'active';
@@ -430,7 +442,7 @@ window.editProduct = function(id) {
   document.getElementById('weightOptionsList').innerHTML = '';
   weightOptionCount = 0;
   if (p.weightOptions && p.weightOptions.length > 0) {
-    p.weightOptions.forEach(opt => addWeightRow(opt.w, opt.p));
+    p.weightOptions.forEach(opt => addWeightRow(opt.w, opt.o || opt.p));
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -351,7 +351,12 @@ const ALL_PRODUCTS = [
 function getStoredProducts() {
   const stored = localStorage.getItem('mayaPetsExtraProducts');
   const extra = stored ? JSON.parse(stored) : [];
-  return [...ALL_PRODUCTS, ...extra];
+  const map = new Map();
+  if (typeof ALL_PRODUCTS !== 'undefined') {
+    ALL_PRODUCTS.forEach(p => map.set(p.id, p));
+  }
+  extra.forEach(p => map.set(p.id, p));
+  return Array.from(map.values());
 }
 
 // Review Persistence Logic

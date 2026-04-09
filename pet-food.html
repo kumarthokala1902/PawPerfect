@@ -546,13 +546,14 @@
         <div class="prod-card" onclick="showProductDetail('${p.id}')">
           <div class="card-header-overlay">
             <div class="brand-icon-mini">${p.badge || p.brand.substring(0, 2).toUpperCase()}</div>
-            <div class="discount-badge-round" style="${p.discount === 'BEST VALUE' ? 'background:var(--red)' : ''}">${p.discount}${p.discount.includes('%') ? '<span>OFF</span>' : ''}</div>
+            <div class="discount-badge-round" style="${p.discount === 'BEST VALUE' ? 'background:var(--red)' : ''}">${p.discount.replace(' OFF', '')}${p.discount.includes('%') ? '<span>OFF</span>' : ''}</div>
           </div>
           <div class="prod-img"><img src="${p.image}" alt="${p.name}"></div>
           <div class="prod-body">
             <span class="prod-brand" style="${p.brand === 'Maximom!' ? 'color:var(--red)' : ''}">${p.brand}</span>
             <h3 class="prod-name">${p.name}</h3>
             <span class="prod-cat">${p.weightOptions ? p.weightOptions[0].w : p.cat}</span>
+            ${p.stock > 0 && p.stock < 10 ? `<div style="color:var(--red); font-size:0.75rem; font-weight:700; margin-top:2px;">Only ${p.stock} left in stock! Hurry up!</div>` : ''}
             <div class="prod-price-box">
               <span class="prod-price">₹${p.price.toLocaleString()}</span>
               <span class="prod-old-price">₹${p.oldPrice.toLocaleString()}</span>

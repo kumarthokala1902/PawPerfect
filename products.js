@@ -395,12 +395,41 @@ function initGlobalSearch() {
   const searchInput = document.getElementById('typingSearchBar');
   if (!searchInput) return;
 
+  const searchContainer = searchInput.closest('.search-container');
   let resultsBox = document.getElementById('searchResultsBox');
   if (!resultsBox) {
     resultsBox = document.createElement('div');
     resultsBox.id = 'searchResultsBox';
     resultsBox.className = 'search-results-dropdown';
     searchInput.parentElement.appendChild(resultsBox);
+  }
+
+  // Handle mobile expansion
+  searchInput.addEventListener('focus', () => {
+    if (window.innerWidth <= 768) {
+      searchContainer.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  // Ensure clicking the icon also focuses the input
+  const searchIcon = searchContainer.querySelector('.search-icon');
+  if (searchIcon) {
+    searchIcon.addEventListener('click', () => {
+      searchInput.focus();
+    });
+  }
+
+  // Handle Close Button
+  const closeBtn = document.getElementById('closeSearch');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      searchContainer.classList.remove('active');
+      searchInput.value = '';
+      resultsBox.style.display = 'none';
+      searchInput.blur();
+    });
   }
 
   searchInput.addEventListener('input', (e) => {
@@ -436,8 +465,11 @@ function initGlobalSearch() {
   });
 
   document.addEventListener('click', (e) => {
-    if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+    if (!searchContainer.contains(e.target) && !resultsBox.contains(e.target)) {
       resultsBox.style.display = 'none';
+      if (window.innerWidth <= 768) {
+        searchContainer.classList.remove('active');
+      }
     }
   });
 }
@@ -485,7 +517,26 @@ function initTypingAnimation() {
   type();
 }
 
+function initNavHighlight() {
+  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+  const navLinks = document.querySelectorAll('.nav-links a');
+  
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+    const linkPath = href.split('/').pop();
+    
+    // Exact match or handle index.html / root case
+    if (linkPath === currentPath || (currentPath === 'index.html' && linkPath === '')) {
+      link.classList.add('active-nav');
+    } else {
+      link.classList.remove('active-nav');
+    }
+  });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   initGlobalSearch();
   initTypingAnimation();
+  initNavHighlight();
 });

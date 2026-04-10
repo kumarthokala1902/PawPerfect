@@ -798,7 +798,20 @@ select.form-control { cursor: pointer; }
   .stats-grid {
     display: flex !important;
     flex-direction: row !important;
-    gap: 30px !important;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   BULK IMPORT SPECIFIC
+   ────────────────────────────────────────────────────────────── */
+.bulk-status-icon {
+  font-size: 16px;
+  vertical-align: middle;
+}
+.bulk-success-text { color: var(--green); font-weight: 700; }
+.bulk-error-text { color: var(--red); font-weight: 700; }
+.bulk-row-num { color: var(--text2); font-weight: 600; font-family: monospace; }
+  gap: 30px !important;
   }
 
   .panel-title {
@@ -845,3 +858,14 @@ select.form-control { cursor: pointer; }
     color: #444;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────
+   BULK IMPORT SPECIFIC
+   ────────────────────────────────────────────────────────────── */
+.bulk-status-icon {
+  font-size: 16px;
+  vertical-align: middle;
+}
+.bulk-success-text { color: var(--green); font-weight: 700; }
+.bulk-error-text { color: var(--red); font-weight: 700; }
+.bulk-row-num { color: var(--text2); font-weight: 600; font-family: monospace; }

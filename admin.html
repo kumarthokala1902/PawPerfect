@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
   <link rel="stylesheet" href="admin.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 
@@ -164,6 +165,9 @@
       <div class="section-view" id="sec-add-product">
         <div class="section-header">
           <h2>➕ Add Product</h2>
+          <button class="btn-secondary" onclick="openBulkImportModal()" style="background:var(--white);">
+            <span class="material-symbols-outlined">upload_file</span> Bulk Import
+          </button>
         </div>
         <div class="panel">
           <div class="panel-title"><span class="material-symbols-outlined">add_box</span> <span id="addFormTitle">New Product</span></div>
@@ -455,6 +459,83 @@
         <span class="material-symbols-outlined">delete</span> Yes, Delete
       </button>
       <button class="btn-secondary" onclick="document.getElementById('deleteModal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BULK IMPORT MODAL ═══════════════════════════════════════ -->
+<div class="modal-overlay" id="bulkImportModal">
+  <div class="modal-box" style="max-width:650px;">
+    <div class="modal-header">
+      <h3>🚀 Bulk Product Import</h3>
+      <button class="modal-close-btn" onclick="closeBulkImportModal()"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    
+    <div id="bulkStep1">
+      <div style="background:rgba(4,151,177,0.06); padding:20px; border-radius:14px; margin-bottom:24px;">
+        <p style="font-size:0.9rem; color:var(--text); margin-bottom:12px; font-weight:600;">Download our template to get started:</p>
+        <button class="btn-secondary" onclick="downloadReferenceCSV()" style="width:100%; background:white;">
+          <span class="material-symbols-outlined">download</span> Download Reference File (.csv)
+        </button>
+      </div>
+
+      <div class="img-upload-zone" id="bulkUploadZone" 
+           onselctstart="return false"
+           ondragover="event.preventDefault(); this.style.borderColor='var(--blue)'; this.style.background='rgba(4,151,177,0.05)'"
+           ondragleave="event.preventDefault(); this.style.borderColor='var(--border)'; this.style.background='var(--gray)'"
+           ondrop="handleBulkDrop(event)"
+           onclick="document.getElementById('bulkFileRef').click()">
+        <span class="material-symbols-outlined upload-icon">cloud_upload</span>
+        <p>Drop your CSV file here or click to browse</p>
+        <small>Only .csv files are supported</small>
+        <input type="file" id="bulkFileRef" accept=".csv" style="display:none;" onchange="handleBulkFileSelect(event)"/>
+      </div>
+    </div>
+
+    <div id="bulkStep2" style="display:none;">
+      <div style="margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span id="bulkProgressLabel" style="font-size:0.85rem; font-weight:700; color:var(--text2);">Processing...</span>
+          <span id="bulkPercentLabel" style="font-size:0.85rem; font-weight:700; color:var(--blue);">0%</span>
+        </div>
+        <div style="height:8px; background:var(--gray); border-radius:10px; overflow:hidden;">
+          <div id="bulkProgressBar" style="width:0%; height:100%; background:var(--blue); transition:width 0.3s ease;"></div>
+        </div>
+      </div>
+      <div id="bulkStatusMsg" style="text-align:center; padding:10px; font-size:0.9rem; font-weight:600; color:var(--text2);"></div>
+    </div>
+
+    <div id="bulkStep3" style="display:none;">
+      <div class="stat-card" style="margin-bottom:20px; box-shadow:none; border:1.5px solid var(--border);">
+         <div style="display:flex; gap:20px; width:100%;">
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:1.5rem; font-weight:900; color:var(--green);" id="bulkSuccessCount">0</div>
+              <div style="font-size:0.75rem; font-weight:700; color:var(--text2); text-transform:uppercase;">Success</div>
+            </div>
+            <div style="width:1px; background:var(--border);"></div>
+            <div style="flex:1; text-align:center;">
+              <div style="font-size:1.5rem; font-weight:900; color:var(--red);" id="bulkErrorCount">0</div>
+              <div style="font-size:0.75rem; font-weight:700; color:var(--text2); text-transform:uppercase;">Failed</div>
+            </div>
+         </div>
+      </div>
+      
+      <div style="max-height:250px; overflow-y:auto; border:1.5px solid var(--border); border-radius:12px;" id="bulkResultsLogWrap">
+        <table class="data-table" style="font-size:0.8rem;">
+          <thead style="position:sticky; top:0; z-index:10;">
+            <tr>
+              <th>Row</th>
+              <th>Product</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="bulkResultsLog"></tbody>
+        </table>
+      </div>
+
+      <button class="btn-primary" style="width:100%; margin-top:24px;" onclick="closeBulkImportModal()">
+        Done & Refresh Table
+      </button>
     </div>
   </div>
 </div>

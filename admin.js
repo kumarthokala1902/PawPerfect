@@ -893,3 +893,182 @@ window.updateOrderStatusFromDetail = async function(orderId, userId) {
 window.printInvoice = function() {
   window.print();
 };
+
+/* ══════════════════════════════════════════════════════════════
+   BULK IMPORT LOGIC
+   ══════════════════════════════════════════════════════════════ */
+window.openBulkImportModal = function() {
+  document.getElementById('bulkImportModal').classList.add('open');
+  switchToBulkStep(1);
+};
+
+window.closeBulkImportModal = function() {
+  document.getElementById('bulkImportModal').classList.remove('open');
+  if (currentSection === 'manage-products' || currentSection === 'add-product') {
+    renderProductsTable();
+    populateProductFilters();
+  }
+};
+
+function switchToBulkStep(step) {
+  ['bulkStep1', 'bulkStep2', 'bulkStep3'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (i + 1 === step) ? 'block' : 'none';
+  });
+}
+
+window.downloadReferenceCSV = function() {
+  const headers = ['name', 'brand', 'category', 'cat', 'price', 'discount', 'stock', 'unit', 'status', 'features', 'desc', 'image', 'badge'];
+  const sample = ['Adult Chicken & Rice', 'Bairo', 'Pet Food', 'Dog Food', '1200', '20', '50', 'KG', 'active', 'High Protein | Easy Digest', 'Premium nutrition for adult dogs.', 'images/Barioo/Bario-Adult EC-Chicken and rice.png', 'BA'];
+  
+  const csvContent = [headers.join(','), sample.join(',')].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute("download", "mayapets_bulk_template.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+window.handleBulkFileSelect = function(event) {
+  const file = event.target.files[0];
+  if (file) startBulkImport(file);
+};
+
+window.handleBulkDrop = function(event) {
+  event.preventDefault();
+  const file = event.dataTransfer.files[0];
+  if (file && file.name.endsWith('.csv')) {
+    startBulkImport(file);
+  } else {
+    showToast('Please drop a valid CSV file.', 'error');
+  }
+  // Reset zone style
+  const zone = document.getElementById('bulkUploadZone');
+  if (zone) {
+    zone.style.borderColor = 'var(--border)';
+    zone.style.background = 'var(--gray)';
+  }
+};
+
+function startBulkImport(file) {
+  switchToBulkStep(2);
+  const bar = document.getElementById('bulkProgressBar');
+  const pct = document.getElementById('bulkPercentLabel');
+  const msg = document.getElementById('bulkStatusMsg');
+  
+  if (bar) bar.style.width = '0%';
+  if (pct) pct.textContent = '0%';
+  if (msg) msg.textContent = 'Reading file...';
+
+  if (typeof Papa === 'undefined') {
+    showToast('CSV Parser library not loaded. Please refresh.', 'error');
+    switchToBulkStep(1);
+    return;
+  }
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      processBulkData(results.data);
+    },
+    error: function(err) {
+      showToast('Error parsing CSV: ' + err.message, 'error');
+      switchToBulkStep(1);
+    }
+  });
+}
+
+async function processBulkData(rows) {
+  const resultsLog = document.getElementById('bulkResultsLog');
+  if (resultsLog) resultsLog.innerHTML = '';
+  
+  let successCount = 0;
+  let errorCount = 0;
+  const total = rows.length;
+  
+  const adminProducts = getAdminProducts();
+  const timestamp = Date.now();
+
+  for (let i = 0; i < total; i++) {
+    const row = rows[i];
+    const rowNum = i + 1;
+    
+    const percent = Math.round(((i + 1) / total) * 100);
+    const bar = document.getElementById('bulkProgressBar');
+    const pct = document.getElementById('bulkPercentLabel');
+    const msg = document.getElementById('bulkStatusMsg');
+    
+    if (bar) bar.style.width = percent + '%';
+    if (pct) pct.textContent = percent + '%';
+    if (msg) msg.textContent = `Processing row ${i+1} of ${total}...`;
+
+    const validation = validateBulkRow(row);
+    
+    if (resultsLog) {
+      const tr = document.createElement('tr');
+      if (validation.valid) {
+        successCount++;
+        const pMRP = parseInt(row.price);
+        const pDisc = parseInt(row.discount) || 0;
+        const pFinal = pDisc ? Math.floor(pMRP * (1 - (pDisc / 100))) : pMRP;
+        
+        const newProduct = {
+          id: 'adm_bulk_' + timestamp + '_' + i,
+          name: row.name.trim(),
+          brand: row.brand.trim(),
+          category: row.category || 'Pet Food',
+          cat: row.cat || '',
+          oldPrice: pMRP,
+          price: pFinal,
+          discount: pDisc ? `${pDisc}% OFF` : '',
+          stock: parseInt(row.stock) || 0,
+          unit: row.unit || 'KG',
+          status: row.status || 'active',
+          desc: row.desc || '',
+          features: row.features || '',
+          badge: row.badge || row.brand.substring(0,2).toUpperCase(),
+          image: row.image || 'images/placeholder.png',
+          isAdminAdded: true
+        };
+        adminProducts.unshift(newProduct);
+        
+        tr.innerHTML = `
+          <td><span class="bulk-row-num">#${rowNum}</span></td>
+          <td><div class="product-name-cell">${row.name}</div></td>
+          <td><span class="bulk-success-text"><span class="material-symbols-outlined bulk-status-icon">check_circle</span> Success</span></td>
+        `;
+      } else {
+        errorCount++;
+        tr.innerHTML = `
+          <td><span class="bulk-row-num">#${rowNum}</span></td>
+          <td><div class="product-name-cell">${row.name || 'Unknown'}</div></td>
+          <td><span class="bulk-error-text" title="${validation.error}"><span class="material-symbols-outlined bulk-status-icon">error</span> Failed: ${validation.error}</span></td>
+        `;
+      }
+      resultsLog.appendChild(tr);
+    }
+    
+    if (total > 20) await new Promise(r => setTimeout(r, 10));
+  }
+
+  saveAdminProducts(adminProducts);
+  
+  const okCountEl = document.getElementById('bulkSuccessCount');
+  const errCountEl = document.getElementById('bulkErrorCount');
+  if (okCountEl) okCountEl.textContent = successCount;
+  if (errCountEl) errCountEl.textContent = errorCount;
+  
+  switchToBulkStep(3);
+  showToast(`Bulk Import Complete: ${successCount} Success, ${errorCount} Failed`, successCount > 0 ? 'success' : 'error');
+}
+
+function validateBulkRow(row) {
+  if (!row.name || !row.name.trim()) return { valid: false, error: 'Missing Name' };
+  if (!row.brand || !row.brand.trim()) return { valid: false, error: 'Missing Brand' };
+  if (!row.price || isNaN(parseInt(row.price))) return { valid: false, error: 'Invalid/Missing Price' };
+  if (!row.desc || !row.desc.trim()) return { valid: false, error: 'Missing Description' };
+  return { valid: true };
+}

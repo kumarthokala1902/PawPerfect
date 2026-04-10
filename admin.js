@@ -564,6 +564,7 @@ function updatePendingBadge() {
 window.renderOrdersTable = function() {
   const search  = (document.getElementById('orderSearch')?.value || '').toLowerCase();
   const statusF = document.getElementById('orderStatusFilter')?.value || '';
+  const groupByType = document.getElementById('orderGroupBy')?.value || '';
 
   let orders = allOrders.filter(o => {
     const matchSearch = !search ||
@@ -577,14 +578,10 @@ window.renderOrdersTable = function() {
     return matchSearch && matchStatus;
   });
 
-  const total = orders.length;
-  const start = (orderPage - 1) * ROWS_PER_PAGE;
-  const page  = orders.slice(start, start + ROWS_PER_PAGE);
-
+  const tbody = document.getElementById('ordersTableBody');
+  const paginationEl = document.getElementById('ordersPagination');
   document.getElementById('ordersLoading').style.display  = 'none';
   document.getElementById('ordersTableWrap').style.display = 'block';
-
-  const tbody = document.getElementById('ordersTableBody');
 
   if (orders.length === 0) {
     tbody.innerHTML = `<tr><td colspan="8">
@@ -592,47 +589,98 @@ window.renderOrdersTable = function() {
         <span class="material-symbols-outlined">receipt_long</span>
         <h3>No orders found</h3><p>Orders placed by customers will appear here.</p>
       </div></td></tr>`;
-    document.getElementById('ordersPagination').innerHTML = '';
+    if (paginationEl) paginationEl.innerHTML = '';
     return;
   }
 
-  tbody.innerHTML = page.map(order => {
-    const st = order.status || 'Ordered';
-    const stClass = st.toLowerCase().replace(/\s+/g, '_');
-    const customerName = order.userName || order.address?.name || 'Customer';
-    const itemsSummary = (order.items || []).map(i => i.name).slice(0, 2).join(', ') +
-      (order.items?.length > 2 ? ` +${order.items.length - 2} more` : '');
-    const orderDate = order.date || '—';
+  let html = '';
 
-    const statuses = ['Pending','Confirmed','Processing','Shipped','Out for Delivery','Delivered','Cancelled'];
+  if (groupByType) {
+    // CATEGORIZED VIEW — No pagination as per requirements to "list every order"
+    if (paginationEl) paginationEl.innerHTML = '';
+    
+    // Ensure chronological order for grouping logic
+    orders.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-    return `
-    <tr>
-      <td style="font-weight:800;font-size:0.88rem;white-space:nowrap;">${order.orderId || '—'}</td>
-      <td style="cursor:pointer;" onclick="viewOrderDetails('${order.orderId}')">
-        <div style="font-weight:700;font-size:0.88rem;color:var(--blue);">${customerName}</div>
-        <div style="font-size:0.78rem;color:#888;">${order.userEmail || ''}</div>
-      </td>
-      <td style="font-size:0.82rem;color:#555;max-width:200px;">${itemsSummary || '—'}</td>
-      <td style="font-weight:800;">₹${(order.total||0).toLocaleString()}</td>
-      <td style="font-size:0.82rem;font-weight:600;">${order.paymentMethod || 'COD'}</td>
-      <td style="font-size:0.82rem;white-space:nowrap;">${orderDate}</td>
-      <td><span class="badge ${stClass}">${st}</span></td>
-      <td>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <select class="status-select" id="stSel_${order.orderId}">
-            ${statuses.map(s => `<option value="${s}" ${s===st?'selected':''}>${s}</option>`).join('')}
-          </select>
-          <button class="btn-update-status" onclick="updateOrderStatus('${order.orderId}','${order.userId || ''}')">
-            Update
-          </button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
+    let currentGroupKey = '';
+    
+    orders.forEach(order => {
+      const dateStr = order.date || '—'; // Expected format: YYYY-MM-DD
+      let groupKey = '';
+      let groupLabel = '';
+      
+      if (groupByType === 'year') {
+        groupKey = dateStr.substring(0, 4);
+        groupLabel = `Year: ${groupKey}`;
+      } else if (groupByType === 'month') {
+        groupKey = dateStr.substring(0, 7); // YYYY-MM
+        const d = new Date(dateStr);
+        const monthName = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+        groupLabel = `Month: ${monthName}`;
+      } else if (groupByType === 'day') {
+        groupKey = dateStr;
+        const d = new Date(dateStr);
+        groupLabel = d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+      }
 
-  renderPagination('ordersPagination', 'order', total, orderPage);
+      if (groupKey !== currentGroupKey) {
+        currentGroupKey = groupKey;
+        const icon = groupByType === 'year' ? 'calendar_today' : (groupByType === 'month' ? 'calendar_month' : 'event');
+        html += `<tr><td colspan="8" class="group-header">
+          <span class="material-symbols-outlined group-header-icon">${icon}</span>
+          ${groupLabel}
+        </td></tr>`;
+      }
+      
+      html += renderOrderRowHtml(order);
+    });
+  } else {
+    // STANDARD VIEW (Paginated)
+    const total = orders.length;
+    const start = (orderPage - 1) * ROWS_PER_PAGE;
+    const page  = orders.slice(start, start + ROWS_PER_PAGE);
+    
+    html = page.map(order => renderOrderRowHtml(order)).join('');
+    renderPagination('ordersPagination', 'order', total, orderPage);
+  }
+
+  tbody.innerHTML = html;
 };
+
+function renderOrderRowHtml(order) {
+  const st = order.status || 'Ordered';
+  const stClass = st.toLowerCase().replace(/\s+/g, '_');
+  const customerName = order.userName || order.address?.name || 'Customer';
+  const itemsSummary = (order.items || []).map(i => i.name).slice(0, 2).join(', ') +
+    (order.items?.length > 2 ? ` +${order.items.length - 2} more` : '');
+  const orderDate = order.date || '—';
+
+  const statuses = ['Pending','Confirmed','Processing','Shipped','Out for Delivery','Delivered','Cancelled'];
+
+  return `
+  <tr>
+    <td style="font-weight:800;font-size:0.88rem;white-space:nowrap;">${order.orderId || '—'}</td>
+    <td style="cursor:pointer;" onclick="viewOrderDetails('${order.orderId}')">
+      <div style="font-weight:700;font-size:0.88rem;color:var(--blue);">${customerName}</div>
+      <div style="font-size:0.78rem;color:#888;">${order.userEmail || ''}</div>
+    </td>
+    <td style="font-size:0.82rem;color:#555;max-width:200px;">${itemsSummary || '—'}</td>
+    <td style="font-weight:800;">₹${(order.total||0).toLocaleString()}</td>
+    <td style="font-size:0.82rem;font-weight:600;">${order.paymentMethod || 'COD'}</td>
+    <td style="font-size:0.82rem;white-space:nowrap;">${orderDate}</td>
+    <td><span class="badge ${stClass}">${st}</span></td>
+    <td>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select class="status-select" id="stSel_${order.orderId}">
+          ${statuses.map(s => `<option value="${s}" ${s===st?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <button class="btn-update-status" onclick="updateOrderStatus('${order.orderId}','${order.userId || ''}')">
+          Update
+        </button>
+      </div>
+    </td>
+  </tr>`;
+}
 
 window.updateOrderStatus = async function(orderId, userId) {
   const sel = document.getElementById('stSel_' + orderId);

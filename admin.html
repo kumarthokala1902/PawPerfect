@@ -328,6 +328,12 @@
               <input type="text" id="orderSearch" placeholder="Search by Order ID or customer..." oninput="renderOrdersTable()"/>
             </div>
             <div style="display:flex;gap:10px;align-items:center;">
+              <select class="filter-select" id="orderGroupBy" onchange="renderOrdersTable()">
+                <option value="">Group By: None</option>
+                <option value="year">Yearly</option>
+                <option value="month">Monthly</option>
+                <option value="day">Daily</option>
+              </select>
               <select class="filter-select" id="orderStatusFilter" onchange="renderOrdersTable()">
                 <option value="">All Status</option>
                 <option value="Pending">Pending</option>

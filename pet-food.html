@@ -290,14 +290,13 @@
       }
     }
 
-    /* Continuous Scrolling Marquee */
+    /* Brand Bar — drag / swipe to scroll, no auto-animation */
     .marquee-wrapper {
       margin-top: 50px;
       width: 100%;
       height: 80px;
       overflow-x: auto;
       overflow-y: hidden;
-      white-space: nowrap;
       position: relative;
       background: rgba(247, 250, 252, 0.7);
       backdrop-filter: blur(5px);
@@ -307,65 +306,49 @@
       display: flex;
       align-items: center;
       z-index: 2;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none;  /* IE/Edge */
       cursor: grab;
+      /* hide scrollbar visually */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
-    .marquee-wrapper::-webkit-scrollbar {
-      display: none; /* Chrome/Safari */
-    }
+    .marquee-wrapper::-webkit-scrollbar { display: none; }
+    .marquee-wrapper:active { cursor: grabbing; }
 
-    /* Fade edges for smooth entry/exit */
+    /* Fade edges */
     .marquee-wrapper::before,
     .marquee-wrapper::after {
       content: '';
       position: absolute;
       top: 0;
-      width: 120px;
+      width: 80px;
       height: 100%;
       z-index: 3;
       pointer-events: none;
     }
-
     .marquee-wrapper::before {
       left: 0;
       background: linear-gradient(to right, white, transparent);
     }
-
     .marquee-wrapper::after {
       right: 0;
       background: linear-gradient(to left, white, transparent);
     }
 
-    .marquee-content {
+    /* Single flat list of chips */
+    .marquee-track {
       display: flex;
-      gap: 30px;
-      padding-left: 30px;
+      gap: 14px;
+      padding: 0 20px;
+      flex-shrink: 0;
       width: max-content;
-      transition: none; /* Ensure no conflict with JS scrolling */
-    }
-
-    .marquee-wrapper:active {
-      cursor: grabbing;
-    }
-
-    @keyframes marqueeScroll {
-      0% {
-        transform: translateX(0);
-      }
-
-      100% {
-        transform: translateX(calc(-50% - 15px));
-      }
-
-      /* the -15px accounts for half the gap */
+      user-select: none;
     }
 
     .marquee-chip {
       background: white;
       border: 1.5px solid #e2e8f0;
-      padding: 12px 32px;
+      padding: 12px 28px;
       border-radius: 50px;
       font-weight: 800;
       font-size: 1rem;
@@ -377,14 +360,15 @@
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .marquee-chip:hover {
       background: var(--yellow);
       color: var(--black);
       border-color: var(--yellow);
-      transform: scale(1.1) translateY(-3px);
-      box-shadow: 0 15px 30px rgba(255, 214, 0, 0.3);
+      transform: scale(1.08) translateY(-3px);
+      box-shadow: 0 12px 28px rgba(255, 214, 0, 0.3);
       z-index: 5;
     }
 
@@ -489,30 +473,16 @@
         </div>
       </div>
 
-      <!-- Scrolling Brand Ticker within Banner -->
-      <div class="marquee-wrapper">
-        <div class="marquee-content">
-          <!-- Set 1 -->
+      <!-- Brand Filter Bar — drag or swipe to scroll -->
+      <div class="marquee-wrapper" id="brandBar">
+        <div class="marquee-track">
           <div class="marquee-chip" onclick="setFilter('Bairo')">BAIRO</div>
           <div class="marquee-chip" onclick="setFilter('MIOW')">MIOW</div>
           <div class="marquee-chip" onclick="setFilter('Bill')">BILLI</div>
           <div class="marquee-chip" onclick="setFilter('Maximom!')">MAXIMOM!</div>
           <div class="marquee-chip" onclick="setFilter('Defender')">DEFENDER</div>
           <div class="marquee-chip" onclick="setFilter('Countryside')">COUNTRYSIDE</div>
-          <div class="marquee-chip" onclick="setFilter('Royal Canin')"><span style="color:red; font-weight:900;">ROYAL
-              CANIN</span></div>
-          <div class="marquee-chip" onclick="setFilter('Catsup')">CATSUP</div>
-          <div class="marquee-chip" onclick="setFilter('Wagsup')">WAGSUP</div>
-
-          <!-- Set 2 (for continuous scroll loop) -->
-          <div class="marquee-chip" onclick="setFilter('Bairo')">BAIRO</div>
-          <div class="marquee-chip" onclick="setFilter('MIOW')">MIOW</div>
-          <div class="marquee-chip" onclick="setFilter('Bill')">BILLI</div>
-          <div class="marquee-chip" onclick="setFilter('Maximom!')">MAXIMOM!</div>
-          <div class="marquee-chip" onclick="setFilter('Defender')">DEFENDER</div>
-          <div class="marquee-chip" onclick="setFilter('Countryside')">COUNTRYSIDE</div>
-          <div class="marquee-chip" onclick="setFilter('Royal Canin')"><span style="color:red; font-weight:900;">ROYAL
-              CANIN</span></div>
+          <div class="marquee-chip" onclick="setFilter('Royal Canin')"><span style="color:red; font-weight:900;">ROYAL CANIN</span></div>
           <div class="marquee-chip" onclick="setFilter('Catsup')">CATSUP</div>
           <div class="marquee-chip" onclick="setFilter('Wagsup')">WAGSUP</div>
         </div>
@@ -587,43 +557,42 @@
 
     window.onload = () => {
       init();
-      initMarqueeScroll();
+      initBrandBarDrag();
     };
 
-    function initMarqueeScroll() {
-      const wrapper = document.querySelector('.marquee-wrapper');
-      const content = document.querySelector('.marquee-content');
-      if (!wrapper || !content) return;
+    /* Drag-to-scroll for the brand bar */
+    function initBrandBarDrag() {
+      const bar = document.getElementById('brandBar');
+      if (!bar) return;
+      let isDragging = false, startX = 0, startScroll = 0;
 
-      let isInteracting = false;
-      let scrollSpeed = 0.8; // px per frame
-      let animationId = null;
-
-      function step() {
-        if (!isInteracting) {
-          wrapper.scrollLeft += scrollSpeed;
-          // Loop reset: since content is duplicated (Set 1 + Set 2), 
-          // we reset once we've scrolled past the first set.
-          if (wrapper.scrollLeft >= content.scrollWidth / 2) {
-            wrapper.scrollLeft = 0;
-          }
-        }
-        animationId = requestAnimationFrame(step);
-      }
-
-      // Interaction listeners to pause auto-scroll
-      wrapper.addEventListener('mouseenter', () => isInteracting = true);
-      wrapper.addEventListener('mouseleave', () => isInteracting = false);
-      wrapper.addEventListener('touchstart', () => isInteracting = true, {passive: true});
-      wrapper.addEventListener('touchend', () => isInteracting = false);
-      
-      // Also stop if user manually scrolls (e.g. scrollbar or swipe)
-      wrapper.addEventListener('scroll', () => {
-        // Simple logic: if user scrolls far from predicted auto-scroll, they are interacting
-        // But for simplicity, we mostly rely on touch/mouse events.
+      bar.addEventListener('mousedown', e => {
+        isDragging = true;
+        startX = e.pageX - bar.offsetLeft;
+        startScroll = bar.scrollLeft;
+        bar.style.cursor = 'grabbing';
+      });
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+        bar.style.cursor = 'grab';
+      });
+      bar.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const dx = (e.pageX - bar.offsetLeft) - startX;
+        bar.scrollLeft = startScroll - dx;
       });
 
-      animationId = requestAnimationFrame(step);
+      /* Touch support */
+      let touchStartX = 0, touchStartScroll = 0;
+      bar.addEventListener('touchstart', e => {
+        touchStartX = e.touches[0].pageX;
+        touchStartScroll = bar.scrollLeft;
+      }, { passive: true });
+      bar.addEventListener('touchmove', e => {
+        const dx = e.touches[0].pageX - touchStartX;
+        bar.scrollLeft = touchStartScroll - dx;
+      }, { passive: true });
     }
   </script>
   <!-- ══ FOOTER ═══════════════════════════════════════════════════ -->

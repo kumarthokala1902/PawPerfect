@@ -1360,8 +1360,31 @@
       
       <div class="products-grid scrollable">
 
-        <!-- 1. Countryside -->
-        <div class="prod-card reveal" data-id="pf35" onclick="window.location.href='product-detail.html?id=pf35'" style="cursor:pointer;">
+        <!-- 1. Bairo (Hardcoded Featured Card) -->
+        <div class="prod-card" onclick="window.location.href='product-detail.html?id=pf1'" style="cursor:pointer; display: flex !important; opacity: 1 !important; visibility: visible !important;">
+          <div class="card-header-overlay">
+            <div class="brand-icon-mini" style="color:#511b15;">BA</div>
+            <div class="discount-badge-round" style="background:var(--red); color:white;">22%<span>OFF</span></div>
+          </div>
+          <div class="prod-img">
+            <img src="images/Barioo/Bario-Adult EC-Chicken and rice.png" alt="Bairo Adult EC Chicken" style="opacity:1 !important;">
+          </div>
+          <div class="prod-body">
+            <span class="prod-brand" style="color:#511b15;">Bairo</span>
+            <h3 class="prod-name">Adult EC Chicken &amp; Rice</h3>
+            <span class="prod-cat">Dog Food</span>
+            <div class="prod-price-box">
+              <span class="prod-price">₹599</span>
+              <span class="prod-old-price">₹768</span>
+            </div>
+            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'Adult EC Chicken &amp; Rice', price: 599, image: 'images/Barioo/Bario-Adult EC-Chicken and rice.png', brand: 'Bairo', qty: 1, unit: 'KG'})" style="display:flex !important;">
+              <span class="material-symbols-outlined">shopping_bag</span> Add to Cart
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Countryside -->
+        <div class="prod-card" data-id="pf35" onclick="window.location.href='product-detail.html?id=pf35'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini">CS</div>
             <div class="discount-badge-round">15%<span>OFF</span></div>
@@ -1384,7 +1407,7 @@
         </div>
 
         <!-- 2. Defender -->
-        <div class="prod-card reveal" data-id="pf30" onclick="window.location.href='product-detail.html?id=pf30'" style="cursor:pointer;">
+        <div class="prod-card" data-id="pf30" onclick="window.location.href='product-detail.html?id=pf30'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini">DF</div>
             <div class="discount-badge-round">19%<span>OFF</span></div>
@@ -1407,7 +1430,7 @@
         </div>
 
         <!-- 3. Royal Canin -->
-        <div class="prod-card reveal" data-id="rc1" onclick="window.location.href='product-detail.html?id=rc1'" style="cursor:pointer;">
+        <div class="prod-card" data-id="rc1" onclick="window.location.href='product-detail.html?id=rc1'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini" style="color:red; font-weight:900;">RC</div>
             <div class="discount-badge-round">14%<span>OFF</span></div>
@@ -1430,7 +1453,7 @@
         </div>
 
         <!-- 4. MIOW -->
-        <div class="prod-card reveal" data-id="pf15" onclick="window.location.href='product-detail.html?id=pf15'" style="cursor:pointer;">
+        <div class="prod-card" data-id="pf15" onclick="window.location.href='product-detail.html?id=pf15'" style="cursor:pointer;">
           <div class="card-header-overlay">
             <div class="brand-icon-mini" style="color:#0077b5;">MW</div>
             <div class="discount-badge-round">25%<span>OFF</span></div>
@@ -1452,28 +1475,6 @@
           </div>
         </div>
 
-        <!-- 5. Bairo -->
-        <div class="prod-card reveal" data-id="pf1" onclick="window.location.href='product-detail.html?id=pf1'" style="cursor:pointer;">
-          <div class="card-header-overlay">
-            <div class="brand-icon-mini" style="color:#511b15;">BR</div>
-            <div class="discount-badge-round">20%<span>OFF</span></div>
-          </div>
-          <div class="prod-img">
-            <img src="images/Barioo/Bario-Adult EC-Chicken and rice.png" alt="Bairo Adult EC Chicken">
-          </div>
-          <div class="prod-body">
-            <span class="prod-brand" style="color:#511b15;">Bairo</span>
-            <h3 class="prod-name">Adult EC Chicken &amp; Rice</h3>
-            <span class="prod-cat">Dog Food</span>
-            <div class="prod-price-box">
-              <span class="prod-price">₹1,120</span>
-              <span class="prod-old-price">₹1,400</span>
-            </div>
-            <button class="prod-btn" onclick="event.stopPropagation(); addToCart({name: 'Bairo Adult EC Chicken & Rice', price: 1120, image: 'images/Barioo/Bario-Adult EC-Chicken and rice.png', brand: 'Bairo', qty: 1, unit: 'KG'})">
-              <span class="material-symbols-outlined">shopping_bag</span> Add to Cart
-            </button>
-          </div>
-        </div>
 
       </div>
 

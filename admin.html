@@ -178,9 +178,21 @@
               <input class="form-control" id="fp-name" placeholder="e.g. Adult Chicken & Rice"/>
             </div>
             <div class="form-group">
-              <label>Brand *</label>
-              <input class="form-control" id="fp-brand" list="brand-options" placeholder="e.g. Royal Canin" autocomplete="off"/>
-              <datalist id="brand-options"></datalist>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2px;">
+                <label style="margin-bottom:0;">Brand *</label>
+                <button type="button" class="btn-brand-mode" id="btn-brand-mode" onclick="toggleBrandMode()">
+                  <span class="material-symbols-outlined">add_circle</span>
+                  <span>New Brand</span>
+                </button>
+              </div>
+              <div id="brand-select-wrap">
+                <input class="form-control" id="fp-brand" list="brand-options" placeholder="e.g. Royal Canin" autocomplete="off"/>
+                <datalist id="brand-options"></datalist>
+              </div>
+              <div id="brand-custom-wrap" style="display:none;">
+                <input class="form-control" id="fp-brand-custom" placeholder="Type new brand name..."/>
+              </div>
+              <input type="hidden" id="fp-brand-mode" value="select"/>
             </div>
             <div class="form-group">
               <label>Category *</label>

@@ -410,6 +410,29 @@ select.form-control { cursor: pointer; }
 }
 .btn-remove-weight:hover { background: var(--red); color: white; }
 
+.btn-brand-mode {
+  background: rgba(4,151,177,0.1);
+  color: var(--blue);
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.2s;
+}
+.btn-brand-mode:hover {
+  background: var(--blue);
+  color: white;
+}
+.btn-brand-mode .material-symbols-outlined {
+  font-size: 16px;
+}
+
 /* Form action buttons */
 .form-actions {
   display: flex; gap: 12px;

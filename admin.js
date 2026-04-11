@@ -237,7 +237,16 @@ window.handleImageUpload = function(event) {
 
 window.saveProduct = function() {
   const name     = document.getElementById('fp-name').value.trim();
-  const brand    = document.getElementById('fp-brand').value.trim();
+  
+  // Brand selection logic
+  const brandMode = document.getElementById('fp-brand-mode').value;
+  let brand = '';
+  if (brandMode === 'select') {
+    brand = document.getElementById('fp-brand').value.trim();
+  } else {
+    brand = document.getElementById('fp-brand-custom').value.trim();
+  }
+
   const category = document.getElementById('fp-category').value;
   const cat      = document.getElementById('fp-cat').value.trim();
   const inputPrice = parseInt(document.getElementById('fp-price').value);
@@ -304,11 +313,18 @@ window.saveProduct = function() {
 };
 
 window.resetProductForm = function() {
-  ['fp-name','fp-brand','fp-cat','fp-price','fp-oldprice','fp-discount',
+  ['fp-name','fp-brand','fp-brand-custom','fp-cat','fp-price','fp-oldprice','fp-discount',
    'fp-stock','fp-features','fp-desc','fp-badge','fp-image-data','fp-image-url'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+
+  // Reset Brand Mode
+  const modeVal = document.getElementById('fp-brand-mode');
+  if (modeVal && modeVal.value === 'custom') {
+    toggleBrandMode(); // Switch back to select mode
+  }
+
   document.getElementById('fp-category').value = 'Pet Food';
   document.getElementById('fp-unit').value = 'KG';
   document.getElementById('fp-status').value = 'active';
@@ -323,6 +339,30 @@ window.resetProductForm = function() {
   document.getElementById('addFormTitle').textContent = 'New Product';
   document.getElementById('saveProductBtnText').textContent = 'Save Product';
 };
+
+window.toggleBrandMode = function() {
+  const modeVal   = document.getElementById('fp-brand-mode');
+  const selectWrap = document.getElementById('brand-select-wrap');
+  const customWrap = document.getElementById('brand-custom-wrap');
+  const btn       = document.getElementById('btn-brand-mode');
+
+  if (modeVal.value === 'select') {
+    modeVal.value = 'custom';
+    selectWrap.style.display = 'none';
+    customWrap.style.display = 'block';
+    btn.innerHTML = '<span class="material-symbols-outlined">list</span> <span>Choose Existing</span>';
+    btn.style.background = 'rgba(16,185,129,0.1)';
+    btn.style.color = 'var(--green)';
+  } else {
+    modeVal.value = 'select';
+    selectWrap.style.display = 'block';
+    customWrap.style.display = 'none';
+    btn.innerHTML = '<span class="material-symbols-outlined">add_circle</span> <span>New Brand</span>';
+    btn.style.background = 'rgba(4,151,177,0.1)';
+    btn.style.color = 'var(--blue)';
+  }
+};
+
 
 function populateProductFilters() {
   const brands = [...new Set(getStoredProducts().map(p => p.brand))].sort();
@@ -416,7 +456,20 @@ window.editProduct = function(id) {
   document.getElementById('addFormTitle').textContent = 'Editing: ' + p.name;
   document.getElementById('saveProductBtnText').textContent = 'Update Product';
   document.getElementById('fp-name').value     = p.name || '';
-  document.getElementById('fp-brand').value    = p.brand || '';
+  
+  // Brand selection mode handling during edit
+  const brands = [...new Set(getStoredProducts().map(pr => pr.brand))];
+  const modeVal = document.getElementById('fp-brand-mode');
+  if (p.brand && !brands.includes(p.brand)) {
+    // Brand is new/custom
+    if (modeVal.value === 'select') toggleBrandMode();
+    document.getElementById('fp-brand-custom').value = p.brand;
+  } else {
+    // Brand exists
+    if (modeVal.value === 'custom') toggleBrandMode();
+    document.getElementById('fp-brand').value = p.brand || '';
+  }
+
   document.getElementById('fp-category').value = p.category || 'Pet Food';
   document.getElementById('fp-cat').value      = p.cat || '';
   document.getElementById('fp-price').value    = p.oldPrice || p.price || '';

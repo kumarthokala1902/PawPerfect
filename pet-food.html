@@ -408,6 +408,8 @@
       flex-shrink: 0;
       position: sticky;
       top: 100px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
       background: white;
       border-radius: 20px;
       padding: 24px;
@@ -415,6 +417,10 @@
       border: 1px solid #edf2f7;
       z-index: 100;
     }
+
+    /* Custom scrollbar for sidebar */
+    .filter-sidebar::-webkit-scrollbar { width: 4px; }
+    .filter-sidebar::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 10px; }
 
     .filter-section {
       margin-bottom: 30px;
@@ -607,10 +613,10 @@
       position: sticky;
       top: 80px;
       z-index: 800;
-      background: white;
-      padding: 12px 5vw;
-      border-bottom: 1px solid #edf2f7;
-      margin-bottom: 20px;
+      background: transparent;
+      padding: 15px 5vw 0;
+      border: none;
+      margin-bottom: 10px;
     }
 
     /* Sidebar Overlay */
@@ -657,8 +663,26 @@
       }
       .mobile-filter-bar {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
+        background: transparent;
+        padding: 5px 5vw;
+        border: none;
+        box-shadow: none;
+        margin-bottom: 0;
+      }
+      .results-count {
+        display: none !important;
+      }
+      .sort-label {
+        display: none;
+      }
+      .products-toolbar {
+        justify-content: flex-end;
+        margin-top: -40px; /* Pull products up closer */
+        position: relative;
+        z-index: 10;
+        margin-bottom: 15px;
       }
       .btn-mobile-filter {
         display: flex;
@@ -794,7 +818,6 @@
 
   <!-- Mobile Filter Bar -->
   <div class="mobile-filter-bar">
-    <div class="results-count" id="mobileResultsCount">Showing <span>0</span> products</div>
     <button class="btn-mobile-filter" onclick="toggleFilterSidebar(true)">
       <span class="material-symbols-outlined">menu</span> Filters
     </button>
@@ -988,7 +1011,8 @@
       // Update Results Count
       const countText = `Showing <span>${filtered.length}</span> products`;
       document.getElementById('desktopResultsCount').innerHTML = countText;
-      document.getElementById('mobileResultsCount').innerHTML = countText;
+      const mobileCount = document.getElementById('mobileResultsCount');
+      if (mobileCount) mobileCount.innerHTML = countText;
 
       if (filtered.length === 0) {
         grid.innerHTML = `

@@ -860,14 +860,58 @@ window.refreshDashboard = async function() {
 
   const breakdownEl = document.getElementById('statusBreakdown');
   const total = allOrders.length || 1;
-  breakdownEl.innerHTML = statuses.filter(s => counts[s] > 0 || s === 'Delivered').map(s => `
-    <div class="status-row">
-      <span style="font-size:0.82rem;font-weight:700;min-width:130px;">${s}</span>
-      <div class="status-bar-wrap">
-        <div class="status-bar" style="width:${Math.round((counts[s]/total)*100)}%;background:${colors[s]};"></div>
+  const activeStatuses = statuses.filter(s => counts[s] > 0 || s === 'Delivered');
+
+  breakdownEl.innerHTML = `
+    <div style="display:flex; flex-direction: column; gap: 24px; align-items: center;">
+      <div style="width: 100%; min-width: 250px;">
+        ${activeStatuses.map(s => `
+        <div class="status-row">
+          <span style="font-size:0.82rem;font-weight:700;min-width:130px;">${s}</span>
+          <div class="status-bar-wrap">
+            <div class="status-bar" style="width:${Math.round((counts[s]/total)*100)}%;background:${colors[s]};"></div>
+          </div>
+          <span style="font-weight:800;font-size:0.9rem;min-width:30px;text-align:right;">${counts[s]}</span>
+        </div>`).join('')}
       </div>
-      <span style="font-weight:800;font-size:0.9rem;min-width:30px;text-align:right;">${counts[s]}</span>
-    </div>`).join('');
+      <div style="width: 160px; height: 160px; flex-shrink: 0; margin: 0 auto;">
+        <canvas id="donutChart"></canvas>
+      </div>
+    </div>`;
+
+  const ctx = document.getElementById('donutChart');
+  if (ctx) {
+    if (window.statusChart) window.statusChart.destroy();
+    window.statusChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: activeStatuses,
+        datasets: [{
+          data: activeStatuses.map(s => counts[s]),
+          backgroundColor: activeStatuses.map(s => colors[s]),
+          borderWidth: 0,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '75%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            padding: 10,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(context) {
+                return ' ' + context.label + ': ' + context.raw;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
 };
 
 // ══════════════════════════════════════════════════════════════
